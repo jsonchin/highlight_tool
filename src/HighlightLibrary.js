@@ -1,32 +1,16 @@
-class HighlighterLibrary {
-    constructor() {
-        this.highlighterSets = [];
-        this.currentSetIndex = 0;
-    }
-
-    /**
-     * A factory method to create a highlighter library from json.
-     * @param {String} libraryJSONStr Represents the jsonified string of a library.
-     */
-    makeHighlighterLibrary(libraryJSONStr) {
-        const hLibrary = new HighlighterLibrary();
-
-        hLibrary.currentSetIndex = libraryJSONStr.currentSetIndex;
-        libraryJSONStr.highlighterSets.forEach((highlighterSet) => {
-            hLibrary.highlighterSets.push(new HighlighterSet(
-                highlighterSet.setName,
-                highlighterSet.highlighters
-            ));
-        });
-        
-        return hLibrary;
-    }
+/**
+ * A factory method to create a highlighter library from json.
+ * @param {String} libraryJSONStr Represents the jsonified string of a library.
+ */
+const HighlighterLibrary = function() {
+    this.highlighterSets = [];
+    this.currentSetIndex = 0;
 
     /**
      * Adds a highlighter set to the library.
      * @param {HighlighterSet} highlighterSet 
      */
-    addHighlighterSet(highlighterSet) {
+    this.addHighlighterSet = function(highlighterSet) {
         if (!(highlighterSet instanceof HighlighterSet)) {
             throw 'HighlighterLibrary::addHighlighterSet expected a HighlighterSet object.'
         }
@@ -38,7 +22,7 @@ class HighlighterLibrary {
      * Removes a HighlighterSet at the given index from the HighlighterLibrary.
      * @param {int} index
      */
-    removeHighlighterSet(index) {
+    this.removeHighlighterSet = function(index) {
         if (index >= this.highlighterSets.length) {
             throw 'HighlighterLibrary::removeHighlighterSet index greater than highlighters length.'
         }
@@ -47,29 +31,44 @@ class HighlighterLibrary {
     }
 }
 
-class HighlighterSet {
-    
-    /**
-     * @param {String} setName 
-     */
-    constructor(setName, highlightersJSON = []) {
-        this.setName = setName;
-        this.highlighters = [];
+const makeHighlighterLibrary = function(libraryJSONStr) {
+    const hLibrary = new HighlighterLibrary();
 
-        highlightersJSON.forEach((highlighter) => {
-            this.highlighters.push(new Highlighter(
-                highlighter.label,
-                highlighter.setName
-            ));
-        });
+    hLibrary.currentSetIndex = libraryJSONStr.currentSetIndex;
+    libraryJSONStr.highlighterSets.forEach(function(highlighterSet) {
+        hLibrary.highlighterSets.push(new HighlighterSet(
+            highlighterSet.setName,
+            highlighterSet.highlighters
+        ));
+    });
+
+    return hLibrary;
+}
+
+/**
+ * @param {String} setName 
+ */
+const HighlighterSet = function(setName, highlightersJSON) {
+    if (highlightersJSON === undefined) {
+        highlightersJSON = [];
     }
+    
+    this.setName = setName;
+    this.highlighters = [];
+
+    highlightersJSON.forEach(function(highlighter) {
+        this.highlighters.push(new Highlighter(
+            highlighter.label,
+            highlighter.setName
+        ));
+    });
 
 
     /**
      * Adds a highlighter to the set.
      * @param {Highlighter} highlighter 
      */
-    addHighlighter(highlighter) {
+    this.addHighlighter = function(highlighter) {
         if (!(highlighter instanceof Highlighter)) {
             throw 'HighlighterSet::addHighlighter expected a Highlighter object.'
         }
@@ -82,7 +81,7 @@ class HighlighterSet {
      * Removes a highlighter at the given index from the HighlighterSet.
      * @param {int} index 
      */
-    removeHighlighter(index) {
+    this.removeHighlighter = function(index) {
         if (index >= this.highlighters.length) {
             throw 'HighlighterSet::removeHighlighter index greater than highlighters length.'
         }
@@ -92,14 +91,11 @@ class HighlighterSet {
 
 }
 
-class Highlighter {
-
-    /**
-     * @param {String} label 
-     * @param {String} color (in #RGB format, ex. "#3f0f10")
-     */
-    constructor(label, color) {
-        this.label = label;
-        this.color = color;
-    }
+/**
+ * @param {String} label 
+ * @param {String} color (in #RGB format, ex. "#3f0f10")
+ */
+const Highlighter = function(label, color) {
+    this.label = label;
+    this.color = color;
 }
