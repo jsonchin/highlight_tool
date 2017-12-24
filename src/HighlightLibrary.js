@@ -22,7 +22,7 @@ const HighlighterSet = function (setName, highlightersJSON) {
   highlightersJSON.forEach(function (highlighter) {
     this.highlighters.push(new Highlighter(
       highlighter.label,
-      highlighter.setName,
+      highlighter.setName
     ));
   });
 
@@ -94,7 +94,7 @@ const makeHighlighterLibrary = function (libraryJSONStr) {
   libraryJSONStr.highlighterSets.forEach(function (highlighterSet) {
     hLibrary.highlighterSets.push(new HighlighterSet(
       highlighterSet.setName,
-      highlighterSet.highlighters,
+      highlighterSet.highlighters
     ));
   });
 
