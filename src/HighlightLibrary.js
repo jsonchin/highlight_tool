@@ -9,6 +9,9 @@ var assert = function (bool, msg) {
   }
 };
 
+var LIBRARY_KEY = 'library';
+
+
 /**
  * @param {String} label
  * @param {String} color (in #RGB format, ex. "#3f0f10")
@@ -122,13 +125,18 @@ var HighlighterLibrary = function () {
       })
     }
   };
+
+  this.save = function () {
+    const userProps = PropertiesService.getUserProperties();
+    userProps.setProperty(LIBRARY_KEY, JSON.stringify(this.toJSON()));
+  };
 };
 
-var makeHighlighterLibrary = function (libraryJSONStr) {
+var makeHighlighterLibrary = function (libraryJSON) {
   const hLibrary = new HighlighterLibrary();
 
-  hLibrary.currentSetIndex = libraryJSONStr.currentSetIndex;
-  libraryJSONStr.highlighterSets.forEach(function (highlighterSet) {
+  hLibrary.currentSetIndex = libraryJSON.currentSetIndex;
+  libraryJSON.highlighterSets.forEach(function (highlighterSet) {
     hLibrary.highlighterSets.push(new HighlighterSet(
       highlighterSet.setName,
       highlighterSet.highlighters
@@ -136,4 +144,12 @@ var makeHighlighterLibrary = function (libraryJSONStr) {
   });
 
   return hLibrary;
+};
+
+var loadHighlighterLibrary = function () {
+  const userProps = PropertiesService.getUserProperties();
+  const libraryJSONStr = userProps.getProperty(LIBRARY_KEY);
+  const libraryJSON = JSON.parse(libraryJSONStr);
+
+  return makeHighlighterLibrary(libraryJSON);
 };
