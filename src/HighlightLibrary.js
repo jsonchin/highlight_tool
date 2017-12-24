@@ -1,17 +1,43 @@
+var AssertionError = function (msg) {
+  this.name = 'AssertionError';
+  this.message = msg;
+};
+
+var assert = function (bool, msg) {
+  if (!bool) {
+    throw new AssertionError(msg);
+  }
+};
+
 /**
  * @param {String} label
  * @param {String} color (in #RGB format, ex. "#3f0f10")
  */
-const Highlighter = function (label, color) {
+var Highlighter = function (label, color) {
   this.label = label;
   this.color = color;
+
+  this.setLabel = function (newLabel) {
+    this.label = newLabel;
+  };
+
+  this.setColor = function (newColor) {
+    this.color = newColor;
+  };
+
+  this.toJSON = function () {
+    return {
+      label: this.label,
+      color: this.color
+    };
+  };
 };
 
 
 /**
  * @param {String} setName
  */
-const HighlighterSet = function (setName, highlightersJSON) {
+var HighlighterSet = function (setName, highlightersJSON) {
   if (highlightersJSON === undefined) {
     highlightersJSON = [];
   }
@@ -32,9 +58,7 @@ const HighlighterSet = function (setName, highlightersJSON) {
      * @param {Highlighter} highlighter
      */
   this.addHighlighter = function (highlighter) {
-    if (!(highlighter instanceof Highlighter)) {
-      throw 'HighlighterSet::addHighlighter expected a Highlighter object.';
-    }
+    assert(!(highlighter instanceof Highlighter), 'HighlighterSet::addHighlighter expected a Highlighter object.');
 
     this.highlighters.push(highlighter);
   };
@@ -45,11 +69,19 @@ const HighlighterSet = function (setName, highlightersJSON) {
      * @param {int} index
      */
   this.removeHighlighter = function (index) {
-    if (index >= this.highlighters.length) {
-      throw 'HighlighterSet::removeHighlighter index greater than highlighters length.';
-    }
+    assert((index >= this.highlighters.length), 'HighlighterSet::removeHighlighter index greater than highlighters length.');
 
     this.highlighters.splice(index, 1);
+  };
+
+
+  this.toJSON = function () {
+    return {
+      setName: this.setName,
+      highlighters: this.highlighters.forEach(function (highlighter) {
+        return highlighter.toJSON();
+      })
+    };
   };
 };
 
@@ -58,7 +90,7 @@ const HighlighterSet = function (setName, highlightersJSON) {
  * A factory method to create a highlighter library from json.
  * @param {String} libraryJSONStr Represents the jsonified string of a library.
  */
-const HighlighterLibrary = function () {
+var HighlighterLibrary = function () {
   this.highlighterSets = [];
   this.currentSetIndex = 0;
 
@@ -67,9 +99,7 @@ const HighlighterLibrary = function () {
      * @param {HighlighterSet} highlighterSet
      */
   this.addHighlighterSet = function (highlighterSet) {
-    if (!(highlighterSet instanceof HighlighterSet)) {
-      throw 'HighlighterLibrary::addHighlighterSet expected a HighlighterSet object.';
-    }
+    assert(!(highlighterSet instanceof HighlighterSet), 'HighlighterLibrary::addHighlighterSet expected a HighlighterSet object.');
 
     this.highlighterSets.push(highlighterSet);
   };
@@ -79,15 +109,22 @@ const HighlighterLibrary = function () {
      * @param {int} index
      */
   this.removeHighlighterSet = function (index) {
-    if (index >= this.highlighterSets.length) {
-      throw 'HighlighterLibrary::removeHighlighterSet index greater than highlighters length.';
-    }
-
+    assert(index >= this.highlighterSets.length, 'HighlighterLibrary::removeHighlighterSet index greater than highlighters length.');
+   
     this.highlighterSets.splice(index, 1);
+  };
+
+  this.toJSON = function () {
+    return {
+      currentSetIndex: this.currentSetIndex,
+      highlighterSets: this.highlighterSets.forEach(function (highlighterSet) {
+        return highlighterSet.toJSON();
+      })
+    }
   };
 };
 
-const makeHighlighterLibrary = function (libraryJSONStr) {
+var makeHighlighterLibrary = function (libraryJSONStr) {
   const hLibrary = new HighlighterLibrary();
 
   hLibrary.currentSetIndex = libraryJSONStr.currentSetIndex;
