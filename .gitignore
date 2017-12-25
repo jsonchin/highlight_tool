@@ -59,3 +59,7 @@ typings/
 
 # gapps
 gapps.config.json
+notes.txt
+package.json
+.eslintrc.yml
+.vscode/settings.json
