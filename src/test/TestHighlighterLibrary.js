@@ -12,7 +12,7 @@ function runTests() {
   testLibraryRemoveSetNegative();
   testSetRemoveHighlighter();
   testSetRemoveHighlighterNegative();
-  Logger.log('Tests successful');
+  Logger.log('Tests successful.');
 }
 
 function testLibraryInit() {
