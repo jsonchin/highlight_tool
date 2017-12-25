@@ -15,7 +15,15 @@ var assertEquals = function (predicate, truth, msg) {
 
 var LIBRARY_KEY = 'library';
 
-var makeHighlighterLibrary = function (libraryJSON) {
+/**
+ * Loads the user's highlighter library stored in user properties.
+ * Returns a HighlighterLibrary object.
+ */
+var loadHighlighterLibrary = function () {
+  const userProps = PropertiesService.getUserProperties();
+  const libraryJSONStr = userProps.getProperty(LIBRARY_KEY);
+  const libraryJSON = JSON.parse(libraryJSONStr);
+
   const hLibrary = new HighlighterLibrary();
 
   hLibrary.currentSetIndex = libraryJSON.currentSetIndex;
@@ -27,14 +35,6 @@ var makeHighlighterLibrary = function (libraryJSON) {
   });
 
   return hLibrary;
-};
-
-var loadHighlighterLibrary = function () {
-  const userProps = PropertiesService.getUserProperties();
-  const libraryJSONStr = userProps.getProperty(LIBRARY_KEY);
-  const libraryJSON = JSON.parse(libraryJSONStr);
-
-  return makeHighlighterLibrary(libraryJSON);
 };
 
 
@@ -80,9 +80,9 @@ function HighlighterSet (setName, highlightersJSON) {
 
 
   /**
-     * Adds a highlighter to the set.
-     * @param {Highlighter} highlighter
-     */
+   * Adds a highlighter to the set.
+   * @param {Highlighter} highlighter
+   */
   this.addHighlighter = function (highlighter) {
     assert(highlighter instanceof Highlighter, 'HighlighterSet::addHighlighter expected a Highlighter object.');
 
@@ -91,9 +91,9 @@ function HighlighterSet (setName, highlightersJSON) {
 
 
   /**
-     * Removes a highlighter at the given index from the HighlighterSet.
-     * @param {int} index
-     */
+   * Removes a highlighter at the given index from the HighlighterSet.
+   * @param {int} index
+   */
   this.removeHighlighter = function (index) {
     assert(index < this.highlighters.length, 'HighlighterSet::removeHighlighter index greater than highlighters length.');
 
