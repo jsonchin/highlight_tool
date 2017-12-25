@@ -104,6 +104,14 @@
    * On click, highlight the selection with the button's background color.
    */
   $('.highlight-button').on('click', highlightSelection);
+
+
+
+  function openHighlighterLibrary(event) {
+    google.script.run.showHighlighterLibraryDialog();
+  }
+
+  $('#highlighter-library-button').on('click', openHighlighterLibrary);
   </script>
 </body>
 

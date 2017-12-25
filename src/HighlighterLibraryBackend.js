@@ -38,6 +38,22 @@ var loadHighlighterLibrary = function () {
 };
 
 
+function showHighlighterLibraryDialog() {
+  const dialogTemplate = HtmlService.createTemplateFromFile('HighlighterLibrary');
+
+  const hLibrary = loadHighlighterLibrary();
+  const hLibraryJSON = hLibrary.toJSON();
+  dialogTemplate.hLibrary = hLibraryJSON;
+
+  const dialog = dialogTemplate.evaluate();
+  dialog.setWidth(800)
+    .setHeight(600);
+
+  DocumentApp.getUi()
+    .showModalDialog(dialog, 'Highlighter Library');
+}
+
+
 /**
  * @param {String} label
  * @param {String} color (in #RGB format, ex. "#3f0f10")

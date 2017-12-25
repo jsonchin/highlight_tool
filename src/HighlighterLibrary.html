@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <style>
+    #sortable {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      width: 60%;
+    }
+
+    #sortable li {
+      margin: 0 3px 3px 3px;
+      padding: 0.4em;
+      padding-left: 1.5em;
+      font-size: 1.4em;
+      height: 18px;
+    }
+
+    #sortable li span {
+      position: absolute;
+      margin-left: -1.3em;
+    }
+  </style>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  
+  <script>
+    $(function () {
+      $("#sortable").sortable({
+        axis: "y"
+      });
+      $("#sortable").disableSelection();
+
+      $("#highlighter-sets").sortable({
+        axis: "y",
+        handle: ".draggable-set-handle"
+      });
+      $("#highlighter-sets").disableSelection();
+    });
+  </script>
+</head>
+
+<body>
+
+  <? var hSets = hLibrary.highlighterSets; ?>
+  <? var currentSetIndex = hLibrary.currentSetIndex; ?>
+  <ul id="highlighter-sets">
+  <? for (var i = 0; i < hSets.length; i++) { ?>
+    <li>
+      <span class="ui-icon ui-icon-arrowthick-2-n-s draggable-set-handle"></span>
+      <?= hSets[i].setName ?>
+    </li>
+  <? } ?>
+  </ul>
+
+  <ul id="sortable">
+    <li class="ui-state-default">
+      <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
+    <li class="ui-state-default">
+      <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
+    <li class="ui-state-default">
+      <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>
+    <li class="ui-state-default">
+      <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>
+    <li class="ui-state-default">
+      <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>
+    <li class="ui-state-default">
+      <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>
+    <li class="ui-state-default">
+      <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 7</li>
+  </ul>
+
+
+</body>
+
+</html>
