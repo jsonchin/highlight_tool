@@ -1,19 +1,37 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     <style>
+        input[type=button] {
+            cursor: pointer;
+        }
+
+        body {
+            height: 100%;
+        }
+
+        #highlighter-library {
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+
+        #bottom {
+            position: absolute;
+            bottom: 0;
+        }
+
         #highlighter-sets {
             list-style-type: none;
             margin: 0;
             padding: 0;
-            width: 80%;
         }
         
         .highlighter-sets-item {
-            margin: 0 3px 3px 3px;
+            margin: 3px;
             padding: 0.4em;
             padding-left: 1.5em;
             font-size: 1.4em;
@@ -28,11 +46,11 @@
             list-style-type: none;
             margin: 0;
             padding: 0;
-            width: 80%;
         }
 
         .highlighters-item {
-            margin: 0 3px 3px 3px;
+            margin: 3px;
+            width: fit-content;
             padding: 0.4em;
             padding-left: 1.5em;
             font-size: 1.4em;
@@ -69,28 +87,103 @@
 
 <body>
 
-    <? var hSets = hLibrary.highlighterSets; ?>
-    <? var currentSetIndex = hLibrary.currentSetIndex; ?>
-    <ul id="highlighter-sets">
-    <? for (var i = 0; i < hSets.length; i++) { ?>
-        <li class="highlighter-sets-item">
-            <span class="ui-icon ui-icon-arrowthick-2-n-s draggable-set-handle"></span>
-            <?= hSets[i].setName ?>
+    <div id="highlighter-library">
+        <? var hSets = hLibrary.highlighterSets; ?>
+        <? var currentSetIndex = hLibrary.currentSetIndex; ?>
+        <ul id="highlighter-sets">
+        <? for (var i = 0; i < hSets.length; i++) { ?>
+            <li class="highlighter-sets-item">
+                <span class="ui-icon ui-icon-arrowthick-2-n-s draggable-set-handle"></span>
+                <?= hSets[i].setName ?>
 
-            <? var highlighters = hSets[i].highlighters; ?>
-            <ul class="highlighters">
-            <? for (var j = 0; j < highlighters.length; j++) { ?>
-                <li class="highlighters-item">
-                    <span class="ui-icon ui-icon-arrowthick-2-n-s draggable-highlighter-handle"></span>
-                    <input type="color" value="<?= highlighters[j].color ?>">
-                    <input type="text" value="<?= highlighters[j].label ?>">
-                </li>
-            <? } ?>
-            </ul>
-        </li>
-    <? } ?>
-    </ul>
+                <? var highlighters = hSets[i].highlighters; ?>
+                <ul class="highlighters">
+                <? for (var j = 0; j < highlighters.length; j++) { ?>
+                    <li class="highlighters-item">
+                        <span class="ui-icon ui-icon-arrowthick-2-n-s draggable-highlighter-handle"></span>
+                        <input class="highlighter-color" type="color" value="<?= highlighters[j].color ?>" />
+                        <input class="highlighter-label" type="text" value="<?= highlighters[j].label ?>" />
+                    </li>
+                <? } ?>
+                </ul>
+            </li>
+        <? } ?>
+        </ul>
+    </div>
+
+    <div id="bottom">
+        <input type="button" value="Save" id="save-library-button" class="action" />
+        <input type="button" value="Close" id="close-library-button" />
+    </div>
 
 </body>
+
+<script>
+    var LABEL_KEY = 'label';
+    var COLOR_KEY = 'color';
+    var SET_NAME_KEY = 'setName';
+    var HIGHLIGHTERS_KEY = 'highlighters';
+    var CURRENT_SET_INDEX_KEY = 'currentSetIndex';
+    var HIGHLIGHTER_SETS_KEY = 'highlighterSets';
+
+    function saveLibrary() {
+        const libraryJSON = serializeLibrary();
+        console.log(libraryJSON);
+        google.script.run
+            .withSuccessHandler(function () {
+                setTimeout(function () {
+                    google.script.host.close();                    
+                }, 1000);
+            })
+            .withFailureHandler(function () {
+                alert('Was not able to save the library. Please try again.');
+            })
+            .saveHighlighterLibraryFromDialog(libraryJSON);
+    }
+
+    function serializeLibrary() {
+        const highlighterSets = [];
+        const currentSetIndex = 0;
+
+        $('#highlighter-sets').children('.highlighter-sets-item').each(
+            function () {
+                const highlighters = [];
+                const setName = $.trim($(this).text());
+
+                const highlightersContainer = $(this).children('.highlighters')[0];
+                $(highlightersContainer).children('.highlighters-item').each(
+                    function () {
+                        const color = $(this).children('.highlighter-color').val();
+                        const label = $(this).children('.highlighter-label').val();
+                        const highlighterJSON = {}
+                        highlighterJSON[COLOR_KEY] = color;
+                        highlighterJSON[LABEL_KEY] = label;
+                        highlighters.push(highlighterJSON);
+                    }
+                );
+
+                const highlighterSetJSON = {};
+                highlighterSetJSON[HIGHLIGHTERS_KEY] = highlighters;
+                highlighterSetJSON[SET_NAME_KEY] = setName;
+                
+                highlighterSets.push(highlighterSetJSON);
+            }
+        );
+
+        const libraryJSON = {};
+        libraryJSON[HIGHLIGHTER_SETS_KEY] = highlighterSets;
+        libraryJSON[CURRENT_SET_INDEX_KEY] = currentSetIndex;
+
+        return libraryJSON;
+    }
+
+    $('#save-library-button').on('click', saveLibrary);
+
+    $('#close-library-button').on('click', google.script.host.close);
+
+    $('#bottom > input[type=button]').on('click', function () {
+        $('#bottom > input[type=button]').attr('disabled', 'disabled');
+    });
+</script>
 
 </html>
