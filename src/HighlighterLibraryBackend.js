@@ -14,16 +14,19 @@ var assertEquals = function (predicate, truth, msg) {
 };
 
 var LIBRARY_KEY = 'library';
+var LABEL_KEY = 'label';
+var COLOR_KEY = 'color';
+var SET_NAME_KEY = 'setName';
+var HIGHLIGHTERS_KEY = 'highlighters';
+var CURRENT_SET_INDEX_KEY = 'currentSetIndex';
+var HIGHLIGHTER_SETS_KEY = 'highlighterSets';
+
 
 /**
- * Loads the user's highlighter library stored in user properties.
- * Returns a HighlighterLibrary object.
+ * Creates a highlighter library from the provided json.
+ * @param {json} libraryJSON Must be in the correct library json format.
  */
-var loadHighlighterLibrary = function () {
-  const userProps = PropertiesService.getUserProperties();
-  const libraryJSONStr = userProps.getProperty(LIBRARY_KEY);
-  const libraryJSON = JSON.parse(libraryJSONStr);
-
+var makeHighlighterLibrary = function makeHighlighterLibraryFromJSON(libraryJSON) {
   const hLibrary = new HighlighterLibrary();
 
   hLibrary.currentSetIndex = libraryJSON.currentSetIndex;
@@ -35,6 +38,18 @@ var loadHighlighterLibrary = function () {
   });
 
   return hLibrary;
+};
+
+/**
+ * Loads the user's highlighter library stored in user properties.
+ * Returns a HighlighterLibrary object.
+ */
+var loadHighlighterLibrary = function () {
+  const userProps = PropertiesService.getUserProperties();
+  const libraryJSONStr = userProps.getProperty(LIBRARY_KEY);
+  const libraryJSON = JSON.parse(libraryJSONStr);
+
+  return makeHighlighterLibrary(libraryJSON);
 };
 
 
@@ -51,6 +66,13 @@ function showHighlighterLibraryDialog() {
 
   DocumentApp.getUi()
     .showModalDialog(dialog, 'Highlighter Library');
+}
+
+function saveHighlighterLibraryFromDialog(libraryJSON) {
+  const hLibrary = makeHighlighterLibrary(libraryJSON);
+  hLibrary.save();
+
+  showSidebar();
 }
 
 
@@ -71,10 +93,11 @@ function Highlighter (label, color) {
   };
 
   this.toJSON = function () {
-    return {
-      label: this.label,
-      color: this.color
-    };
+    const json = {};
+    json[LABEL_KEY] = this.label;
+    json[COLOR_KEY] = this.color;
+
+    return json;
   };
 }
 
@@ -123,10 +146,10 @@ function HighlighterSet (setName, highlightersJSON) {
       highlightersListJSON.push(highlighter.toJSON());
     });
 
-    return {
-      setName: this.setName,
-      highlighters: highlightersListJSON
-    };
+    const json = {};
+    json[SET_NAME_KEY] = this.setName;
+    json[HIGHLIGHTERS_KEY] = highlightersListJSON;
+    return json;
   };
 }
 
@@ -165,10 +188,10 @@ function HighlighterLibrary () {
       highlighterSetsJSON.push(highlighterSet.toJSON());
     });
 
-    return {
-      currentSetIndex: this.currentSetIndex,
-      highlighterSets: highlighterSetsJSON
-    };
+    const json = {};
+    json[CURRENT_SET_INDEX_KEY] = this.currentSetIndex;
+    json[HIGHLIGHTER_SETS_KEY] = highlighterSetsJSON;
+    return json;
   };
 
   /**
