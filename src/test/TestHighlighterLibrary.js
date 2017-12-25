@@ -8,6 +8,10 @@ var SET1NAME = 'set_name';
 function runTests() {
   testLibraryInit();
   testLibraryRetrieve();
+  testLibraryRemoveSet();
+  testLibraryRemoveSetNegative();
+  testSetRemoveHighlighter();
+  testSetRemoveHighlighterNegative();
   Logger.log('Tests successful');
 }
 
@@ -37,14 +41,37 @@ function testLibraryRetrieve() {
   assertEquals(h2.label, H2LABEL, 'Highlighter2 label does not match.');
 }
 
+function testLibraryRemoveSet() {
+  const hLib = loadHighlighterLibrary();
+  hLib.removeHighlighterSet(hLib.highlighterSets.length - 1); // valid index
+}
 
-// try {
-//   hLib.removeHighlighterSet(2);
-// } catch (error) {
-//   return;
-// }
+function testLibraryRemoveSetNegative() {
+  const hLib = loadHighlighterLibrary();
+  var e = null;
+  try {
+    hLib.removeHighlighterSet(hLib.highlighterSets.length); // invalid index
+  } catch (error) {
+    e = error;
+  }
+  assert(e, 'HighlighterLibrary:removeHighlighterSet invalid argument did not error,');
+}
 
-// throw {
-//   'name': 'TestError',
-//   'message': 'HighlighterLibrary::removeHighlighterSet did not fail for index out of bounds.'
-// };
+function testSetRemoveHighlighter() {
+  const hLib = loadHighlighterLibrary();
+  const hSet = hLib.highlighterSets[0];
+  hSet.removeHighlighter(hSet.highlighters.length - 1);
+}
+
+function testSetRemoveHighlighterNegative() {
+  const hLib = loadHighlighterLibrary();
+  const hSet = hLib.highlighterSets[0];
+
+  var e = null;
+  try {
+    hSet.removeHighlighter(hSet.highlighters.length); // invalid index
+  } catch (error) {
+    e = error;
+  }
+  assert(e, 'HighlighterSet:removeHighlighter invalid argument did not error,');
+}
