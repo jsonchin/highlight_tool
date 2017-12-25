@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+  <!-- The CSS package above applies Google styling to buttons and other elements. -->
+
+  <style>
+    .branding-below {
+      bottom: 56px;
+      top: 0;
+    }
+
+    .branding-text {
+      left: 7px;
+      position: relative;
+      top: 3px;
+    }
+
+    .col-contain {
+      overflow: hidden;
+    }
+
+    .col-one {
+      float: left;
+      width: 50%;
+    }
+
+    .logo {
+      vertical-align: middle;
+    }
+
+    .radio-spacer {
+      height: 20px;
+    }
+
+    .width-100 {
+      width: 100%;
+    }
+
+    input {
+      cursor:pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <input type="button" id="highlighter-library-button" />
+
+  <?= hSet.setName ?>
+  <? for (var i = 0; i < hSet.highlighters.length; i++) { ?>
+    <input type="button"
+    class="highlight-button"
+    style="background:<?= hSet.highlighters[i].color ?>; display:block;"
+    value="<?= hSet.highlighters[i].label ?>" />
+  <? } ?>
+
+  <div class="sidebar bottom">
+    <img alt="Add-on logo" class="logo" src="https://www.gstatic.com/images/branding/product/1x/translate_48dp.png" width="27"
+      height="27">
+    <span class="gray branding-text">Translate sample by Google</span>
+  </div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+  </script>
+  <script>
+
+  // https://stackoverflow.com/questions/1740700/how-to-get-hex-color-value-rather-than-rgb-value
+  var HEX_DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+
+  /**
+   * Converts RGB to hex.
+   */
+  function rgb2hex(rgb) {
+    rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+    return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+  }
+
+  /**
+   * Converts a number between 0 to 255 to its corresponding value in hex.
+   */
+  function hex(num) {
+    return isNaN(num) ? "00" : HEX_DIGITS[(num - num % 16) / 16] + HEX_DIGITS[num % 16];
+  }
+
+  /**
+   * Displays the alert error message when the server side highlightSelection fails.
+   */
+  function highlightFailure(e) {
+    alert('Was not able to highlight the selection. Please try again.');
+  }
+
+  /**
+   * Calls the server to highlight the selection with the context's background color.
+   */
+  function highlightSelection(event) {
+    const RGBcolor = $(this).css('backgroundColor');
+    const hexColor = rgb2hex(RGBcolor);
+    google.script.run.withFailureHandler(highlightFailure).highlightSelection(hexColor);
+  }
+
+  /**
+   * On click, highlight the selection with the button's background color.
+   */
+  $('.highlight-button').on('click', highlightSelection);
+  </script>
+</body>
+
+</html>

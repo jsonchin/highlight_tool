@@ -1,7 +1,7 @@
 var H1COLOR = '#23f02f';
 var H2COLOR = '#e34242';
-var H1LABEL = 'label_name2';
-var H2LABEL = 'label_name1';
+var H1LABEL = 'label_name1';
+var H2LABEL = 'label_name2';
 var SET1NAME = 'set_name';
 
 
