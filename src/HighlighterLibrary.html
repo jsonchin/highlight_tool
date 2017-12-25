@@ -2,79 +2,94 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-  <style>
-    #sortable {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-      width: 60%;
-    }
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <style>
+        #highlighter-sets {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            width: 80%;
+        }
+        
+        .highlighter-sets-item {
+            margin: 0 3px 3px 3px;
+            padding: 0.4em;
+            padding-left: 1.5em;
+            font-size: 1.4em;
+            background-color: #f9f9f9;
+        }
+        
+        .draggable-set-handle {
+            margin-left: -1.3em;
+        }
 
-    #sortable li {
-      margin: 0 3px 3px 3px;
-      padding: 0.4em;
-      padding-left: 1.5em;
-      font-size: 1.4em;
-      height: 18px;
-    }
+        .highlighters {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            width: 80%;
+        }
 
-    #sortable li span {
-      position: absolute;
-      margin-left: -1.3em;
-    }
-  </style>
-  
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-  
-  <script>
-    $(function () {
-      $("#sortable").sortable({
-        axis: "y"
-      });
-      $("#sortable").disableSelection();
+        .highlighters-item {
+            margin: 0 3px 3px 3px;
+            padding: 0.4em;
+            padding-left: 1.5em;
+            font-size: 1.4em;
+            background-color: #f6f6f6;
+        }
 
-      $("#highlighter-sets").sortable({
-        axis: "y",
-        handle: ".draggable-set-handle"
-      });
-      $("#highlighter-sets").disableSelection();
-    });
-  </script>
+        .draggable-highlighter-handle {
+            margin-left: -1.3em;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <script>
+        $(function() {
+            $("#highlighter-sets").sortable({
+                axis: "y",
+                handle: ".draggable-set-handle",
+                opacity: 0.5,
+                tolerance: "pointer"
+            });
+
+            $(".highlighters").sortable({
+                axis: "y",
+                handle: ".draggable-highlighter-handle",
+                opacity: 0.5,
+                tolerance: "pointer",
+                containment: "parent"
+            });
+        });
+    </script>
 </head>
 
 <body>
 
-  <? var hSets = hLibrary.highlighterSets; ?>
-  <? var currentSetIndex = hLibrary.currentSetIndex; ?>
-  <ul id="highlighter-sets">
-  <? for (var i = 0; i < hSets.length; i++) { ?>
-    <li>
-      <span class="ui-icon ui-icon-arrowthick-2-n-s draggable-set-handle"></span>
-      <?= hSets[i].setName ?>
-    </li>
-  <? } ?>
-  </ul>
+    <? var hSets = hLibrary.highlighterSets; ?>
+    <? var currentSetIndex = hLibrary.currentSetIndex; ?>
+    <ul id="highlighter-sets">
+    <? for (var i = 0; i < hSets.length; i++) { ?>
+        <li class="highlighter-sets-item">
+            <span class="ui-icon ui-icon-arrowthick-2-n-s draggable-set-handle"></span>
+            <?= hSets[i].setName ?>
 
-  <ul id="sortable">
-    <li class="ui-state-default">
-      <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
-    <li class="ui-state-default">
-      <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
-    <li class="ui-state-default">
-      <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>
-    <li class="ui-state-default">
-      <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>
-    <li class="ui-state-default">
-      <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>
-    <li class="ui-state-default">
-      <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>
-    <li class="ui-state-default">
-      <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 7</li>
-  </ul>
-
+            <? var highlighters = hSets[i].highlighters; ?>
+            <ul class="highlighters">
+            <? for (var j = 0; j < highlighters.length; j++) { ?>
+                <li class="highlighters-item">
+                    <span class="ui-icon ui-icon-arrowthick-2-n-s draggable-highlighter-handle"></span>
+                    <input type="color" value="<?= highlighters[j].color ?>">
+                    <input type="text" value="<?= highlighters[j].label ?>">
+                </li>
+            <? } ?>
+            </ul>
+        </li>
+    <? } ?>
+    </ul>
 
 </body>
 
