@@ -102,10 +102,13 @@
                     <li class="highlighters-item">
                         <span class="ui-icon ui-icon-arrowthick-2-n-s draggable-highlighter-handle"></span>
                         <input class="highlighter-color" type="color" value="<?= highlighters[j].color ?>" />
-                        <input class="highlighter-label" type="text" value="<?= highlighters[j].label ?>" />
+                        <input class="highlighter-label" type="text" value="<?= highlighters[j].label ?>" placeholder="Label" />
+                        <input class="highlighter-remove" type="button" value="-" />
                     </li>
                 <? } ?>
                 </ul>
+
+                <input class="highlighter-add" type="button" value="+" />
             </li>
         <? } ?>
         </ul>
@@ -184,6 +187,44 @@
     $('#bottom > input[type=button]').on('click', function () {
         $('#bottom > input[type=button]').attr('disabled', 'disabled');
     });
+
+    $('.highlighter-add').on('click', function () {
+        const li = document.createElement('li');
+        li.className = 'highlighters-item';
+
+        const span = document.createElement('span');
+        span.className = 'ui-icon ui-icon-arrowthick-2-n-s draggable-highlighter-handle';
+
+        const inputColor = document.createElement('input');
+        inputColor.className = 'highlighter-color';
+        inputColor.type = 'color';
+        inputColor.value = '#ff0000';
+
+        const inputLabel = document.createElement('input');
+        inputLabel.className = 'highlighter-label';
+        inputLabel.type = 'text';
+        inputLabel.placeholder = 'Label';
+
+        const inputRemove = document.createElement('input');
+        inputRemove.className = 'highlighter-remove';
+        inputRemove.type = 'button';
+        inputRemove.value = '-';
+
+        li.appendChild(span);
+        li.appendChild(document.createTextNode('\u00A0'));
+        li.appendChild(inputColor);
+        li.appendChild(document.createTextNode('\u00A0'));
+        li.appendChild(inputLabel);
+        li.appendChild(document.createTextNode('\u00A0'));
+        li.appendChild(inputRemove);
+
+        $(this).siblings('.highlighters')[0].appendChild(li);
+    });
+
+    $(document).on('click', '.highlighter-remove', function () {
+        $(this).parent().remove();
+    });
+
 </script>
 
 </html>
