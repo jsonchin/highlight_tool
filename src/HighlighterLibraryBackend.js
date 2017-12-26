@@ -52,6 +52,10 @@ var loadHighlighterLibrary = function () {
   return makeHighlighterLibrary(libraryJSON);
 };
 
+function logLibrary() {
+  Logger.log(loadHighlighterLibrary().toJSON());
+}
+
 
 function showHighlighterLibraryDialog() {
   const dialogTemplate = HtmlService.createTemplateFromFile('HighlighterLibrary');
