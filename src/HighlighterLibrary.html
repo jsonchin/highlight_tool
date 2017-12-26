@@ -17,6 +17,8 @@
         #highlighter-library {
             overflow-y: scroll;
             overflow-x: hidden;
+            max-height: 80%;
+            height: 80%;
         }
 
         #bottom {
@@ -66,7 +68,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
     <script>
-        $(function() {
+        function createDraggable() {
             $("#highlighter-sets").sortable({
                 axis: "y",
                 handle: ".draggable-set-handle",
@@ -81,7 +83,9 @@
                 tolerance: "pointer",
                 containment: "parent"
             });
-        });
+        }
+
+        createDraggable();
     </script>
 </head>
 
@@ -94,7 +98,10 @@
         <? for (var i = 0; i < hSets.length; i++) { ?>
             <li class="highlighter-sets-item">
                 <span class="ui-icon ui-icon-arrowthick-2-n-s draggable-set-handle"></span>
-                <?= hSets[i].setName ?>
+                
+                <input type="text" class="set-name" value="<?= hSets[i].setName ?>" placeholder="Set name" />
+
+                <input type="button" class="set-remove" value="-" />
 
                 <? var highlighters = hSets[i].highlighters; ?>
                 <ul class="highlighters">
@@ -102,13 +109,18 @@
                     <li class="highlighters-item">
                         <span class="ui-icon ui-icon-arrowthick-2-n-s draggable-highlighter-handle"></span>
                         <input class="highlighter-color" type="color" value="<?= highlighters[j].color ?>" />
-                        <input class="highlighter-label" type="text" value="<?= highlighters[j].label ?>" />
+                        <input class="highlighter-label" type="text" value="<?= highlighters[j].label ?>" placeholder="Label" />
+                        <input class="highlighter-remove" type="button" value="-" />
                     </li>
                 <? } ?>
                 </ul>
+
+                <input class="highlighter-add" type="button" value="+" />
             </li>
         <? } ?>
         </ul>
+
+        <input type="button" value="New Set" id="set-add" class="share" />
     </div>
 
     <div id="bottom">
@@ -148,7 +160,7 @@
         $('#highlighter-sets').children('.highlighter-sets-item').each(
             function () {
                 const highlighters = [];
-                const setName = $.trim($(this).text());
+                const setName = $.trim($(this).children('.set-name').val());
 
                 const highlightersContainer = $(this).children('.highlighters')[0];
                 $(highlightersContainer).children('.highlighters-item').each(
@@ -177,13 +189,115 @@
         return libraryJSON;
     }
 
+    /**
+     * Bottom buttons
+     */
     $('#save-library-button').on('click', saveLibrary);
 
     $('#close-library-button').on('click', google.script.host.close);
 
+    /**
+     * Disable all bottom buttons when one of them is clicked.
+     */
     $('#bottom > input[type=button]').on('click', function () {
         $('#bottom > input[type=button]').attr('disabled', 'disabled');
     });
+
+    /**
+     * Add a new set.
+     */
+    $('#set-add').on('click', function () {
+        const highlighterSetLi = document.createElement('li');
+        highlighterSetLi.className = 'highlighter-sets-item';
+
+        const span = document.createElement('span');
+        span.className = 'ui-icon ui-icon-arrowthick-2-n-s draggable-set-handle';
+
+        const setNameInput = document.createElement('input');
+        setNameInput.type = 'text';
+        setNameInput.className = 'set-name';
+        setNameInput.placeholder = 'Set name';
+
+        const setRemoveInput = document.createElement('input');
+        setRemoveInput.type = 'button';
+        setRemoveInput.className = 'set-remove';
+        setRemoveInput.value = '-';
+
+        const highlightersUl = document.createElement('ul');
+        highlightersUl.className = 'highlighters';
+
+        const highlighterAddButton = document.createElement('input');
+        highlighterAddButton.className = 'highlighter-add';
+        highlighterAddButton.type = 'button';
+        highlighterAddButton.value = '+';
+
+        highlighterSetLi.appendChild(span);
+        highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
+        highlighterSetLi.appendChild(setNameInput);
+        highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
+        highlighterSetLi.appendChild(setRemoveInput);
+        highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
+        highlighterSetLi.appendChild(highlightersUl);
+        highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
+        highlighterSetLi.appendChild(highlighterAddButton);
+
+        $('#highlighter-sets').append(highlighterSetLi);
+
+        $(highlighterAddButton).click();
+        createDraggable();
+    });
+
+    /**
+     * Remove a set.
+     */
+    $(document).on('click', '.set-remove', function () {
+        $(this).parent().remove();
+    });
+
+    /**
+     * Add a new highlighter to a set.
+     */
+    $(document).on('click', '.highlighter-add', function () {
+        const li = document.createElement('li');
+        li.className = 'highlighters-item';
+
+        const span = document.createElement('span');
+        span.className = 'ui-icon ui-icon-arrowthick-2-n-s draggable-highlighter-handle';
+
+        const inputColor = document.createElement('input');
+        inputColor.className = 'highlighter-color';
+        inputColor.type = 'color';
+        inputColor.value = '#ff0000';
+
+        const inputLabel = document.createElement('input');
+        inputLabel.className = 'highlighter-label';
+        inputLabel.type = 'text';
+        inputLabel.placeholder = 'Label';
+
+        const inputRemove = document.createElement('input');
+        inputRemove.className = 'highlighter-remove';
+        inputRemove.type = 'button';
+        inputRemove.value = '-';
+
+        li.appendChild(span);
+        li.appendChild(document.createTextNode('\u00A0'));
+        li.appendChild(inputColor);
+        li.appendChild(document.createTextNode('\u00A0'));
+        li.appendChild(inputLabel);
+        li.appendChild(document.createTextNode('\u00A0'));
+        li.appendChild(inputRemove);
+
+        $(this).siblings('.highlighters')[0].appendChild(li);
+        createDraggable();
+    });
+
+    /**
+     * Remove a highlighter from a set.
+     */
+    $(document).on('click', '.highlighter-remove', function () {
+        $(this).parent().remove();
+    });
+
 </script>
 
 </html>
