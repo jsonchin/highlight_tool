@@ -107,6 +107,7 @@
     var LABEL_KEY = 'label';
     var COLOR_KEY = 'color';
     var SET_NAME_KEY = 'setName';
+    var IS_SET_MINIMIZED_KEY = 'isSetMinimized';
     var HIGHLIGHTERS_KEY = 'highlighters';
     var CURRENT_SET_INDEX_KEY = 'currentSetIndex';
     var HIGHLIGHTER_SETS_KEY = 'highlighterSets';
@@ -154,8 +155,8 @@
                 currentSetIndex = i;
             }
 
-            const highlightersContainer = $highlighterSet.children('.highlighters')[0];
-            $(highlightersContainer).children('.highlighters-item').each(
+            const $highlightersContainer = $highlighterSet.children('.highlighters');
+            $highlightersContainer.children('.highlighters-item').each(
                 function () {
                     const color = $(this).children('.highlighter-color').val();
                     const label = $(this).children('.highlighter-label').val();
@@ -166,9 +167,12 @@
                 }
             );
 
+            const isMinimized = $highlightersContainer.css('display') === 'none';
+
             const highlighterSetJSON = {};
             highlighterSetJSON[HIGHLIGHTERS_KEY] = highlighters;
             highlighterSetJSON[SET_NAME_KEY] = setName;
+            highlighterSetJSON[IS_SET_MINIMIZED_KEY] = isMinimized;
 
             highlighterSets.push(highlighterSetJSON);
         }
