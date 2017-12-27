@@ -37,7 +37,7 @@
             padding: 0.4em;
             padding-left: 1.5em;
             font-size: 1.4em;
-            background-color: #f9f9f9;
+            background-color: #FAFAFA;
         }
         
         .draggable-set-handle {
@@ -56,7 +56,7 @@
             padding: 0.4em;
             padding-left: 1.5em;
             font-size: 1.4em;
-            background-color: #f6f6f6;
+            background-color: #F5F5F5;
         }
 
         .draggable-highlighter-handle {
@@ -84,48 +84,21 @@
                 containment: "parent"
             });
         }
-
-        createDraggable();
     </script>
 </head>
 
 <body>
 
     <div id="highlighter-library">
-        <? var hSets = hLibrary.highlighterSets; ?>
-        <? var currentSetIndex = hLibrary.currentSetIndex; ?>
         <ul id="highlighter-sets">
-        <? for (var i = 0; i < hSets.length; i++) { ?>
-            <li class="highlighter-sets-item">
-                <span class="ui-icon ui-icon-arrowthick-2-n-s draggable-set-handle"></span>
-                
-                <input type="text" class="set-name" value="<?= hSets[i].setName ?>" placeholder="Set name" />
-
-                <input type="button" class="set-remove" value="-" />
-
-                <? var highlighters = hSets[i].highlighters; ?>
-                <ul class="highlighters">
-                <? for (var j = 0; j < highlighters.length; j++) { ?>
-                    <li class="highlighters-item">
-                        <span class="ui-icon ui-icon-arrowthick-2-n-s draggable-highlighter-handle"></span>
-                        <input class="highlighter-color" type="color" value="<?= highlighters[j].color ?>" />
-                        <input class="highlighter-label" type="text" value="<?= highlighters[j].label ?>" placeholder="Label" />
-                        <input class="highlighter-remove" type="button" value="-" />
-                    </li>
-                <? } ?>
-                </ul>
-
-                <input class="highlighter-add" type="button" value="+" />
-            </li>
-        <? } ?>
+        
         </ul>
-
         <input type="button" value="New Set" id="set-add" class="share" />
     </div>
 
     <div id="bottom">
         <input type="button" value="Save" id="save-library-button" class="action" />
-        <input type="button" value="Close" id="close-library-button" />
+        <input type="button" value="Cancel" id="close-library-button" />
     </div>
 
 </body>
@@ -138,9 +111,22 @@
     var CURRENT_SET_INDEX_KEY = 'currentSetIndex';
     var HIGHLIGHTER_SETS_KEY = 'highlighterSets';
 
+    const CURRENT_SET_DATA_KEY = 'current-set';
+
+    /**
+     * Color palette:
+     * 300: #E0E0E0
+     * 100: #F5F5F5
+     * 50: #FAFAFA
+     * 0: #FFFFFF 
+     */
+    const DARK_GREY_HEX = '#E0E0E0';
+    const GREY_HEX = '#F5F5F5';
+    const LIGHT_GREY_HEX = '#FAFAFA';
+    const WHITE_HEX = '#FFFFFF';
+
     function saveLibrary() {
         const libraryJSON = serializeLibrary();
-        console.log(libraryJSON);
         google.script.run
             .withSuccessHandler(function () {
                 setTimeout(function () {
@@ -155,32 +141,37 @@
 
     function serializeLibrary() {
         const highlighterSets = [];
-        const currentSetIndex = 0;
+        var currentSetIndex = 0;
 
-        $('#highlighter-sets').children('.highlighter-sets-item').each(
-            function () {
-                const highlighters = [];
-                const setName = $.trim($(this).children('.set-name').val());
+        const highlighterSetElements = $('#highlighter-sets').children('.highlighter-sets-item');
 
-                const highlightersContainer = $(this).children('.highlighters')[0];
-                $(highlightersContainer).children('.highlighters-item').each(
-                    function () {
-                        const color = $(this).children('.highlighter-color').val();
-                        const label = $(this).children('.highlighter-label').val();
-                        const highlighterJSON = {}
-                        highlighterJSON[COLOR_KEY] = color;
-                        highlighterJSON[LABEL_KEY] = label;
-                        highlighters.push(highlighterJSON);
-                    }
-                );
+        for (var i = 0; i < highlighterSetElements.length; i++) {
+            const $highlighterSet = $(highlighterSetElements[i]);
 
-                const highlighterSetJSON = {};
-                highlighterSetJSON[HIGHLIGHTERS_KEY] = highlighters;
-                highlighterSetJSON[SET_NAME_KEY] = setName;
-                
-                highlighterSets.push(highlighterSetJSON);
+            const highlighters = [];
+            const setName = $.trim($highlighterSet.children('.set-name').val());
+            if ($highlighterSet.data(CURRENT_SET_DATA_KEY)) {
+                currentSetIndex = i;
             }
-        );
+
+            const highlightersContainer = $highlighterSet.children('.highlighters')[0];
+            $(highlightersContainer).children('.highlighters-item').each(
+                function () {
+                    const color = $(this).children('.highlighter-color').val();
+                    const label = $(this).children('.highlighter-label').val();
+                    const highlighterJSON = {}
+                    highlighterJSON[COLOR_KEY] = color;
+                    highlighterJSON[LABEL_KEY] = label;
+                    highlighters.push(highlighterJSON);
+                }
+            );
+
+            const highlighterSetJSON = {};
+            highlighterSetJSON[HIGHLIGHTERS_KEY] = highlighters;
+            highlighterSetJSON[SET_NAME_KEY] = setName;
+
+            highlighterSets.push(highlighterSetJSON);
+        }
 
         const libraryJSON = {};
         libraryJSON[HIGHLIGHTER_SETS_KEY] = highlighterSets;
@@ -204,9 +195,25 @@
     });
 
     /**
-     * Add a new set.
+     * Denotes the current selected set.
      */
-    $('#set-add').on('click', function () {
+    const denoteCurrentSet = function denoteCurrentlySelectedHighlighterSet($selectedSet) {
+        $('.highlighter-sets-item').data(CURRENT_SET_DATA_KEY, false);
+        $('.highlighter-sets-item').css('background-color', LIGHT_GREY_HEX);
+        $selectedSet.data(CURRENT_SET_DATA_KEY, true);
+        $selectedSet.css('background-color', DARK_GREY_HEX);
+    }
+
+    $(document).on('click', '.highlighter-sets-item', function () {
+        denoteCurrentSet($(this));
+    });
+
+    /**
+     * Create a new set.
+     * @param {string} setName
+     * @param {[{color: '#ffffff', label: ''}]} highlighters
+     */
+    const createSet = function createSetHTML(setName, highlighters) {
         const highlighterSetLi = document.createElement('li');
         highlighterSetLi.className = 'highlighter-sets-item';
 
@@ -217,6 +224,7 @@
         setNameInput.type = 'text';
         setNameInput.className = 'set-name';
         setNameInput.placeholder = 'Set name';
+        setNameInput.value = setName;
 
         const setRemoveInput = document.createElement('input');
         setRemoveInput.type = 'button';
@@ -225,6 +233,17 @@
 
         const highlightersUl = document.createElement('ul');
         highlightersUl.className = 'highlighters';
+
+        // If no highlighters are provided, add an empty one to be filled in
+        if (highlighters.length == 0) {
+            const highlighterLi = createHighlighter('', '#ff0000');
+            highlightersUl.appendChild(highlighterLi);
+        } else {
+            highlighters.forEach(function (highlighter) {
+                const highlighterLi = createHighlighter(highlighter.label, highlighter.color);
+                highlightersUl.appendChild(highlighterLi);
+            });
+        }
 
         const highlighterAddButton = document.createElement('input');
         highlighterAddButton.className = 'highlighter-add';
@@ -241,23 +260,10 @@
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
         highlighterSetLi.appendChild(highlighterAddButton);
 
-        $('#highlighter-sets').append(highlighterSetLi);
+        return highlighterSetLi;
+    };
 
-        $(highlighterAddButton).click();
-        createDraggable();
-    });
-
-    /**
-     * Remove a set.
-     */
-    $(document).on('click', '.set-remove', function () {
-        $(this).parent().remove();
-    });
-
-    /**
-     * Add a new highlighter to a set.
-     */
-    $(document).on('click', '.highlighter-add', function () {
+    const createHighlighter = function createHighlighterHTML(label, color) {
         const li = document.createElement('li');
         li.className = 'highlighters-item';
 
@@ -267,12 +273,13 @@
         const inputColor = document.createElement('input');
         inputColor.className = 'highlighter-color';
         inputColor.type = 'color';
-        inputColor.value = '#ff0000';
+        inputColor.value = color;
 
         const inputLabel = document.createElement('input');
         inputLabel.className = 'highlighter-label';
         inputLabel.type = 'text';
         inputLabel.placeholder = 'Label';
+        inputLabel.value = label;
 
         const inputRemove = document.createElement('input');
         inputRemove.className = 'highlighter-remove';
@@ -287,6 +294,50 @@
         li.appendChild(document.createTextNode('\u00A0'));
         li.appendChild(inputRemove);
 
+        return li;
+    };
+
+    /**
+     * Event listeners for adding and removing sets/highlighters.
+     */
+
+    /**
+     * Add a set.
+     */
+    $('#set-add').on('click', function () {
+        const highlighterSetLi = createSet('', []);
+        $('#highlighter-sets').append(highlighterSetLi);
+        createDraggable();
+    });
+
+    /**
+     * Remove a set.
+     */
+    $(document).on('click', '.set-remove', function () {
+        const $highlighterSet = $(this).parent();
+        const isCurrentlySelectedSet = $highlighterSet.data(CURRENT_SET_DATA_KEY)
+
+        $highlighterSet.remove();
+
+        // If this is the currently selected set, set the first set to be the current set
+        // In the case of the to be removed set being the only set left, 0 is well defined
+        if (isCurrentlySelectedSet) {
+            const highlighterSets = $('.highlighter-sets-item');
+            if (highlighterSets.length > 0) {
+                denoteCurrentSet($(highlighterSets[0]));
+            }
+        }
+
+        // Prevent propogation to parent.
+        return false;
+    });
+
+    /**
+     * Add a new highlighter to a set.
+     */
+    $(document).on('click', '.highlighter-add', function () {
+        const li = createHighlighter('', '#ff0000');
+
         $(this).siblings('.highlighters')[0].appendChild(li);
         createDraggable();
     });
@@ -298,6 +349,28 @@
         $(this).parent().remove();
     });
 
+    /**
+     * Load the library and create the html.
+     */
+    google.script.run.withSuccessHandler(function (hLibrary) {
+        const currentSetIndex = hLibrary.currentSetIndex;
+        const highlighterSets = hLibrary.highlighterSets;
+
+        for (var i = 0; i < highlighterSets.length; i++) {
+            const highlighterSet = highlighterSets[i];
+            const setName = highlighterSet.setName;
+            const highlighters = highlighterSet.highlighters;
+
+            const setLi = createSet(setName, highlighters);
+            $('#highlighter-sets').append(setLi);
+            
+            if (i == currentSetIndex) {
+                denoteCurrentSet($(setLi));
+            }
+        }
+
+        createDraggable();
+    }).loadHighlighterLibraryJSON();
 </script>
 
 </html>
