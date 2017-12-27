@@ -45,12 +45,17 @@ var makeHighlighterLibrary = function makeHighlighterLibraryFromJSON(libraryJSON
  * Returns a HighlighterLibrary object.
  */
 var loadHighlighterLibrary = function () {
+  const libraryJSON = loadHighlighterLibraryJSON();
+  return makeHighlighterLibrary(libraryJSON);
+};
+
+function loadHighlighterLibraryJSON() {
   const userProps = PropertiesService.getUserProperties();
   const libraryJSONStr = userProps.getProperty(LIBRARY_KEY);
   const libraryJSON = JSON.parse(libraryJSONStr);
 
-  return makeHighlighterLibrary(libraryJSON);
-};
+  return libraryJSON;
+}
 
 function logLibrary() {
   Logger.log(loadHighlighterLibrary().toJSON());
