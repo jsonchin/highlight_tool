@@ -107,11 +107,16 @@
     var LABEL_KEY = 'label';
     var COLOR_KEY = 'color';
     var SET_NAME_KEY = 'setName';
+    var IS_SET_MINIMIZED_KEY = 'isSetMinimized';
     var HIGHLIGHTERS_KEY = 'highlighters';
     var CURRENT_SET_INDEX_KEY = 'currentSetIndex';
     var HIGHLIGHTER_SETS_KEY = 'highlighterSets';
 
     const CURRENT_SET_DATA_KEY = 'current-set';
+    const MINIMIZE_SET_VAL = '...';
+    const SHOW_SET_VAL = '^';
+    const DISPLAY_NONE = 'none';
+    const DISPLAY_SHOW = ''; // sets the display back to normal
 
     /**
      * Color palette:
@@ -154,8 +159,8 @@
                 currentSetIndex = i;
             }
 
-            const highlightersContainer = $highlighterSet.children('.highlighters')[0];
-            $(highlightersContainer).children('.highlighters-item').each(
+            const $highlightersContainer = $highlighterSet.children('.highlighters');
+            $highlightersContainer.children('.highlighters-item').each(
                 function () {
                     const color = $(this).children('.highlighter-color').val();
                     const label = $(this).children('.highlighter-label').val();
@@ -166,9 +171,12 @@
                 }
             );
 
+            const isMinimized = $highlightersContainer.css('display') === 'none';
+
             const highlighterSetJSON = {};
             highlighterSetJSON[HIGHLIGHTERS_KEY] = highlighters;
             highlighterSetJSON[SET_NAME_KEY] = setName;
+            highlighterSetJSON[IS_SET_MINIMIZED_KEY] = isMinimized;
 
             highlighterSets.push(highlighterSetJSON);
         }
@@ -213,7 +221,7 @@
      * @param {string} setName
      * @param {[{color: '#ffffff', label: ''}]} highlighters
      */
-    const createSet = function createSetHTML(setName, highlighters) {
+    const createSet = function createSetHTML(setName, highlighters, isSetMinimized) {
         const highlighterSetLi = document.createElement('li');
         highlighterSetLi.className = 'highlighter-sets-item';
 
@@ -226,13 +234,22 @@
         setNameInput.placeholder = 'Set name';
         setNameInput.value = setName;
 
+        const setHideInput = document.createElement('input');
+        setHideInput.type = 'button';
+        setHideInput.className = 'set-hide';
+        setHideInput.value = isSetMinimized ? SHOW_SET_VAL : MINIMIZE_SET_VAL;
+
+        const displayCSS = isSetMinimized ? DISPLAY_NONE : DISPLAY_SHOW;
+
         const setRemoveInput = document.createElement('input');
         setRemoveInput.type = 'button';
         setRemoveInput.className = 'set-remove';
         setRemoveInput.value = '-';
+        setRemoveInput.style.display = displayCSS;
 
         const highlightersUl = document.createElement('ul');
         highlightersUl.className = 'highlighters';
+        highlightersUl.style.display = displayCSS;
 
         // If no highlighters are provided, add an empty one to be filled in
         if (highlighters.length == 0) {
@@ -249,10 +266,13 @@
         highlighterAddButton.className = 'highlighter-add';
         highlighterAddButton.type = 'button';
         highlighterAddButton.value = '+';
+        highlighterAddButton.style.display = displayCSS;
 
         highlighterSetLi.appendChild(span);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
         highlighterSetLi.appendChild(setNameInput);
+        highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
+        highlighterSetLi.appendChild(setHideInput);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
         highlighterSetLi.appendChild(setRemoveInput);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
@@ -305,7 +325,7 @@
      * Add a set.
      */
     $('#set-add').on('click', function () {
-        const highlighterSetLi = createSet('', []);
+        const highlighterSetLi = createSet('', [], false);
         $('#highlighter-sets').append(highlighterSetLi);
         createDraggable();
     });
@@ -349,6 +369,29 @@
         $(this).parent().remove();
     });
 
+
+    /**
+     * Event listener for hiding and showing a highlighter set.
+     */
+    $(document).on('click', '.set-hide', function () {
+        const $highlighterSet = $(this).parent();
+        const $highlighters = $highlighterSet.children('.highlighters');
+        const $addHighlighterButton = $highlighterSet.children('.highlighter-add');
+        const $removeSetButton = $highlighterSet.children('.set-remove');
+        const displayCSS = $highlighters.css('display');
+        if (displayCSS === DISPLAY_NONE) {
+            $highlighters.css('display', DISPLAY_SHOW);
+            $addHighlighterButton.css('display', DISPLAY_SHOW);
+            $removeSetButton.css('display', DISPLAY_SHOW);
+            $(this).val(MINIMIZE_SET_VAL);
+        } else {
+            $highlighters.css('display', DISPLAY_NONE);
+            $addHighlighterButton.css('display', DISPLAY_NONE);
+            $removeSetButton.css('display', DISPLAY_NONE);
+            $(this).val(SHOW_SET_VAL);
+        }
+    });
+
     /**
      * Load the library and create the html.
      */
@@ -360,8 +403,9 @@
             const highlighterSet = highlighterSets[i];
             const setName = highlighterSet.setName;
             const highlighters = highlighterSet.highlighters;
+            const isSetMinimized = highlighterSet.isSetMinimized;
 
-            const setLi = createSet(setName, highlighters);
+            const setLi = createSet(setName, highlighters, isSetMinimized);
             $('#highlighter-sets').append(setLi);
             
             if (i == currentSetIndex) {

@@ -19,7 +19,7 @@ function runTests() {
 function libraryInit1() {
   const h1 = new Highlighter(H1LABEL, H1COLOR);
   const h2 = new Highlighter(H2LABEL, H2COLOR);
-  const hSet = new HighlighterSet(SET1NAME, []);
+  const hSet = new HighlighterSet(SET1NAME, [], false);
   hSet.addHighlighter(h1);
   hSet.addHighlighter(h2);
   const hLib = new HighlighterLibrary();
@@ -31,11 +31,11 @@ function libraryInit1() {
 function libraryInit2() {
   const h1 = new Highlighter(H1LABEL, H1COLOR);
   const h2 = new Highlighter(H2LABEL, H2COLOR);
-  const hSet1 = new HighlighterSet(SET1NAME, []);
+  const hSet1 = new HighlighterSet(SET1NAME, [], false);
   hSet1.addHighlighter(h1);
   hSet1.addHighlighter(h2);
 
-  const hSet2 = new HighlighterSet(SET2NAME, []);
+  const hSet2 = new HighlighterSet(SET2NAME, [], true);
   hSet2.addHighlighter(h2);
   hSet2.addHighlighter(h1);
   hSet2.addHighlighter(h2);
