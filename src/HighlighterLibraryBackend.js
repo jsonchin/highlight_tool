@@ -17,6 +17,7 @@ var LIBRARY_KEY = 'library';
 var LABEL_KEY = 'label';
 var COLOR_KEY = 'color';
 var SET_NAME_KEY = 'setName';
+var IS_SET_MINIMIZED_KEY = 'isSetMinimized';
 var HIGHLIGHTERS_KEY = 'highlighters';
 var CURRENT_SET_INDEX_KEY = 'currentSetIndex';
 var HIGHLIGHTER_SETS_KEY = 'highlighterSets';
@@ -33,7 +34,8 @@ var makeHighlighterLibrary = function makeHighlighterLibraryFromJSON(libraryJSON
   libraryJSON.highlighterSets.forEach(function (highlighterSet) {
     hLibrary.highlighterSets.push(new HighlighterSet(
       highlighterSet.setName,
-      highlighterSet.highlighters
+      highlighterSet.highlighters,
+      highlighterSet.isSetMinimized
     ));
   });
 
@@ -114,7 +116,7 @@ function Highlighter (label, color) {
 /**
  * @param {String} setName
  */
-function HighlighterSet (setName, highlightersJSON) {
+function HighlighterSet (setName, highlightersJSON, isSetMinimized) {
   if (highlightersJSON === undefined) {
     highlightersJSON = [];
   }
@@ -125,6 +127,7 @@ function HighlighterSet (setName, highlightersJSON) {
     highlighters.push(new Highlighter(highlighter.label, highlighter.color));
   });
   this.highlighters = highlighters;
+  this.isSetMinimized = isSetMinimized;
 
 
   /**
@@ -158,6 +161,7 @@ function HighlighterSet (setName, highlightersJSON) {
     const json = {};
     json[SET_NAME_KEY] = this.setName;
     json[HIGHLIGHTERS_KEY] = highlightersListJSON;
+    json[IS_SET_MINIMIZED_KEY] = isSetMinimized;
     return json;
   };
 }
