@@ -113,6 +113,10 @@
     var HIGHLIGHTER_SETS_KEY = 'highlighterSets';
 
     const CURRENT_SET_DATA_KEY = 'current-set';
+    const MINIMIZE_SET_VAL = '...';
+    const SHOW_SET_VAL = '^';
+    const DISPLAY_NONE = 'none';
+    const DISPLAY_SHOW = ''; // sets the display back to normal
 
     /**
      * Color palette:
@@ -217,7 +221,7 @@
      * @param {string} setName
      * @param {[{color: '#ffffff', label: ''}]} highlighters
      */
-    const createSet = function createSetHTML(setName, highlighters) {
+    const createSet = function createSetHTML(setName, highlighters, isSetMinimized) {
         const highlighterSetLi = document.createElement('li');
         highlighterSetLi.className = 'highlighter-sets-item';
 
@@ -233,15 +237,19 @@
         const setHideInput = document.createElement('input');
         setHideInput.type = 'button';
         setHideInput.className = 'set-hide';
-        setHideInput.value = '...';
+        setHideInput.value = isSetMinimized ? SHOW_SET_VAL : MINIMIZE_SET_VAL;
+
+        const displayCSS = isSetMinimized ? DISPLAY_NONE : DISPLAY_SHOW;
 
         const setRemoveInput = document.createElement('input');
         setRemoveInput.type = 'button';
         setRemoveInput.className = 'set-remove';
         setRemoveInput.value = '-';
+        setRemoveInput.style.display = displayCSS;
 
         const highlightersUl = document.createElement('ul');
         highlightersUl.className = 'highlighters';
+        highlightersUl.style.display = displayCSS;
 
         // If no highlighters are provided, add an empty one to be filled in
         if (highlighters.length == 0) {
@@ -258,6 +266,7 @@
         highlighterAddButton.className = 'highlighter-add';
         highlighterAddButton.type = 'button';
         highlighterAddButton.value = '+';
+        highlighterAddButton.style.display = displayCSS;
 
         highlighterSetLi.appendChild(span);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
@@ -316,7 +325,7 @@
      * Add a set.
      */
     $('#set-add').on('click', function () {
-        const highlighterSetLi = createSet('', []);
+        const highlighterSetLi = createSet('', [], false);
         $('#highlighter-sets').append(highlighterSetLi);
         createDraggable();
     });
@@ -370,16 +379,16 @@
         const $addHighlighterButton = $highlighterSet.children('.highlighter-add');
         const $removeSetButton = $highlighterSet.children('.set-remove');
         const displayCSS = $highlighters.css('display');
-        if (displayCSS === 'none') {
-            $highlighters.css('display', 'inline');
-            $addHighlighterButton.css('display', 'inline');
-            $removeSetButton.css('display', 'inline');
-            $(this).val('...');
+        if (displayCSS === DISPLAY_NONE) {
+            $highlighters.css('display', DISPLAY_SHOW);
+            $addHighlighterButton.css('display', DISPLAY_SHOW);
+            $removeSetButton.css('display', DISPLAY_SHOW);
+            $(this).val(MINIMIZE_SET_VAL);
         } else {
-            $highlighters.css('display', 'none');
-            $addHighlighterButton.css('display', 'none');
-            $removeSetButton.css('display', 'none');
-            $(this).val('^');
+            $highlighters.css('display', DISPLAY_NONE);
+            $addHighlighterButton.css('display', DISPLAY_NONE);
+            $removeSetButton.css('display', DISPLAY_NONE);
+            $(this).val(SHOW_SET_VAL);
         }
     });
 
@@ -394,8 +403,9 @@
             const highlighterSet = highlighterSets[i];
             const setName = highlighterSet.setName;
             const highlighters = highlighterSet.highlighters;
+            const isSetMinimized = highlighterSet.isSetMinimized;
 
-            const setLi = createSet(setName, highlighters);
+            const setLi = createSet(setName, highlighters, isSetMinimized);
             $('#highlighter-sets').append(setLi);
             
             if (i == currentSetIndex) {
