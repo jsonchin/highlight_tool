@@ -39,8 +39,8 @@
       width: 100%;
     }
 
-    input {
-      cursor:pointer;
+    input[type=button] {
+      cursor: pointer;
     }
   </style>
 </head>
@@ -104,6 +104,14 @@
    * On click, highlight the selection with the button's background color.
    */
   $('.highlight-button').on('click', highlightSelection);
+
+
+
+  function openHighlighterLibrary(event) {
+    google.script.run.showHighlighterLibraryDialog();
+  }
+
+  $('#highlighter-library-button').on('click', openHighlighterLibrary);
   </script>
 </body>
 
