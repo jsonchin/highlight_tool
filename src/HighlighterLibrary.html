@@ -226,6 +226,11 @@
         setNameInput.placeholder = 'Set name';
         setNameInput.value = setName;
 
+        const setHideInput = document.createElement('input');
+        setHideInput.type = 'button';
+        setHideInput.className = 'set-hide';
+        setHideInput.value = '...';
+
         const setRemoveInput = document.createElement('input');
         setRemoveInput.type = 'button';
         setRemoveInput.className = 'set-remove';
@@ -253,6 +258,8 @@
         highlighterSetLi.appendChild(span);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
         highlighterSetLi.appendChild(setNameInput);
+        highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
+        highlighterSetLi.appendChild(setHideInput);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
         highlighterSetLi.appendChild(setRemoveInput);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
@@ -347,6 +354,29 @@
      */
     $(document).on('click', '.highlighter-remove', function () {
         $(this).parent().remove();
+    });
+
+
+    /**
+     * Event listener for hiding and showing a highlighter set.
+     */
+    $(document).on('click', '.set-hide', function () {
+        const $highlighterSet = $(this).parent();
+        const $highlighters = $highlighterSet.children('.highlighters');
+        const $addHighlighterButton = $highlighterSet.children('.highlighter-add');
+        const $removeSetButton = $highlighterSet.children('.set-remove');
+        const displayCSS = $highlighters.css('display');
+        if (displayCSS === 'none') {
+            $highlighters.css('display', 'inline');
+            $addHighlighterButton.css('display', 'inline');
+            $removeSetButton.css('display', 'inline');
+            $(this).val('...');
+        } else {
+            $highlighters.css('display', 'none');
+            $addHighlighterButton.css('display', 'none');
+            $removeSetButton.css('display', 'none');
+            $(this).val('^');
+        }
     });
 
     /**
