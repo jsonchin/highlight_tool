@@ -1,5 +1,6 @@
 var EXTRACTED_TEXT_FONT_SIZE = 11;
 var EXTRACTED_TEXT_FONT_FAMILY = 'ARIAL';
+var TABLE_LABEL_CELL_WIDTH = 100;
 
 var getDocument = function () {
   // return DocumentApp.getActiveDocument();
@@ -135,14 +136,17 @@ var appendExtractedTextChrono = function appendExtractedTextToDocByChronological
       // set the first column to be the label if there is a match
       if (color in colorToLabel) {
         tableCell1.setText(colorToLabel[color]);
+        tableCell1.setBold(true);
+        tableCell1.setWidth(TABLE_LABEL_CELL_WIDTH);
       }
       tableCell2 = tableRow.appendTableCell();
       tableCell2.setText(textStr);
+      tableCell2.setBold(false);
     }
 
     // style the table cells with the correct color
     tableCell1.setBackgroundColor(color);
-    tableCell2.setBackgroundColor(color);
+    tableCell2.editAsText().setBackgroundColor(color);
   });
 
   // set the first header row of the table to be bold (doing this after so it doesn't transfer)
