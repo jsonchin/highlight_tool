@@ -21,6 +21,12 @@
       height: 80%;
     }
 
+    .empty-label {
+      width: 1em;
+      height: 1em;
+      display: inline-block;
+    }
+
     #bottom {
       position: absolute;
       bottom: 0;
@@ -37,10 +43,11 @@
     <? var hSets = hLibrary.highlighterSets; ?>
     <? var currentSetIndex = hLibrary.currentSetIndex; ?>
     <? for (var i = 0; i < hSets.length; i++) { ?>
-      <input type="checkbox" id="set<?= i ?>"
+    <div class="set-container">
+      <input type="checkbox" class='set-checkbox' id="set<?= i ?>"
       <? if (i == currentSetIndex) { ?>
         checked
-        <? }?>>
+      <? }?>>
       <label for="set<?= i ?>">
       <? if (hSets[i].setName === '') { ?>
         <span class='set-name' style="font-weight:bold;">(No set name)</span>
@@ -52,7 +59,7 @@
         <? for (var j = 0; j < highlighters.length; j++) { ?>
           <li class="highlighters-item">
           <? if (highlighters[j].label === '') { ?>
-            <span class='highlighter' style="background-color:<?= highlighters[j].color ?>;">_</span>
+            <div class='highlighter empty-label' style="background-color:<?= highlighters[j].color ?>;"></div>
           <? } else { ?>
             <span class='highlighter'style="background-color:<?= highlighters[j].color ?>;"><?= highlighters[j].label ?></span>
           <? } ?>
@@ -60,8 +67,8 @@
         <? } ?>
         </ul>
       </label>
+    </div>
     <? } ?>
-    </ul>
   </div>
 
   <div id="bottom">
@@ -75,31 +82,30 @@
   var LABEL_KEY = 'label';
   var COLOR_KEY = 'color';
   var SET_NAME_KEY = 'setName';
-  var IS_SET_MINIMIZED_KEY = 'isSetMinimized';
   var HIGHLIGHTERS_KEY = 'highlighters';
-  var CURRENT_SET_INDEX_KEY = 'currentSetIndex';
-  var HIGHLIGHTER_SETS_KEY = 'highlighterSets';
 
-  const CURRENT_SET_DATA_KEY = 'current-set';
-  const MINIMIZE_SET_VAL = '...';
-  const SHOW_SET_VAL = '^';
-  const DISPLAY_NONE = 'none';
-  const DISPLAY_SHOW = ''; // sets the display back to normal
+  const NO_SET_NAME_GIVEN = '(No set name)';
+
+  // https://stackoverflow.com/questions/1740700/how-to-get-hex-color-value-rather-than-rgb-value
+  var HEX_DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 
   /**
-   * Color palette:
-   * 300: #E0E0E0
-   * 100: #F5F5F5
-   * 50: #FAFAFA
-   * 0: #FFFFFF 
+   * Converts a number between 0 to 255 to its corresponding value in hex.
    */
-  const DARK_GREY_HEX = '#E0E0E0';
-  const GREY_HEX = '#F5F5F5';
-  const LIGHT_GREY_HEX = '#FAFAFA';
-  const WHITE_HEX = '#FFFFFF';
+  function hex(num) {
+    return isNaN(num) ? "00" : HEX_DIGITS[(num - num % 16) / 16] + HEX_DIGITS[num % 16];
+  }
 
-  function saveLibrary() {
-    const libraryJSON = serializeLibrary();
+  /**
+   * Converts RGB to hex.
+   */
+  function rgb2hex(rgb) {
+    rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+    return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+  }
+
+  function shareChosenSets() {
+    const chosenSets = serializeChosenSets();
     google.script.run
       .withSuccessHandler(function () {
         setTimeout(function () {
@@ -109,57 +115,50 @@
       .withFailureHandler(function () {
         alert('Was not able to save the library. Please try again.');
       })
-      .saveHighlighterLibraryFromDialog(libraryJSON);
+      .shareChosenSets(chosenSets);
   }
 
-  function serializeLibrary() {
+  function serializeChosenSets() {
     const highlighterSets = [];
-    var currentSetIndex = 0;
 
-    const highlighterSetElements = $('#highlighter-sets').children('.highlighter-sets-item');
+    const highlighterSetElements = $('.set-checkbox');
 
-    for (var i = 0; i < highlighterSetElements.length; i++) {
-      const $highlighterSet = $(highlighterSetElements[i]);
+    highlighterSetElements.each(function () {
+      var $setCheckbox = $(this);
+      if ($setCheckbox.is(':checked')) {
+        var $label = $setCheckbox.parent().children('label');
+        var setNameVal = $label.children('.set-name').val();
+        var setName = setNameVal === NO_SET_NAME_GIVEN ? '' : setNameVal;
 
-      const highlighters = [];
-      const setName = $.trim($highlighterSet.children('.set-name').val());
-      if ($highlighterSet.data(CURRENT_SET_DATA_KEY)) {
-        currentSetIndex = i;
+        var highlighters = [];
+
+        var $highlighters = $label.children('.highlighters');
+        $highlighters.children('.highlighters-item').each(function () {
+          var $highlighter_item = $(this);
+          var $highlighter = $highlighter_item.children('.highlighter');
+          var label = $highlighter.html();
+          var rgbColor = $highlighter.css('background-color');
+
+          var highlighter = {};
+          highlighter[LABEL_KEY] = label;
+          highlighter[COLOR_KEY] = rgb2hex(rgbColor);
+          highlighters.push(highlighter);
+        });
+
+        var hSet = {};
+        hSet[SET_NAME_KEY] = setName;
+        hSet[HIGHLIGHTERS_KEY] = highlighters;
+        highlighterSets.push(hSet);
       }
+    });
 
-      const $highlightersContainer = $highlighterSet.children('.highlighters');
-      $highlightersContainer.children('.highlighters-item').each(
-        function () {
-          const color = $(this).children('.highlighter-color').val();
-          const label = $(this).children('.highlighter-label').val();
-          const highlighterJSON = {}
-          highlighterJSON[COLOR_KEY] = color;
-          highlighterJSON[LABEL_KEY] = label;
-          highlighters.push(highlighterJSON);
-        }
-      );
-
-      const isMinimized = $highlightersContainer.css('display') === 'none';
-
-      const highlighterSetJSON = {};
-      highlighterSetJSON[HIGHLIGHTERS_KEY] = highlighters;
-      highlighterSetJSON[SET_NAME_KEY] = setName;
-      highlighterSetJSON[IS_SET_MINIMIZED_KEY] = isMinimized;
-
-      highlighterSets.push(highlighterSetJSON);
-    }
-
-    const libraryJSON = {};
-    libraryJSON[HIGHLIGHTER_SETS_KEY] = highlighterSets;
-    libraryJSON[CURRENT_SET_INDEX_KEY] = currentSetIndex;
-
-    return libraryJSON;
+    return highlighterSets;
   }
 
   /**
    * Bottom buttons
    */
-  $('#export-library-button').on('click', saveLibrary);
+  $('#export-library-button').on('click', shareChosenSets);
 
   $('#close-library-button').on('click', function () {
     google.script.host.close();
