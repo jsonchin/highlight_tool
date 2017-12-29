@@ -2,13 +2,19 @@ var EXTRACTED_TEXT_FONT_SIZE = 11;
 var EXTRACTED_TEXT_FONT_FAMILY = 'ARIAL';
 var TABLE_LABEL_CELL_WIDTH = 100;
 
-var getDocument = function () {
-  // return DocumentApp.getActiveDocument();
-  return DocumentApp.openByUrl('https://docs.google.com/document/d/1S-QoWUdC07lOn6iijAhEOFNaFFWK6PHpQ_2AE6XfXe0/edit');
+var ORDER_COLOR = 'COLOR';
+var ORDER_CHRONO = 'CHRONO';
+
+var NEW_DOC = 'NEW';
+var CURRENT_DOC = 'CURRENT';
+
+var getActiveDocument = function () {
+  return DocumentApp.getActiveDocument();
+  // return DocumentApp.openByUrl('https://docs.google.com/document/d/1S-QoWUdC07lOn6iijAhEOFNaFFWK6PHpQ_2AE6XfXe0/edit');
 }
 
 var extractHighlightedTextFromDoc = function extractHighlightedTextFromActiveDoc() {
-  const doc = getDocument();
+  const doc = getActiveDocument();
   const body = doc.getBody();
 
   const numChildren = body.getNumChildren();
@@ -82,11 +88,24 @@ var extractHighlightsFromText = function extractHighlightedTextFromGASTextObject
  * @param {Document} doc Google App Script Document object
  */
 var appendHighlighterKey = function appendCurrentHighlighterSetKey(doc, currentHSet) {
+  const body = doc.getBody();
+  const labelingKeyParagraph = body.appendParagraph('Labeling Key');
   if (currentHSet !== null) {
     // TODO for each highlighter, append the label name highlighted by the color.
+    currentHSet.highlighters.forEach(function (highlighter) {
+      var paragraph = body.appendParagraph(highlighter.label);
+      paragraph.editAsText().setBackgroundColor(highlighter.color);
+    });
   }
+  labelingKeyParagraph.editAsText().setBold(true).setUnderline(true).setBackgroundColor(null);
+  body.appendParagraph('\n\n');
 };
 
+/**
+ * Returns a dictionary from color:label of the highlighters in the provided HighlighterSet.
+ * Duplicate colors with differing labels chooses the last label that appears.
+ * @param {HighlighterSet} currHSet 
+ */
 var getCurrentSetMap = function getCurrentSetMapFromColorToLabel(currHSet) {
   const colorToLabel = {};
   if (currHSet !== null) {
@@ -113,6 +132,7 @@ var appendExtractedTextChrono = function appendExtractedTextToDocByChronological
   tableAttributes[DocumentApp.Attribute.BACKGROUND_COLOR] = null;
   tableAttributes[DocumentApp.Attribute.FONT_SIZE] = EXTRACTED_TEXT_FONT_SIZE;
   tableAttributes[DocumentApp.Attribute.FONT_FAMILY] = EXTRACTED_TEXT_FONT_FAMILY;
+  tableAttributes[DocumentApp.Attribute.UNDERLINE] = false;
   table.setAttributes(tableAttributes);
 
   const colorToLabel = getCurrentSetMap(currentHSet);
@@ -222,30 +242,86 @@ var organizeByColor = function organizeExtractedTextByColor(extractedTexts) {
 };
 
 /**
- * Extracts highlighted text from the dialog provided document in the order specified.
+ * Shows the dialog to get the target document.
  * @param {String} order must either by 'COLOR' or CHRONO'
  */
-function extractHighlightedText(order) {
-  var appendExtractedTextByOrder;
-  if (order === 'COLOR') {
-    appendExtractedTextByOrder = appendExtractedTextColor;
-  } else {
-    appendExtractedTextByOrder = appendExtractedTextChrono;
+function showExtractHighlightedTextTargetDocDialog(order) {
+  const dialogTemplate = HtmlService.createTemplateFromFile('ExtractHighlightsTargetDocDialog');
+  dialogTemplate.order = order;
+
+  const dialog = dialogTemplate.evaluate();
+  dialog.setWidth(300)
+    .setHeight(150);
+
+  DocumentApp.getUi()
+    .showModalDialog(dialog, 'Extract Highlights');
+}
+
+/**
+ * Extracts highlighted text to the target doc in the specified order.
+ * If a URL is passed but is not a valid Google Document or permissions are not valid,
+ * this will show an invalid URL dialog.
+ * @param {String} target Either NEW_DOC, CURRENT_DOC, or a valid URL to a Google Document.
+ * @param {String} order Either CHRONO or COLOR.
+ */
+function extractHighlightsToDoc(target, order) {
+  // figure out the targetDoc
+  var targetDoc;
+  if (target === NEW_DOC) {
+    const currDocName = getActiveDocument().getName();
+    targetDoc = DocumentApp.create(currDocName + ' Extracted Highlights');
+  } else if (target === CURRENT_DOC) {
+    targetDoc = getActiveDocument();
+  } else { // throws error if not a valid URL
+    targetDoc = DocumentApp.openByUrl(target);
   }
-  appendExtractedTextByOrder = appendExtractedTextColor;
 
-  // TODO dialog to get document
-  const targetDoc = getDocument();
+  // extract the highlighted text BEFORE appending the highlighter key
+  const extractedTexts = extractHighlightedTextFromDoc();
 
-  // append the highlighter key
+  // append the highlighter key to the targetDoc
   const currentHSet = loadCurrentHighlighterSet();
   appendHighlighterKey(targetDoc, currentHSet);
 
-  // append the extracted text
-  const extractedTexts = extractHighlightedTextFromDoc();
+  // choose the function by which to append the extracted text (color/chrono)
+  var appendExtractedTextByOrder;
+  if (order === ORDER_COLOR) {
+    appendExtractedTextByOrder = appendExtractedTextColor;
+  } else if (order === ORDER_CHRONO) {
+    appendExtractedTextByOrder = appendExtractedTextChrono;
+  } else {
+    appendExtractedTextByOrder = appendExtractedTextChrono;
+  }
+
+  // append the extracted text to the targetDoc
   appendExtractedTextByOrder(extractedTexts, targetDoc, currentHSet);
+
+  // show a dialog containing a link to the target doc
+  const docURL = targetDoc.getUrl();
+
+  return docURL;
 }
 
+function showLinkToDocDialog(link) {
+  const dialogTemplate = HtmlService.createTemplateFromFile('ExtractHighlightsLinkDialog');
+  dialogTemplate.link = link;
+  dialogTemplate.isCurrentDoc = link === getActiveDocument().getUrl();
+
+  const dialog = dialogTemplate.evaluate();
+  dialog.setWidth(300)
+    .setHeight(80);
+
+  DocumentApp.getUi()
+    .showModalDialog(dialog, 'Extracted Highlights');
+}
+
+function showInvalidURLDialog(url) {
+  const ui = DocumentApp.getUi();
+  ui.alert(
+    'Invalid URL to target document',
+    'The provided URL to the target Google Document was invalid, please try again:\n' + url, ui.ButtonSet.OK
+  );
+}
 
 /**
  * Represents extracted text from a document

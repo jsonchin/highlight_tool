@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <style>
+    input[type=radio], input[type=text], input[type=button] {
+      cursor: pointer;
+    }
+
+    #top {
+      position: relative;
+    }
+
+    #bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+  </style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+</head>
+
+<body>
+  <div id="top">
+    <div style="margin-botton:0.5em;">
+      Extracted text will be appended to the bottom of the chosen document.
+    </div>
+
+    <div>
+      <input type="radio" name="radio-a" id="radio1" checked>
+      <label for="radio1">New document</label>
+    </div>
+    <div>
+      <input type="radio" name="radio-a" id="radio2">
+      <label for="radio2">Current document</label>
+    </div>
+    <div id="custom-doc-url-radio">
+      <input type="radio" name="radio-a" id="radio3">
+      <label for="radio3">
+        <input type="text" id="doc-url" placeholder="Document URL"> </label>
+    </div>
+  </div>
+
+  <div id="bottom">
+    <input type="button" class="action" id="export-button" value="Extract">
+    <input type="button" id="close-button" value="Cancel">
+  </div>
+</body>
+
+<script>
+  var NEW_DOC = 'NEW';
+  var CURRENT_DOC = 'CURRENT';
+
+  var ORDER = <?= order ?>;
+
+  $('#custom-doc-url-radio').on('click', function () {
+    $('#radio3').click();
+  });
+
+  $('#export-button').on('click', function () {
+    if ($('#radio1').is(':checked')) {
+      google.script.run.withSuccessHandler(function (docURL) {
+        google.script.run.showLinkToDocDialog(docURL);
+      }).extractHighlightsToDoc(NEW_DOC, ORDER);
+    } else if ($('#radio2').is(':checked')) {
+      google.script.run.withSuccessHandler(function (docURL) {
+        google.script.run.showLinkToDocDialog(docURL);
+      }).extractHighlightsToDoc(CURRENT_DOC, ORDER);
+    } else {
+      const urlDoc = $("#doc-url").val();
+      google.script.run
+        .withSuccessHandler(function (docURL) {
+          google.script.run.showLinkToDocDialog(docURL);
+        })
+        .withFailureHandler(function () {
+          google.script.run.showInvalidURLDialog(urlDoc);
+        })
+        .extractHighlightsToDoc(urlDoc, ORDER);
+    }
+
+    const baseText = 'Highlights are being extracted.';
+    const NUM_ADDITIONAL_PERIODS = 4;
+
+    var secs = 0;
+    const SECS_TO_SHOW_ERROR_MSG = 60;
+    // set the div to be blank
+    $('#top').html('');
+
+    // create the p element that will contain the text
+    const $waitAnimationP = $('<p>');
+    $('#top').append($waitAnimationP);
+    $waitAnimationP.html(baseText);
+    var shownPossibleErrorMsg = false;
+
+    setInterval(function () {
+        if ($waitAnimationP.html().length >= baseText.length + NUM_ADDITIONAL_PERIODS) {
+          $waitAnimationP.html(baseText);
+        } else {
+          $waitAnimationP.html($waitAnimationP.html() + '.');
+        }
+
+        secs += 1;
+
+        if (secs > SECS_TO_SHOW_ERROR_MSG && !shownPossibleErrorMsg) {
+          shownPossibleErrorMsg = true;
+          $('#top').append('<p>This is taking a long time. Something may have gone wrong. Please try again or a wait a little longer.</p>');
+        }
+      }, 1000
+    );
+  });
+
+  $('#close-button').on('click', function () {
+    google.script.host.close();
+  });
+
+  /**
+   * Disable all bottom buttons when one of them is clicked.
+   */
+  $('#bottom > input[type=button]').on('click', function () {
+    $('#bottom > input[type=button]').attr('disabled', 'disabled');
+  });
+</script>
+
+
