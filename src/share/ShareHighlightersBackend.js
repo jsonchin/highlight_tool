@@ -53,13 +53,18 @@ function appendHighlighterSetBlock(hSet, body) {
  * @param {List[HighlighterSetJSON]} chosenSets 
  */
 function shareChosenSets(chosenSets) {
-  const doc = DocumentApp.getActiveDocument();
-  const body = doc.getBody();
+  if (chosenSets.length === 0) {
+    const ui = DocumentApp.getUi();
+    ui.alert('No highlighter sets chosen', 'Please try again and select at least one highlighter set.', ui.ButtonSet.OK);
+  } else {
+    const doc = DocumentApp.getActiveDocument();
+    const body = doc.getBody();
 
-  const spacingParagraph = body.appendParagraph('\n\n');
-  spacingParagraph.setAttributes(SHARE_BLOCK_ATTRIBUTES);
+    const spacingParagraph = body.appendParagraph('\n\n');
+    spacingParagraph.setAttributes(SHARE_BLOCK_ATTRIBUTES);
 
-  chosenSets.forEach(function (hSet) {
-    appendHighlighterSetBlock(hSet, body);
-  });
+    chosenSets.forEach(function (hSet) {
+      appendHighlighterSetBlock(hSet, body);
+    });
+  }
 }
