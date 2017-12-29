@@ -1,5 +1,5 @@
 var EXTRACTED_TEXT_FONT_SIZE = 11;
-var EXTRACTED_TEXT_FONT_FAMILY = 'ARIAL';
+var EXTRACTED_TEXT_FONT_FAMILY = 'Arial';
 var TABLE_LABEL_CELL_WIDTH = 100;
 
 var ORDER_COLOR = 'COLOR';
@@ -126,14 +126,7 @@ var appendExtractedTextChrono = function appendExtractedTextToDocByChronological
   const body = doc.getBody();
   const table = body.appendTable([['Label Name', 'Extracted Text']]);
 
-  // set the style of the table to be arial, font 11, no foreground or background color
-  const tableAttributes = {};
-  tableAttributes[DocumentApp.Attribute.FOREGROUND_COLOR] = null;
-  tableAttributes[DocumentApp.Attribute.BACKGROUND_COLOR] = null;
-  tableAttributes[DocumentApp.Attribute.FONT_SIZE] = EXTRACTED_TEXT_FONT_SIZE;
-  tableAttributes[DocumentApp.Attribute.FONT_FAMILY] = EXTRACTED_TEXT_FONT_FAMILY;
-  tableAttributes[DocumentApp.Attribute.UNDERLINE] = false;
-  table.setAttributes(tableAttributes);
+  table.setAttributes(TABLE_ATTRIBUTES);
 
   const colorToLabel = getCurrentSetMap(currentHSet);
 
@@ -240,6 +233,15 @@ var organizeByColor = function organizeExtractedTextByColor(extractedTexts) {
 
   return extractedTextsByColor;
 };
+
+// set the style to be arial, font 11, no foreground or background color
+// putting this here instead of the top for eslint warnings
+var TABLE_ATTRIBUTES = {};
+TABLE_ATTRIBUTES[DocumentApp.Attribute.FOREGROUND_COLOR] = null;
+TABLE_ATTRIBUTES[DocumentApp.Attribute.BACKGROUND_COLOR] = null;
+TABLE_ATTRIBUTES[DocumentApp.Attribute.FONT_SIZE] = EXTRACTED_TEXT_FONT_SIZE;
+TABLE_ATTRIBUTES[DocumentApp.Attribute.FONT_FAMILY] = EXTRACTED_TEXT_FONT_FAMILY;
+TABLE_ATTRIBUTES[DocumentApp.Attribute.UNDERLINE] = false;
 
 /**
  * Shows the dialog to get the target document.
