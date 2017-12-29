@@ -10,6 +10,13 @@ SHARE_BLOCK_ATTRIBUTES[DocumentApp.Attribute.FONT_SIZE] = 9;
 SHARE_BLOCK_ATTRIBUTES[DocumentApp.Attribute.FONT_FAMILY] = 'Arial';
 SHARE_BLOCK_ATTRIBUTES[DocumentApp.Attribute.UNDERLINE] = false;
 
+/**
+ * Share Highlighter Sets
+ */
+
+/**
+ * Shows a dialog asking which highlighter sets in the library to share.
+ */
 function showShareHighlightersDialog() {
   const dialogTemplate = HtmlService.createTemplateFromFile('ShareHighlighters');
 
@@ -67,4 +74,56 @@ function shareChosenSets(chosenSets) {
       appendHighlighterSetBlock(hSet, body);
     });
   }
+}
+
+/**
+ * Import Highlighter Sets
+ */
+
+/**
+ * Parses a share block string and returns a HighlighterSet.
+ * @param {String} block A string beginning with the header and ending with the footer (may be invalid)
+ */
+function parseShareBlock(block) {
+  const isMinimized = false;
+  // TODO implement
+  return new HighlighterSet(setName, highlightersJSON, isMinimized);
+}
+
+/**
+ * Returns a list of share block string texts that are contained in the doc.
+ * @param {Document} doc Google App Script Document object to be scanned
+ */
+function scanDocumentForShareBlocks(doc) {
+  // TODO implement
+}
+
+/**
+ * Shows a dialog asking which found share block/highlighter sets to save.
+ * @param {List[HighlighterSets]} highlighterSets 
+ */
+function showFoundShareBlocks(highlighterSets) {
+  // TODO implement
+}
+
+/**
+ * Defines two HighlighterSets to be equal if they have the same Highlighters in any order.
+ * HighlighterSet.setName and HighlighterSet.isMinimized do not affect equality.
+ * @param {HighlighterSet} hSet1 
+ * @param {HighlighterSet} hSet2 
+ */
+function isHighlighterSetsEqual(hSet1, hSet2) {
+  // TODO implement
+  return true;
+}
+
+/**
+ * Saves non-duplicate highlighter sets into the user's library (UserProperties).
+ * If there are duplicate highlighter set(s), a randomly chosen duplicate
+ * highlighter set is set as currently selected set and the sidebar is reopened.
+ * Duplicate highlighter sets is defined by isHighlighterSetsEqual
+ * @param {List[HighlighterSetJSON]} highlighterSetsJSON A list of chosen highlighter set json.
+ */
+function saveChosenShareBlocks(highlighterSetsJSON) {
+  // TODO implement
 }
