@@ -37,7 +37,10 @@
     <? var hSets = hLibrary.highlighterSets; ?>
     <? var currentSetIndex = hLibrary.currentSetIndex; ?>
     <? for (var i = 0; i < hSets.length; i++) { ?>
-      <input type="checkbox" id="set<?= i ?>">
+      <input type="checkbox" id="set<?= i ?>"
+      <? if (i == currentSetIndex) { ?>
+        checked
+        <? }?>>
       <label for="set<?= i ?>">
       <? if (hSets[i].setName === '') { ?>
         <span class='set-name' style="font-weight:bold;">(No set name)</span>
