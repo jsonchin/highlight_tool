@@ -56,15 +56,21 @@
     value="<?= hSet.highlighters[i].label ?>" />
   <? } ?>
 
+  <input type="button" id="extract-highlights-button-chrono" value='By Chrono' />
+  <input type="button" id="extract-highlights-button-color" value='By Color' />
+
   <div class="sidebar bottom">
     <img alt="Add-on logo" class="logo" src="https://www.gstatic.com/images/branding/product/1x/translate_48dp.png" width="27"
       height="27">
     <span class="gray branding-text">Translate sample by Google</span>
   </div>
 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
-  </script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>
+  
+  /**
+   * Highlight selected text
+   */
 
   // https://stackoverflow.com/questions/1740700/how-to-get-hex-color-value-rather-than-rgb-value
   var HEX_DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
@@ -106,12 +112,29 @@
   $('.highlight-button').on('click', highlightSelection);
 
 
+  /**
+   * Highlighter Library
+   */
 
   function openHighlighterLibrary(event) {
     google.script.run.showHighlighterLibraryDialog();
   }
-
   $('#highlighter-library-button').on('click', openHighlighterLibrary);
+
+
+  /**
+   * Extract Highlights
+   */
+  var ORDER_COLOR = 'COLOR';
+  var ORDER_CHRONO = 'CHRONO';
+
+  $('#extract-highlights-button-chrono').on('click', function () {
+    google.script.run.showExtractHighlightedTextTargetDocDialog(ORDER_CHRONO);
+  });
+
+  $('#extract-highlights-button-color').on('click', function () {
+      google.script.run.showExtractHighlightedTextTargetDocDialog(ORDER_COLOR);
+    });
   </script>
 </body>
 

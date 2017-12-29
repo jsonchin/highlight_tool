@@ -43,6 +43,18 @@ var makeHighlighterLibrary = function makeHighlighterLibraryFromJSON(libraryJSON
 };
 
 /**
+ * Returns the current HighlighterSet or null if there are no HighlighterSets.
+ */
+var loadCurrentHighlighterSet = function () {
+  const hLibrary = loadHighlighterLibrary();
+  const highlighterSets = hLibrary.highlighterSets;
+  if (highlighterSets.length !== 0) {
+    return highlighterSets[hLibrary.currentSetIndex];
+  }
+  return null;
+};
+
+/**
  * Loads the user's highlighter library stored in user properties.
  * Returns a HighlighterLibrary object.
  */
