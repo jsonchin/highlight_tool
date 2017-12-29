@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <style>
+    input[type=button] {
+      cursor: pointer;
+    }
+
+    body {
+      height: 100%;
+    }
+
+    #highlighter-library {
+      overflow-y: scroll;
+      overflow-x: hidden;
+      max-height: 80%;
+      height: 80%;
+    }
+
+    .empty-label {
+      width: 1em;
+      height: 1em;
+      display: inline-block;
+    }
+
+    #bottom {
+      position: absolute;
+      bottom: 0;
+    }
+
+  </style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+</head>
+
+<body>
+  <div id="highlighter-library">
+    <? var hSets = hLibrary.highlighterSets; ?>
+    <? var currentSetIndex = hLibrary.currentSetIndex; ?>
+    <? for (var i = 0; i < hSets.length; i++) { ?>
+    <div class="set-container">
+      <input type="checkbox" class='set-checkbox' id="set<?= i ?>"
+      <? if (i == currentSetIndex) { ?>
+        checked
+      <? }?>>
+      <label for="set<?= i ?>">
+      <? if (hSets[i].setName === '') { ?>
+        <span class='set-name' style="font-weight:bold;">(No set name)</span>
+      <? } else { ?>
+        <span class='set-name' style="font-weight:bold;"><?= hSets[i].setName ?></span>
+      <? } ?>
+        <? var highlighters = hSets[i].highlighters; ?>
+        <ul class="highlighters">
+        <? for (var j = 0; j < highlighters.length; j++) { ?>
+          <li class="highlighters-item">
+          <? if (highlighters[j].label === '') { ?>
+            <div class='highlighter empty-label' style="background-color:<?= highlighters[j].color ?>;"></div>
+          <? } else { ?>
+            <span class='highlighter'style="background-color:<?= highlighters[j].color ?>;"><?= highlighters[j].label ?></span>
+          <? } ?>
+          </li>
+        <? } ?>
+        </ul>
+      </label>
+    </div>
+    <? } ?>
+  </div>
+
+  <div id="bottom">
+    <input type="button" value="Export" id="export-library-button" class="action" />
+    <input type="button" value="Cancel" id="close-library-button" />
+  </div>
+
+</body>
+
+<script>
+  var LABEL_KEY = 'label';
+  var COLOR_KEY = 'color';
+  var SET_NAME_KEY = 'setName';
+  var HIGHLIGHTERS_KEY = 'highlighters';
+
+  const NO_SET_NAME_GIVEN = '(No set name)';
+
+  // https://stackoverflow.com/questions/1740700/how-to-get-hex-color-value-rather-than-rgb-value
+  var HEX_DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+
+  /**
+   * Converts a number between 0 to 255 to its corresponding value in hex.
+   */
+  function hex(num) {
+    return isNaN(num) ? "00" : HEX_DIGITS[(num - num % 16) / 16] + HEX_DIGITS[num % 16];
+  }
+
+  /**
+   * Converts RGB to hex.
+   */
+  function rgb2hex(rgb) {
+    rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+    return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+  }
+
+  function shareChosenSets() {
+    const chosenSets = serializeChosenSets();
+    google.script.run
+      .withSuccessHandler(function () {
+        google.script.host.close();
+      })
+      .shareChosenSets(chosenSets);
+  }
+
+  function serializeChosenSets() {
+    const highlighterSets = [];
+
+    const highlighterSetElements = $('.set-checkbox');
+
+    highlighterSetElements.each(function () {
+      var $setCheckbox = $(this);
+      if ($setCheckbox.is(':checked')) {
+        var $label = $setCheckbox.parent().children('label');
+        var setNameVal = $label.children('.set-name').val();
+        var setName = setNameVal === NO_SET_NAME_GIVEN ? '' : setNameVal;
+
+        var highlighters = [];
+
+        var $highlighters = $label.children('.highlighters');
+        $highlighters.children('.highlighters-item').each(function () {
+          var $highlighter_item = $(this);
+          var $highlighter = $highlighter_item.children('.highlighter');
+          var label = $highlighter.html();
+          var rgbColor = $highlighter.css('background-color');
+
+          var highlighter = {};
+          highlighter[LABEL_KEY] = label;
+          highlighter[COLOR_KEY] = rgb2hex(rgbColor);
+          highlighters.push(highlighter);
+        });
+
+        var hSet = {};
+        hSet[SET_NAME_KEY] = setName;
+        hSet[HIGHLIGHTERS_KEY] = highlighters;
+        highlighterSets.push(hSet);
+      }
+    });
+
+    return highlighterSets;
+  }
+
+  /**
+   * Bottom buttons
+   */
+  $('#export-library-button').on('click', shareChosenSets);
+
+  $('#close-library-button').on('click', function () {
+    google.script.host.close();
+  });
+
+  /**
+   * Disable all bottom buttons when one of them is clicked.
+   */
+  $('#bottom > input[type=button]').on('click', function () {
+    $('#bottom > input[type=button]').attr('disabled', 'disabled');
+  });
+</script>
+
+</html>

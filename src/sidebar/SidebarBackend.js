@@ -1,16 +1,6 @@
-function onOpen(e) {
-  DocumentApp.getUi().createAddonMenu()
-    .addItem('Start', 'showSidebar')
-    .addToUi();
-}
-
-function onInstall(e) {
-  onOpen(e);
-}
-
 function showSidebar() {
   const sidebarTemplate = HtmlService.createTemplateFromFile('Sidebar');
-  // TODO: scripletts
+
   const hLib = loadHighlighterLibrary();
   const currentHSet = hLib.highlighterSets[hLib.currentSetIndex];
   const hSetJSON = currentHSet.toJSON();
