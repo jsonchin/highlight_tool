@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <style>
+    input[type=button] {
+      cursor: pointer;
+    }
+
+    body {
+      height: 100%;
+    }
+
+    #highlighter-library {
+      overflow-y: scroll;
+      overflow-x: hidden;
+      max-height: 80%;
+      height: 80%;
+    }
+
+    #bottom {
+      position: absolute;
+      bottom: 0;
+    }
+
+  </style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+</head>
+
+<body>
+  <div id="highlighter-library">
+    <? var hSets = hLibrary.highlighterSets; ?>
+    <? var currentSetIndex = hLibrary.currentSetIndex; ?>
+    <? for (var i = 0; i < hSets.length; i++) { ?>
+      <input type="checkbox" id="checkbox<?= i ?>">
+      <label for="checkbox<?= i ?>">
+        <span style="font-weight:bold;"><?= hSets[i].setName ?></span>
+        <? var highlighters = hSets[i].highlighters; ?>
+        <ul class="highlighters">
+        <? for (var j = 0; j < highlighters.length; j++) { ?>
+          <li class="highlighters-item">
+            <span style="background-color:<?= highlighters[j].color ?>;"><?= highlighters[j].label ?></span>
+          </li>
+        <? } ?>
+        </ul>
+      </label>
+    <? } ?>
+    </ul>
+  </div>
+
+  <div id="bottom">
+    <input type="button" value="Export" id="export-library-button" class="action" />
+    <input type="button" value="Cancel" id="close-library-button" />
+  </div>
+
+</body>
+
+<script>
+  var LABEL_KEY = 'label';
+  var COLOR_KEY = 'color';
+  var SET_NAME_KEY = 'setName';
+  var IS_SET_MINIMIZED_KEY = 'isSetMinimized';
+  var HIGHLIGHTERS_KEY = 'highlighters';
+  var CURRENT_SET_INDEX_KEY = 'currentSetIndex';
+  var HIGHLIGHTER_SETS_KEY = 'highlighterSets';
+
+  const CURRENT_SET_DATA_KEY = 'current-set';
+  const MINIMIZE_SET_VAL = '...';
+  const SHOW_SET_VAL = '^';
+  const DISPLAY_NONE = 'none';
+  const DISPLAY_SHOW = ''; // sets the display back to normal
+
+  /**
+   * Color palette:
+   * 300: #E0E0E0
+   * 100: #F5F5F5
+   * 50: #FAFAFA
+   * 0: #FFFFFF 
+   */
+  const DARK_GREY_HEX = '#E0E0E0';
+  const GREY_HEX = '#F5F5F5';
+  const LIGHT_GREY_HEX = '#FAFAFA';
+  const WHITE_HEX = '#FFFFFF';
+
+  function saveLibrary() {
+    const libraryJSON = serializeLibrary();
+    google.script.run
+      .withSuccessHandler(function () {
+        setTimeout(function () {
+          google.script.host.close();
+        }, 1000);
+      })
+      .withFailureHandler(function () {
+        alert('Was not able to save the library. Please try again.');
+      })
+      .saveHighlighterLibraryFromDialog(libraryJSON);
+  }
+
+  function serializeLibrary() {
+    const highlighterSets = [];
+    var currentSetIndex = 0;
+
+    const highlighterSetElements = $('#highlighter-sets').children('.highlighter-sets-item');
+
+    for (var i = 0; i < highlighterSetElements.length; i++) {
+      const $highlighterSet = $(highlighterSetElements[i]);
+
+      const highlighters = [];
+      const setName = $.trim($highlighterSet.children('.set-name').val());
+      if ($highlighterSet.data(CURRENT_SET_DATA_KEY)) {
+        currentSetIndex = i;
+      }
+
+      const $highlightersContainer = $highlighterSet.children('.highlighters');
+      $highlightersContainer.children('.highlighters-item').each(
+        function () {
+          const color = $(this).children('.highlighter-color').val();
+          const label = $(this).children('.highlighter-label').val();
+          const highlighterJSON = {}
+          highlighterJSON[COLOR_KEY] = color;
+          highlighterJSON[LABEL_KEY] = label;
+          highlighters.push(highlighterJSON);
+        }
+      );
+
+      const isMinimized = $highlightersContainer.css('display') === 'none';
+
+      const highlighterSetJSON = {};
+      highlighterSetJSON[HIGHLIGHTERS_KEY] = highlighters;
+      highlighterSetJSON[SET_NAME_KEY] = setName;
+      highlighterSetJSON[IS_SET_MINIMIZED_KEY] = isMinimized;
+
+      highlighterSets.push(highlighterSetJSON);
+    }
+
+    const libraryJSON = {};
+    libraryJSON[HIGHLIGHTER_SETS_KEY] = highlighterSets;
+    libraryJSON[CURRENT_SET_INDEX_KEY] = currentSetIndex;
+
+    return libraryJSON;
+  }
+
+  /**
+   * Bottom buttons
+   */
+  $('#export-library-button').on('click', saveLibrary);
+
+  $('#close-library-button').on('click', google.script.host.close);
+
+  /**
+   * Disable all bottom buttons when one of them is clicked.
+   */
+  $('#bottom > input[type=button]').on('click', function () {
+    $('#bottom > input[type=button]').attr('disabled', 'disabled');
+  });
+</script>
+
+</html>
