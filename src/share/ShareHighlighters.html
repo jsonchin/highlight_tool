@@ -108,12 +108,7 @@
     const chosenSets = serializeChosenSets();
     google.script.run
       .withSuccessHandler(function () {
-        setTimeout(function () {
-          google.script.host.close();
-        }, 1000);
-      })
-      .withFailureHandler(function () {
-        alert('Was not able to save the library. Please try again.');
+        google.script.host.close();
       })
       .shareChosenSets(chosenSets);
   }
