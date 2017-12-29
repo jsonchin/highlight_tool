@@ -44,7 +44,11 @@
         <ul class="highlighters">
         <? for (var j = 0; j < highlighters.length; j++) { ?>
           <li class="highlighters-item">
+          <? if (highlighters[j].label === '') { ?>
+            <span style="background-color:<?= highlighters[j].color ?>;"> </span>
+          <? } else { ?>
             <span style="background-color:<?= highlighters[j].color ?>;"><?= highlighters[j].label ?></span>
+          <? } ?>
           </li>
         <? } ?>
         </ul>
@@ -150,7 +154,9 @@
    */
   $('#export-library-button').on('click', saveLibrary);
 
-  $('#close-library-button').on('click', google.script.host.close);
+  $('#close-library-button').on('click', function () {
+    google.script.host.close();
+  });
 
   /**
    * Disable all bottom buttons when one of them is clicked.

@@ -193,7 +193,9 @@
      */
     $('#save-library-button').on('click', saveLibrary);
 
-    $('#close-library-button').on('click', google.script.host.close);
+    $('#close-library-button').on('click', function () {
+        google.script.host.close();
+    });
 
     /**
      * Disable all bottom buttons when one of them is clicked.
