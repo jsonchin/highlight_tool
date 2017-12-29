@@ -10,7 +10,7 @@ function onInstall(e) {
 
 function showSidebar() {
   const sidebarTemplate = HtmlService.createTemplateFromFile('Sidebar');
-  // TODO: scripletts
+
   const hLib = loadHighlighterLibrary();
   const currentHSet = hLib.highlighterSets[hLib.currentSetIndex];
   const hSetJSON = currentHSet.toJSON();
