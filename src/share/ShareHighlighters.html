@@ -37,21 +37,21 @@
     <? var hSets = hLibrary.highlighterSets; ?>
     <? var currentSetIndex = hLibrary.currentSetIndex; ?>
     <? for (var i = 0; i < hSets.length; i++) { ?>
-      <input type="checkbox" id="checkbox<?= i ?>">
-      <label for="checkbox<?= i ?>">
+      <input type="checkbox" id="set<?= i ?>">
+      <label for="set<?= i ?>">
       <? if (hSets[i].setName === '') { ?>
-        <span style="font-weight:bold;">(No set name)</span>
+        <span class='set-name' style="font-weight:bold;">(No set name)</span>
       <? } else { ?>
-        <span style="font-weight:bold;"><?= hSets[i].setName ?></span>
+        <span class='set-name' style="font-weight:bold;"><?= hSets[i].setName ?></span>
       <? } ?>
         <? var highlighters = hSets[i].highlighters; ?>
         <ul class="highlighters">
         <? for (var j = 0; j < highlighters.length; j++) { ?>
           <li class="highlighters-item">
           <? if (highlighters[j].label === '') { ?>
-            <span style="background-color:<?= highlighters[j].color ?>;">_</span>
+            <span class='highlighter' style="background-color:<?= highlighters[j].color ?>;">_</span>
           <? } else { ?>
-            <span style="background-color:<?= highlighters[j].color ?>;"><?= highlighters[j].label ?></span>
+            <span class='highlighter'style="background-color:<?= highlighters[j].color ?>;"><?= highlighters[j].label ?></span>
           <? } ?>
           </li>
         <? } ?>
