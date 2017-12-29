@@ -39,13 +39,17 @@
     <? for (var i = 0; i < hSets.length; i++) { ?>
       <input type="checkbox" id="checkbox<?= i ?>">
       <label for="checkbox<?= i ?>">
+      <? if (hSets[i].setName === '') { ?>
+        <span style="font-weight:bold;">(No set name)</span>
+      <? } else { ?>
         <span style="font-weight:bold;"><?= hSets[i].setName ?></span>
+      <? } ?>
         <? var highlighters = hSets[i].highlighters; ?>
         <ul class="highlighters">
         <? for (var j = 0; j < highlighters.length; j++) { ?>
           <li class="highlighters-item">
           <? if (highlighters[j].label === '') { ?>
-            <span style="background-color:<?= highlighters[j].color ?>;"> </span>
+            <span style="background-color:<?= highlighters[j].color ?>;">_</span>
           <? } else { ?>
             <span style="background-color:<?= highlighters[j].color ?>;"><?= highlighters[j].label ?></span>
           <? } ?>
