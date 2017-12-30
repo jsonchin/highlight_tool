@@ -45,7 +45,7 @@
     <? for (var i = 0; i < hSets.length; i++) { ?>
     <div class="set-container">
       <input type="checkbox" class='set-checkbox' id="set<?= i ?>"
-      <? if (i == currentSetIndex) { ?>
+      <? if (i === currentSetIndex) { ?>
         checked
       <? }?>>
       <label for="set<?= i ?>">
