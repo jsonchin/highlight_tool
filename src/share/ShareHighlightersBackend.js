@@ -185,7 +185,7 @@ function showFoundSharedHighlighterSetsDialog() {
     // TODO implement error dialog
   }
 
-  const dialogTemplate = HtmlService.createTemplateFromFile('ShareHighlighters');
+  const dialogTemplate = HtmlService.createTemplateFromFile('ImportHighlighters');
   const hLibraryJSON = {};
   hLibraryJSON[HIGHLIGHTER_SETS_KEY] = sharedHighlighterSets;
   hLibraryJSON[CURRENT_SET_INDEX_KEY] = 0;
@@ -202,6 +202,25 @@ function showFoundSharedHighlighterSetsDialog() {
 
 }
 
+
+/**
+ * Takes a HighlighterSet and returns a mapping from color:List[String] representing labels.
+ * @param {HighlighterSet} hSet 
+ */
+function groupHighlighterSetHighlighters(hSet) {
+  const labelsByColor = {};
+  hSet.highlighters.forEach(function (highlighter) {
+    const label = highlighter.label;
+    const color = highlighter.color;
+    if (!(color in labelsByColor)) {
+      labelsByColor[color] = [];
+    }
+    labelsByColor[color].push(label);
+  });
+
+  return labelsByColor;
+}
+
 /**
  * Defines two HighlighterSets to be equal if they have the same Highlighters in any order.
  * HighlighterSet.setName and HighlighterSet.isMinimized do not affect equality.
@@ -210,6 +229,32 @@ function showFoundSharedHighlighterSetsDialog() {
  */
 function isHighlighterSetsEqual(hSet1, hSet2) {
   // TODO implement
+  const highlighterGroup1 = groupHighlighterSetHighlighters(hSet1);
+  const highlighterGroup2 = groupHighlighterSetHighlighters(hSet2);
+
+  const colors1 = Object.keys(highlighterGroup1);
+  const colors2 = Object.keys(highlighterGroup2);
+
+  if (colors1.length !== colors2.length) {
+    return false;
+  }
+
+  for (var i = 0; i < colors1.length; i += 1) {
+    var color = colors1[i];
+    var labels1 = highlighterGroup1[color].sort();
+    var labels2 = highlighterGroup2[color].sort();
+
+    if (labels1.length !== labels2.length) {
+      return false;
+    }
+
+    for (var j = 0; j < labels1.length; j += 1) {
+      if (labels1[j] !== labels2[j]) {
+        return false;
+      }
+    }
+  }
+
   return true;
 }
 
@@ -221,5 +266,41 @@ function isHighlighterSetsEqual(hSet1, hSet2) {
  * @param {List[HighlighterSetJSON]} highlighterSetsJSON A list of chosen highlighter set json.
  */
 function saveChosenShareBlocks(highlighterSetsJSON) {
-  // TODO implement
+  const hLibrary = loadHighlighterLibrary();
+
+  const foundHighlighterSets = [];
+  highlighterSetsJSON.forEach(function (highlighterSet) {
+    const isMinimized = false;
+    foundHighlighterSets.push(new HighlighterSet(
+      highlighterSet.setName,
+      highlighterSet.highlighters,
+      isMinimized
+    ));
+  });
+
+  var alreadyChangedCurrentSet = false;
+  foundHighlighterSets.forEach(function (hSet) {
+    var isDuplicate = false;
+    var i = 0;
+    while (i < hLibrary.highlighterSets.length && !isDuplicate) {
+      if (isHighlighterSetsEqual(hSet, hLibrary.highlighterSets[i])) {
+        hLibrary.currentSetIndex = i;
+        isDuplicate = true;
+        alreadyChangedCurrentSet = true;
+      }
+
+      i += 1;
+    }
+
+    if (!isDuplicate) {
+      hLibrary.addHighlighterSet(hSet);
+      if (!alreadyChangedCurrentSet) {
+        hLibrary.currentSetIndex = hLibrary.highlighterSets.length - 1;
+      }
+    }
+  });
+
+  hLibrary.save();
+
+  showSidebar();
 }
