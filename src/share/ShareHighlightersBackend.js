@@ -193,7 +193,6 @@ function showFoundSharedHighlighterSetsDialog() {
   const dialogTemplate = HtmlService.createTemplateFromFile('ImportHighlighters');
   const hLibraryJSON = {};
   hLibraryJSON[HIGHLIGHTER_SETS_KEY] = sharedHighlighterSets;
-  hLibraryJSON[CURRENT_SET_INDEX_KEY] = 0;
 
   dialogTemplate.hLibrary = hLibraryJSON;
 
