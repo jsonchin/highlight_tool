@@ -1,7 +1,12 @@
-var SHARE_BLOCK_HEADER = '******************************************** Highlighter Values ********************************************';
+var SHARE_BLOCK_HEADER = '********************************************Highlighter Values********************************************';
 var SHARE_BLOCK_FOOTER = '*************************************Do not modify this block of text*************************************';
 var SHARE_BLOCK_LEFT_SET_NAME = '<<<<<';
 var SHARE_BLOCK_RIGHT_SET_NAME = '>>>>>';
+
+var SHARE_BLOCK_HEADER_REGEX = '[*]{44}Highlighter Values[*]{44}';
+var SHARE_BLOCK_FOOTER_REGEX = '[*]{37}Do not modify this block of text[*]{37}';
+var SHARE_BLOCK_REGEX = /[*]{44}Highlighter Values[*]{44}(.|[\n\r])*?[*]{37}Do not modify this block of text[*]{37}/g;
+//https://stackoverflow.com/questions/6323417/how-do-i-retrieve-all-matches-for-a-regular-expression-in-javascript
 
 var SHARE_BLOCK_ATTRIBUTES = {};
 SHARE_BLOCK_ATTRIBUTES[DocumentApp.Attribute.FOREGROUND_COLOR] = null;
@@ -9,6 +14,11 @@ SHARE_BLOCK_ATTRIBUTES[DocumentApp.Attribute.BACKGROUND_COLOR] = null;
 SHARE_BLOCK_ATTRIBUTES[DocumentApp.Attribute.FONT_SIZE] = 9;
 SHARE_BLOCK_ATTRIBUTES[DocumentApp.Attribute.FONT_FAMILY] = 'Arial';
 SHARE_BLOCK_ATTRIBUTES[DocumentApp.Attribute.UNDERLINE] = false;
+
+var InvalidShareBlockError = function (msg) {
+  this.name = 'InvalidShareBlockError';
+  this.message = msg;
+}
 
 /**
  * Share Highlighter Sets
@@ -81,13 +91,44 @@ function shareChosenSets(chosenSets) {
  */
 
 /**
- * Parses a share block string and returns a HighlighterSet.
+ * Parses a share block string and returns a HighlighterSet and
+ * null if there are no highlighters.
  * @param {String} block A string beginning with the header and ending with the footer (may be invalid)
  */
 function parseShareBlock(block) {
+  var blockBufferStr = block.replace(/\r/g, '\n');
+  var blockBuffer = blockBufferStr.replace(SHARE_BLOCK_HEADER, '').replace(SHARE_BLOCK_FOOTER, '').trim().split('\n');
+
+  if (blockBuffer.length === 0) {
+    return null;
+  }
+
+  // check if there is a setName block
+  var setName = '';
+  var i = 0;
+  if (blockBuffer[0].substring(0, SHARE_BLOCK_LEFT_SET_NAME.length) === SHARE_BLOCK_LEFT_SET_NAME) {
+    // parse setName
+    setName = blockBuffer[0].replace(SHARE_BLOCK_LEFT_SET_NAME, '').replace(SHARE_BLOCK_RIGHT_SET_NAME, '').trim();
+    i += 1;
+  }
+
+  // parse each remaining line for a highlighter
+  const highlighters = [];
+  for (; i < blockBuffer.length; i += 1) {
+    var highlighter = blockBuffer[i].split('" : "');
+    if (highlighter.length !== 2) {
+      throw new InvalidShareBlockError('Invalid highlighter line.');
+    }
+    var label = highlighter[0].substring(1).trim();
+    var color = highlighter[1].substring(0, highlighter[1].length - 1).trim();
+    var highlighterJSON = {};
+    highlighterJSON[LABEL_KEY] = label;
+    highlighterJSON[COLOR_KEY] = color;
+    highlighters.push(highlighterJSON);
+  }
+
   const isMinimized = false;
-  // TODO implement
-  return new HighlighterSet(setName, highlightersJSON, isMinimized);
+  return new HighlighterSet(setName, highlighters, isMinimized);
 }
 
 /**
@@ -95,15 +136,70 @@ function parseShareBlock(block) {
  * @param {Document} doc Google App Script Document object to be scanned
  */
 function scanDocumentForShareBlocks(doc) {
-  // TODO implement
+  const body = doc.getBody();
+  const bodyText = body.getText(); // string
+
+  const shareBlocks = []; // list of strings
+
+  var match;
+  do {
+    match = SHARE_BLOCK_REGEX.exec(bodyText);
+    if (match) {
+      shareBlocks.push(match[0]);
+    }
+  } while (match);
+
+  return shareBlocks;
+}
+
+/**
+ * Returns HighlighterSets founds corresponding to share blocks found
+ * in the document. This list may be empty.
+ */
+function scanDocumentForSharedHighlighterSets() {
+  const doc = getActiveDocument();
+  const shareBlocks = scanDocumentForShareBlocks(doc);
+  const highlighterSets = [];
+
+  shareBlocks.forEach(function (shareBlock) {
+    try {
+      highlighterSets.push(parseShareBlock(shareBlock));
+    } catch (error) {
+      if (error.name !== 'InvalidShareBlockError') {
+        throw error;
+      }
+    }
+  });
+
+  return highlighterSets;
 }
 
 /**
  * Shows a dialog asking which found share block/highlighter sets to save.
- * @param {List[HighlighterSets]} highlighterSets 
  */
-function showFoundShareBlocks(highlighterSets) {
+function showFoundSharedHighlighterSetsDialog() {
   // TODO implement
+  const sharedHighlighterSets = scanDocumentForSharedHighlighterSets();
+
+  if (sharedHighlighterSets.length === 0) {
+    // TODO implement error dialog
+  }
+
+  const dialogTemplate = HtmlService.createTemplateFromFile('ShareHighlighters');
+  const hLibraryJSON = {};
+  hLibraryJSON[HIGHLIGHTER_SETS_KEY] = sharedHighlighterSets;
+  hLibraryJSON[CURRENT_SET_INDEX_KEY] = 0;
+
+  dialogTemplate.hLibrary = hLibraryJSON;
+
+  const dialog = dialogTemplate.evaluate();
+  dialog.setWidth(500)
+    .setHeight(300);
+
+  DocumentApp.getUi()
+    .showModalDialog(dialog, 'Highlighter Library Exporter');
+
+
 }
 
 /**
