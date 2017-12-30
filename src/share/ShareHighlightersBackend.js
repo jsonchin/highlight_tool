@@ -39,7 +39,7 @@ function showShareHighlightersDialog() {
     .setHeight(300);
 
   DocumentApp.getUi()
-    .showModalDialog(dialog, 'Highlighter Library Exporter');
+    .showModalDialog(dialog, 'Export Highlighter Library');
 }
 
 /**
@@ -202,7 +202,7 @@ function showFoundSharedHighlighterSetsDialog() {
     .setHeight(300);
 
   DocumentApp.getUi()
-    .showModalDialog(dialog, 'Highlighter Library Exporter');
+    .showModalDialog(dialog, 'Import Highlighter Sets');
 }
 
 

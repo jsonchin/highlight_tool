@@ -18,25 +18,9 @@
       top: 3px;
     }
 
-    .col-contain {
-      overflow: hidden;
-    }
-
-    .col-one {
-      float: left;
-      width: 50%;
-    }
-
-    .logo {
-      vertical-align: middle;
-    }
-
-    .radio-spacer {
-      height: 20px;
-    }
-
-    .width-100 {
-      width: 100%;
+    hr.separator {
+      border-top: 1px solid #8c8b8b;
+      float: center;
     }
 
     input[type=button] {
@@ -46,7 +30,17 @@
 </head>
 
 <body>
-  <input type="button" id="highlighter-library-button" />
+  <p>Create and edit highlighters and sets</p>
+
+  <input type="button" id="highlighter-library-button" value="Highlighter Library" class="share" />
+
+  <hr class="separator">
+
+  <p>
+     Click on a highlighter to apply the color to the selected text
+  </p>
+
+  <input type="button" id="un-highlight" value="Un-highlight">
 
   <?= hSet.setName ?>
   <? for (var i = 0; i < hSet.highlighters.length; i++) { ?>
@@ -56,14 +50,13 @@
     value="<?= hSet.highlighters[i].label ?>" />
   <? } ?>
 
+  <hr class="separator">
+
+  <p>Extract Highlights</p>
+
+  <p>Copy highlighted text into a new document</p>
   <input type="button" id="extract-highlights-button-chrono" value='By Chrono' />
   <input type="button" id="extract-highlights-button-color" value='By Color' />
-
-  <div class="sidebar bottom">
-    <img alt="Add-on logo" class="logo" src="https://www.gstatic.com/images/branding/product/1x/translate_48dp.png" width="27"
-      height="27">
-    <span class="gray branding-text">Translate sample by Google</span>
-  </div>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>
