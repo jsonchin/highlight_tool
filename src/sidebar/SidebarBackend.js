@@ -9,6 +9,8 @@ function showSidebar() {
   const sidebar = sidebarTemplate.evaluate();
   sidebar.setTitle('Highlight Tool');
   DocumentApp.getUi().showSidebar(sidebar);
+
+  autoImportHighlighterSets();
 }
 
 function highlightSelection(color) {
