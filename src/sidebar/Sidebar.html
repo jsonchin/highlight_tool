@@ -7,20 +7,59 @@
   <!-- The CSS package above applies Google styling to buttons and other elements. -->
 
   <style>
-    .branding-below {
-      bottom: 56px;
-      top: 0;
+    body {
+      text-align: center;
+      width: 100%;
+      height: 100vh;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    #highlighter-library-button, #un-highlight {
+      width: 65%;
+      margin: 0 auto;
+      display: block;
     }
 
-    .branding-text {
-      left: 7px;
-      position: relative;
-      top: 3px;
+    #highlighter-set {
+      height: 100%;
+      max-height: 100%;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .highlighter-line {
+      margin: 0 auto;
+      margin-bottom: 5px;
+      width: 70%;
+    }
+
+    .highlight-button {
+      width: 100%;
+    }
+
+    .extract-button {
+      margin: 0 auto;
+      width: 40%; 
+    }
+
+    #bottom-buttons {
+      margin: 0 auto;
+      margin-left: 10px;
+      margin-right: 10px;
+      display: block;
+      width: 90%;
+    }
+
+    .footer {
+      margin-bottom: 10px;
     }
 
     hr.separator {
       border-top: 1px solid #8c8b8b;
       float: center;
+      width: 95%;
     }
 
     input[type=button] {
@@ -30,33 +69,41 @@
 </head>
 
 <body>
-  <p>Create and edit highlighters and sets</p>
+  <div id="top">
+    <p>Create and edit highlighters and sets</p>
+    
+    <input type="button" id="highlighter-library-button" value="Highlighter Library" class="share" />
+    
+    <hr class="separator">
+    
+    <p>
+      Click on a highlighter to apply the color to the selected text
+    </p>
+    
+    <input type="button" id="un-highlight" value="Un-highlight">
+  </div>
 
-  <input type="button" id="highlighter-library-button" value="Highlighter Library" class="share" />
+  <p><b><?= hSet.setName ?></b></p>
+  <div id="highlighter-set">
+    <? for (var i = 0; i < hSet.highlighters.length; i++) { ?>
+      <div class="highlighter-line">
+        <input type="button" class="highlight-button"
+        style="background:<?= hSet.highlighters[i].color ?>; display:block;"
+        value="<?= hSet.highlighters[i].label ?>"/>
+      </div>
+    <? } ?>
+  </div>
 
-  <hr class="separator">
-
-  <p>
-     Click on a highlighter to apply the color to the selected text
-  </p>
-
-  <input type="button" id="un-highlight" value="Un-highlight">
-
-  <?= hSet.setName ?>
-  <? for (var i = 0; i < hSet.highlighters.length; i++) { ?>
-    <input type="button"
-    class="highlight-button"
-    style="background:<?= hSet.highlighters[i].color ?>; display:block;"
-    value="<?= hSet.highlighters[i].label ?>" />
-  <? } ?>
-
-  <hr class="separator">
-
-  <p>Extract Highlights</p>
-
-  <p>Copy highlighted text into a new document</p>
-  <input type="button" id="extract-highlights-button-chrono" value='By Chrono' />
-  <input type="button" id="extract-highlights-button-color" value='By Color' />
+  <div class="footer">
+    <hr class="separator">
+    <p><b>Extract Highlights</b></p>
+    
+    <p>Copy highlighted text into a new document</p>
+    <div id="bottom-buttons">
+      <input type="button" class="extract-button" id="extract-highlights-button-chrono" value='By Chrono' />
+      <input type="button" class="extract-button" id="extract-highlights-button-color" value='By Color' />
+    </div>
+  </div>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>
