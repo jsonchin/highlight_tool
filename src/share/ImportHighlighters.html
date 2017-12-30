@@ -31,7 +31,6 @@
       position: absolute;
       bottom: 0;
     }
-
   </style>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -41,13 +40,9 @@
 <body>
   <div id="highlighter-library">
     <? var hSets = hLibrary.highlighterSets; ?>
-    <? var currentSetIndex = hLibrary.currentSetIndex; ?>
     <? for (var i = 0; i < hSets.length; i++) { ?>
     <div class="set-container">
-      <input type="checkbox" class='set-checkbox' id="set<?= i ?>"
-      <? if (i == currentSetIndex) { ?>
-        checked
-      <? }?>>
+      <input type="checkbox" class='set-checkbox' id="set<?= i ?>" checked>
       <label for="set<?= i ?>">
       <? if (hSets[i].setName === '') { ?>
         <span class='set-name' style="font-weight:bold;">(No set name)</span>
@@ -72,7 +67,7 @@
   </div>
 
   <div id="bottom">
-    <input type="button" value="Export" id="export-library-button" class="action" />
+    <input type="button" value="Import" id="import-library-button" class="action" />
     <input type="button" value="Cancel" id="close-library-button" />
   </div>
 
@@ -104,13 +99,13 @@
     return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
   }
 
-  function shareChosenSets() {
+  function saveChosenShareBlocks() {
     const chosenSets = serializeChosenSets();
     google.script.run
       .withSuccessHandler(function () {
         google.script.host.close();
       })
-      .shareChosenSets(chosenSets);
+      .saveChosenShareBlocks(chosenSets);
   }
 
   function serializeChosenSets() {
@@ -153,7 +148,7 @@
   /**
    * Bottom buttons
    */
-  $('#export-library-button').on('click', shareChosenSets);
+  $('#import-library-button').on('click', saveChosenShareBlocks);
 
   $('#close-library-button').on('click', function () {
     google.script.host.close();
