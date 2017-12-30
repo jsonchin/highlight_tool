@@ -121,7 +121,7 @@
       var $setCheckbox = $(this);
       if ($setCheckbox.is(':checked')) {
         var $label = $setCheckbox.parent().children('label');
-        var setNameVal = $label.children('.set-name').val();
+        var setNameVal = $label.children('.set-name').html();
         var setName = setNameVal === NO_SET_NAME_GIVEN ? '' : setNameVal;
 
         var highlighters = [];
