@@ -178,11 +178,16 @@ function scanDocumentForSharedHighlighterSets() {
  * Shows a dialog asking which found share block/highlighter sets to save.
  */
 function showFoundSharedHighlighterSetsDialog() {
-  // TODO implement
   const sharedHighlighterSets = scanDocumentForSharedHighlighterSets();
 
   if (sharedHighlighterSets.length === 0) {
-    // TODO implement error dialog
+    const ui = DocumentApp.getUi();
+    ui.alert(
+      'No highlighter blocks found',
+      'Please copy and paste highlighter blocks produced from this tool\'s export feature into this document.',
+      ui.ButtonSet.OK
+    );
+    return;
   }
 
   const dialogTemplate = HtmlService.createTemplateFromFile('ImportHighlighters');
@@ -198,8 +203,6 @@ function showFoundSharedHighlighterSetsDialog() {
 
   DocumentApp.getUi()
     .showModalDialog(dialog, 'Highlighter Library Exporter');
-
-
 }
 
 
@@ -228,7 +231,6 @@ function groupHighlighterSetHighlighters(hSet) {
  * @param {HighlighterSet} hSet2 
  */
 function isHighlighterSetsEqual(hSet1, hSet2) {
-  // TODO implement
   const highlighterGroup1 = groupHighlighterSetHighlighters(hSet1);
   const highlighterGroup2 = groupHighlighterSetHighlighters(hSet2);
 
