@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <style>
+    input[type=radio],
+    input[type=text],
+    input[type=button] {
+      cursor: pointer;
+    }
+
+    #top {
+      position: relative;
+    }
+
+    #bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+  </style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+</head>
+
+<body>
+  <div id="top">
+    <input type="checkbox" id="auto-import"
+    <? if (settings.settingAutoImport) { ?>
+      checked
+    <? }?>>
+    <label for="auto-import">Automatically scan for highlighter sets on start</label>
+  </div>
+
+  <div id="bottom">
+    <input type="button" class="action" id="save-button" value="Save">
+    <input type="button" id="close-button" value="Cancel">
+  </div>
+</body>
+
+<script>
+  var SETTING_AUTO_IMPORT_KEY = 'settingAutoImport'; // 'true' or 'false' as keys
+
+
+  $('#save-button').on('click', function () {
+    const settings = {};
+    // auto-import
+    settings[SETTING_AUTO_IMPORT_KEY] = $('#auto-import').is(':checked');
+
+    google.script.run
+      .withSuccessHandler(function () {
+        google.script.host.close();
+      })
+      .saveSettings(settings);
+  });
+
+  $('#close-button').on('click', function () {
+    google.script.host.close();
+  });
+
+  /**
+   * Disable all bottom buttons when one of them is clicked.
+   */
+  $('#bottom > input[type=button]').on('click', function () {
+    $('#bottom > input[type=button]').attr('disabled', 'disabled');
+  });
+</script>

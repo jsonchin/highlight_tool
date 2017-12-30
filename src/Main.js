@@ -3,6 +3,8 @@ function onOpen(e) {
     .addItem('Start', 'showSidebar')
     .addItem('Export', 'showShareHighlightersDialog')
     .addItem('Import', 'showFoundSharedHighlighterSetsDialog')
+    .addSeparator()
+    .addItem('Settings', 'showSettingsDialog')
     .addToUi();
 }
 
