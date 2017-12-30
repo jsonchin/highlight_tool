@@ -195,6 +195,7 @@ function showFoundSharedHighlighterSetsDialog() {
   hLibraryJSON[HIGHLIGHTER_SETS_KEY] = sharedHighlighterSets;
 
   dialogTemplate.hLibrary = hLibraryJSON;
+  dialogTemplate.additionalText = '';
 
   const dialog = dialogTemplate.evaluate();
   dialog.setWidth(500)
