@@ -386,6 +386,12 @@
     $('#set-add').on('click', function () {
         const highlighterSetLi = createSet('', [], false);
         $('#highlighter-sets').append(highlighterSetLi);
+
+        // if there were no sets previously, denote the newly created set as the current set
+        if ($('#highlighter-sets').children('li').length === 1) {
+            denoteCurrentSet($(highlighterSetLi));
+        }
+
         createDraggable();
         scrollToHighlighterSet($(highlighterSetLi));
     });
