@@ -134,7 +134,7 @@
    * Displays the alert error message when the server side highlightSelection fails.
    */
   function highlightFailure(e) {
-    alert('Was not able to highlight the selection. Please try again.');
+    google.script.run.showRequireSelectionError();
   }
 
   /**
