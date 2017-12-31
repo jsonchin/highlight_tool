@@ -314,7 +314,7 @@ function showLinkToDocDialog(link) {
     .setHeight(80);
 
   DocumentApp.getUi()
-    .showModalDialog(dialog, 'Extracted Highlights');
+    .showModalDialog(dialog, 'Highlights Extracted');
 }
 
 function showInvalidURLDialog(url) {

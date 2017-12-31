@@ -1,8 +1,11 @@
 function onOpen(e) {
-  DocumentApp.getUi().createAddonMenu()
+  const ui = DocumentApp.getUi();
+  ui.createAddonMenu()
     .addItem('Start', 'showSidebar')
-    .addItem('Export Library', 'showShareHighlightersDialog')
     .addItem('Import Library', 'showFoundSharedHighlighterSetsDialog')
+    .addSubMenu(ui.createMenu('Export Library')
+      .addItem('To new document', 'showShareHighlightersDialogNewDoc')
+      .addItem('To current document', 'showShareHighlightersDialogCurrentDoc'))
     .addSeparator()
     .addItem('Settings', 'showSettingsDialog')
     .addToUi();

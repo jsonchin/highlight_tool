@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <style>
+    input[type=radio],
+    input[type=text],
+    input[type=button] {
+      cursor: pointer;
+    }
+
+    #top {
+      position: relative;
+    }
+
+    #bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+  </style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+</head>
+
+<body>
+  <div id="top">
+    <div style="margin-botton:0.5em;">
+       The chosen highlighter sets have been exported to the following newly created <a href="<?= link ?>" target="_blank">document</a>.
+    </div>
+  </div>
+
+  <div id="bottom">
+    <input type="button" id="close-button" value="Ok">
+  </div>
+</body>
+
+<script>
+  $('#close-button').on('click', function () {
+    google.script.host.close();
+  });
+</script>
