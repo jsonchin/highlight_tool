@@ -116,6 +116,9 @@
    * Highlight selected text
    */
 
+  var LUMINOSITY_BLACK_THRESHOLD = 50;
+  var WHITE_TEXT_HEX_COLOR = '#ffffff';
+
   // https://stackoverflow.com/questions/1740700/how-to-get-hex-color-value-rather-than-rgb-value
   var HEX_DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 
@@ -133,6 +136,37 @@
   function hex(num) {
     return isNaN(num) ? "00" : HEX_DIGITS[(num - num % 16) / 16] + HEX_DIGITS[num % 16];
   }
+
+  /**
+   * Gets the luminosity of a hex string color.
+   * @param {String} hexStr A string in the format "#ff00ff".
+   */
+  var getLuminosity = function getLuminosityFromHex(hexStr) {
+    //https://stackoverflow.com/questions/12043187/how-to-check-if-hex-color-is-too-black
+    const c = hexStr.substring(1); // strip #
+    const rgb = parseInt(c, 16); // convert rrggbb to decimal
+    const r = (rgb >> 16) & 0xff; // extract red
+    const g = (rgb >> 8) & 0xff; // extract green
+    const b = (rgb >> 0) & 0xff; // extract blue
+
+    const luma = (0.2126 * r) + (0.7152 * g) + (0.0722 * b); // per ITU-R BT.709
+
+    return luma;
+  };
+
+  // change all dark highlighters to have white font
+  $(document).on('ready', function() {
+    $('.highlight-button').each(function () {
+      const $highlightButton = $(this);
+      const RGBcolor = $highlightButton.css('backgroundColor');
+      const hexColor = rgb2hex(RGBcolor);
+      console.log('here1');
+      if (getLuminosity(hexColor) < LUMINOSITY_BLACK_THRESHOLD) {
+        console.log('here2');
+        $highlightButton.css('color', WHITE_TEXT_HEX_COLOR);
+      }
+    })
+  });
 
   /**
    * Displays the alert error message when the server side highlightSelection fails.
