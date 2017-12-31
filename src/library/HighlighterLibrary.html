@@ -58,7 +58,7 @@
         .highlighters-item {
             margin: 3px;
             width: fit-content;
-            padding: 0.4em;
+            padding: 0.2em;
             padding-left: 1.5em;
             font-size: 1.4em;
             background-color: #F5F5F5;
@@ -72,7 +72,7 @@
             margin-bottom: 10px;
         }
 
-        .set-remove, .highlighter-remove, .set-hide, .highlighter-add {
+        .set-remove, .highlighter-remove, .set-hide, .highlighter-add, .set-copy {
             height: 27px;
             width: 27px;
             min-width: 27px;
@@ -87,6 +87,14 @@
 
         .set-remove-icon {
             font-size: 22px;
+        }
+
+        .set-copy-icon {
+            font-size: 20px;
+        }
+
+        .set-name, .highlighter-label, .set-remove, .highlighter-remove, .highlighter-add, .set-hide, .highlighter-color, .set-copy {
+            vertical-align: middle;
         }
     </style>
 
@@ -286,12 +294,19 @@
 
         const highlighterAddButton = document.createElement('button');
         highlighterAddButton.className = 'highlighter-add';
-        highlighterAddButton.type = 'button';
         highlighterAddButton.style.display = displayCSS;
         const highlighterAddIcon = document.createElement('i');
         highlighterAddIcon.className = 'material-icons';
         highlighterAddIcon.innerHTML = 'add';
         highlighterAddButton.appendChild(highlighterAddIcon);
+
+        const setCopyButton = document.createElement('button');
+        setCopyButton.className = 'set-copy';
+        setCopyButton.style.display = displayCSS;
+        const setCopyIcon = document.createElement('i');
+        setCopyIcon.className = 'material-icons set-copy-icon';
+        setCopyIcon.innerHTML = 'content_copy';
+        setCopyButton.appendChild(setCopyIcon);
 
         const setRemoveInput = document.createElement('button');
         setRemoveInput.style.display = displayCSS;
@@ -323,6 +338,8 @@
         highlighterSetLi.appendChild(setHideInput);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
         highlighterSetLi.appendChild(highlighterAddButton);
+        highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
+        highlighterSetLi.appendChild(setCopyButton);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
         highlighterSetLi.appendChild(setRemoveInput);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
@@ -415,6 +432,22 @@
         }
 
         // Prevent propogation to parent.
+        return false;
+    });
+
+    /**
+     * Copy a set.
+     */
+    $(document).on('click', '.set-copy', function () {
+        const $highlighterSet = $(this).parent();
+        const $copiedHSet = $($highlighterSet[0].cloneNode(true));
+
+        denoteCurrentSet($copiedHSet);
+        $('#highlighter-sets').append($copiedHSet);
+
+        createDraggable();
+        scrollToHighlighterSet($copiedHSet);
+
         return false;
     });
 
