@@ -126,7 +126,7 @@
             <input type="button" value="New Set" id="set-add" class="share" />
             <span style="float: right;">
                 <span style="font-style: italic;">Currently selected: </span>
-                ' <span id="selected-set-name">temp_set_name</span> '
+                <b>' <span id="selected-set-name"></span> '</b>
             </span>
         </div>
         
@@ -247,6 +247,10 @@
         $('.highlighter-sets-item').css('background-color', LIGHT_GREY_HEX);
         $selectedSet.data(CURRENT_SET_DATA_KEY, true);
         $selectedSet.css('background-color', DARK_GREY_HEX);
+
+        // update the current set name display
+        const currentSetName = $selectedSet.children('.set-name').val();
+        $('#selected-set-name').html(currentSetName);
     }
 
     $(document).on('click', '.highlighter-sets-item', function () {
