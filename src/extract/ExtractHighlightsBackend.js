@@ -8,6 +8,8 @@ var ORDER_CHRONO = 'CHRONO';
 var NEW_DOC = 'NEW';
 var CURRENT_DOC = 'CURRENT';
 
+var LUMINOSITY_WHITE_THRESHOLD = 230;
+
 var getActiveDocument = function () {
   return DocumentApp.getActiveDocument();
   // return DocumentApp.openByUrl('https://docs.google.com/document/d/1S-QoWUdC07lOn6iijAhEOFNaFFWK6PHpQ_2AE6XfXe0/edit');
@@ -118,6 +120,23 @@ var getCurrentSetMap = function getCurrentSetMapFromColorToLabel(currHSet) {
 };
 
 /**
+ * Gets the luminosity of a hex string color.
+ * @param {String} hexStr A string in the format "#ff00ff".
+ */
+var getLuminosity = function getLuminosityFromHex(hexStr) {
+  //https://stackoverflow.com/questions/12043187/how-to-check-if-hex-color-is-too-black
+  const c = hexStr.substring(1); // strip #
+  const rgb = parseInt(c, 16); // convert rrggbb to decimal
+  const r = (rgb >> 16) & 0xff; // extract red
+  const g = (rgb >> 8) & 0xff; // extract green
+  const b = (rgb >> 0) & 0xff; // extract blue
+
+  const luma = (0.2126 * r) + (0.7152 * g) + (0.0722 * b); // per ITU-R BT.709
+
+  return luma;
+};
+
+/**
  * Appends the extracted text in the order they appeared in the original document.
  * @param {List[ExtractedText]} extractedTexts
  * @param {Document} doc Google App Script Document object
@@ -132,34 +151,38 @@ var appendExtractedTextChrono = function appendExtractedTextToDocByChronological
 
   extractedTexts.forEach(function (extractedText) {
     var color = extractedText.color;
-    var textStr = extractedText.text;
 
-    var tableRow;
-    var tableCell1;
-    var tableCell2;
-    // if adjacent extractedText have the same color, put them in the same row.
-    if (color === table.getRow(table.getNumRows() - 1).getCell(0).getBackgroundColor()) {
-      tableRow = table.getRow(table.getNumRows() - 1);
-      tableCell1 = tableRow.getCell(0);
-      tableCell2 = tableRow.getCell(1);
-      tableCell2.appendParagraph(textStr);
-    } else {
-      tableRow = table.appendTableRow();
-      tableCell1 = tableRow.appendTableCell();
-      // set the first column to be the label if there is a match
-      if (color in colorToLabel) {
-        tableCell1.setText(colorToLabel[color]);
-        tableCell1.setBold(true);
-        tableCell1.setWidth(TABLE_LABEL_CELL_WIDTH);
+    // ignore the extracted text if its color is too white
+    if (getLuminosity(color) < LUMINOSITY_WHITE_THRESHOLD) {
+      var textStr = extractedText.text;
+
+      var tableRow;
+      var tableCell1;
+      var tableCell2;
+      // if adjacent extractedText have the same color, put them in the same row.
+      if (color === table.getRow(table.getNumRows() - 1).getCell(0).getBackgroundColor()) {
+        tableRow = table.getRow(table.getNumRows() - 1);
+        tableCell1 = tableRow.getCell(0);
+        tableCell2 = tableRow.getCell(1);
+        tableCell2.appendParagraph(textStr);
+      } else {
+        tableRow = table.appendTableRow();
+        tableCell1 = tableRow.appendTableCell();
+        // set the first column to be the label if there is a match
+        if (color in colorToLabel) {
+          tableCell1.setText(colorToLabel[color]);
+          tableCell1.setBold(true);
+          tableCell1.setWidth(TABLE_LABEL_CELL_WIDTH);
+        }
+        tableCell2 = tableRow.appendTableCell();
+        tableCell2.setText(textStr);
+        tableCell2.setBold(false);
       }
-      tableCell2 = tableRow.appendTableCell();
-      tableCell2.setText(textStr);
-      tableCell2.setBold(false);
-    }
 
-    // style the table cells with the correct color
-    tableCell1.setBackgroundColor(color);
-    tableCell2.editAsText().setBackgroundColor(color);
+      // style the table cells with the correct color
+      tableCell1.setBackgroundColor(color);
+      tableCell2.editAsText().setBackgroundColor(color);
+    }
   });
 
   // set the first header row of the table to be bold (doing this after so it doesn't transfer)
