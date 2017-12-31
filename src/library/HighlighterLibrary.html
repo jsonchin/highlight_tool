@@ -483,7 +483,9 @@
 
         createDraggable();
 
-        scrollToHighlighterSet($currentSet);
+        if ($currentSet !== undefined) {
+            scrollToHighlighterSet($currentSet);
+        }
     }).loadHighlighterLibraryJSON();
 </script>
 
