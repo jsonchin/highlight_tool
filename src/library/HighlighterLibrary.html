@@ -5,8 +5,10 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <style>
-        input[type=button] {
+        input[type=button], button {
             cursor: pointer;
         }
 
@@ -15,6 +17,8 @@
             min-height: 100%;
             display: flex;
             flex-direction: column;
+            line-height: 50%;
+            vertical-align: middle;
         }
 
         #highlighter-library {
@@ -63,6 +67,27 @@
         .draggable-highlighter-handle {
             margin-left: -1.3em;
         }
+
+        #bottom-row1 {
+            margin-bottom: 10px;
+        }
+
+        .set-remove, .highlighter-remove, .set-hide, .highlighter-add {
+            height: 27px;
+            width: 27px;
+            min-width: 27px;
+            text-align: center;
+            padding: 0;
+            line-height: 50%;
+        }
+
+        .set-remove {
+            float: right;
+        }
+
+        .set-remove-icon {
+            font-size: 22px;
+        }
     </style>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -94,12 +119,21 @@
         <ul id="highlighter-sets">
         
         </ul>
-        <input type="button" value="New Set" id="set-add" class="share" />
     </div>
 
     <div id="bottom">
-        <input type="button" value="Save" id="save-library-button" class="action" />
-        <input type="button" value="Cancel" id="close-library-button" />
+        <div id="bottom-row1">
+            <input type="button" value="New Set" id="set-add" class="share" />
+            <span style="float: right;">
+                <span style="font-style: italic;">Currently selected: </span>
+                ' <span id="selected-set-name">temp_set_name</span> '
+            </span>
+        </div>
+        
+        <div id="bottom-row2">
+            <input type="button" value="Save" id="save-library-button" class="action" />
+            <input type="button" value="Cancel" id="close-library-button" />
+        </div>
     </div>
 
 </body>
@@ -114,8 +148,8 @@
     var HIGHLIGHTER_SETS_KEY = 'highlighterSets';
 
     const CURRENT_SET_DATA_KEY = 'current-set';
-    const MINIMIZE_SET_VAL = '...';
-    const SHOW_SET_VAL = '^';
+    const MINIMIZE_SET_VAL = 'expand_less';
+    const SHOW_SET_VAL = 'expand_more';
     const DISPLAY_NONE = 'none';
     const DISPLAY_SHOW = ''; // sets the display back to normal
 
@@ -237,18 +271,31 @@
         setNameInput.placeholder = 'Set name';
         setNameInput.value = setName;
 
-        const setHideInput = document.createElement('input');
-        setHideInput.type = 'button';
+        const setHideInput = document.createElement('button');
         setHideInput.className = 'set-hide';
-        setHideInput.value = isSetMinimized ? SHOW_SET_VAL : MINIMIZE_SET_VAL;
+        const setHideInputIcon = document.createElement('i');
+        setHideInputIcon.className = 'material-icons';
+        setHideInputIcon.innerHTML = isSetMinimized ? SHOW_SET_VAL : MINIMIZE_SET_VAL;
+        setHideInput.appendChild(setHideInputIcon);
 
         const displayCSS = isSetMinimized ? DISPLAY_NONE : DISPLAY_SHOW;
 
-        const setRemoveInput = document.createElement('input');
-        setRemoveInput.type = 'button';
-        setRemoveInput.className = 'set-remove';
-        setRemoveInput.value = '-';
+        const highlighterAddButton = document.createElement('button');
+        highlighterAddButton.className = 'highlighter-add';
+        highlighterAddButton.type = 'button';
+        highlighterAddButton.style.display = displayCSS;
+        const highlighterAddIcon = document.createElement('i');
+        highlighterAddIcon.className = 'material-icons';
+        highlighterAddIcon.innerHTML = 'add';
+        highlighterAddButton.appendChild(highlighterAddIcon);
+
+        const setRemoveInput = document.createElement('button');
         setRemoveInput.style.display = displayCSS;
+        setRemoveInput.className = 'set-remove create';
+        const setRemoveInputIcon = document.createElement('i');
+        setRemoveInputIcon.className = 'material-icons set-remove-icon';
+        setRemoveInputIcon.innerHTML = 'delete_forever';
+        setRemoveInput.appendChild(setRemoveInputIcon);
 
         const highlightersUl = document.createElement('ul');
         highlightersUl.className = 'highlighters';
@@ -265,23 +312,17 @@
             });
         }
 
-        const highlighterAddButton = document.createElement('input');
-        highlighterAddButton.className = 'highlighter-add';
-        highlighterAddButton.type = 'button';
-        highlighterAddButton.value = '+';
-        highlighterAddButton.style.display = displayCSS;
-
         highlighterSetLi.appendChild(span);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
         highlighterSetLi.appendChild(setNameInput);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
         highlighterSetLi.appendChild(setHideInput);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
+        highlighterSetLi.appendChild(highlighterAddButton);
+        highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
         highlighterSetLi.appendChild(setRemoveInput);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
         highlighterSetLi.appendChild(highlightersUl);
-        highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
-        highlighterSetLi.appendChild(highlighterAddButton);
 
         return highlighterSetLi;
     };
@@ -304,10 +345,15 @@
         inputLabel.placeholder = 'Label';
         inputLabel.value = label;
 
-        const inputRemove = document.createElement('input');
+        const inputRemove = document.createElement('button');
         inputRemove.className = 'highlighter-remove';
-        inputRemove.type = 'button';
-        inputRemove.value = '-';
+        const inputRemoveIcon = document.createElement('i');
+        inputRemoveIcon.className = 'material-icons';
+        inputRemoveIcon.innerHTML = 'remove';
+        inputRemove.appendChild(inputRemoveIcon);
+        inputRemove.style.height = '27px';
+        inputRemove.style.width = '27px';
+        inputRemove.style['min-width'] = '27px';
 
         li.appendChild(span);
         li.appendChild(document.createTextNode('\u00A0'));
@@ -386,12 +432,12 @@
             $highlighters.css('display', DISPLAY_SHOW);
             $addHighlighterButton.css('display', DISPLAY_SHOW);
             $removeSetButton.css('display', DISPLAY_SHOW);
-            $(this).val(MINIMIZE_SET_VAL);
+            $(this).children('i').html(MINIMIZE_SET_VAL);
         } else {
             $highlighters.css('display', DISPLAY_NONE);
             $addHighlighterButton.css('display', DISPLAY_NONE);
             $removeSetButton.css('display', DISPLAY_NONE);
-            $(this).val(SHOW_SET_VAL);
+            $(this).children('i').html(SHOW_SET_VAL);
         }
     });
 
