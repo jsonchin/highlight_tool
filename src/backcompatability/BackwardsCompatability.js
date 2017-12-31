@@ -1,3 +1,24 @@
+var VERSION = '3.0.0';
+var VERSION_KEY = 'version';
+
+/**
+ * Checks version and performs any actions that need to be done
+ * across version changes.
+ */
+function checkVersion() {
+  const userProperties = PropertiesService.getUserProperties();
+  const appVersion = userProperties.getProperty(VERSION_KEY);
+  // if version is not up to date, perform some sort of action
+  if (appVersion === null || appVersion !== VERSION) {
+    // in this case, if it's not 3.0.0 or greater, translate the library
+    userProperties.setProperty(VERSION_KEY, VERSION);
+
+    const hLibraryJSON = parsev2Library();
+    const hLibrary = makeHighlighterLibrary(hLibraryJSON);
+    hLibrary.save();
+  }
+}
+
 /**
  * Parses the previous version of the tool's storage system and
  * returns HighlighterLibraryJSON format.
@@ -11,25 +32,33 @@ function parsev2Library() {
   const isMinimized = false;
   for (var i = 0; i < numSets; i += 1) {
     var setStr = 'set' + i;
-    var numHighlighters = parseInt(userProps[setStr + 'N']);
+    try {
+      var numHighlighters = parseInt(userProps[setStr + 'N']);
 
-    var highlighters = [];
-    for (var j = 0; j < numHighlighters; j += 1) {
-      var label = userProps[setStr + 'label' + j];
-      var color = userProps[setStr + 'color' + j];
-      var highlighter = {};
-      highlighter[LABEL_KEY] = label;
-      highlighter[COLOR_KEY] = color;
-      highlighters.push(highlighter);
+      var highlighters = [];
+      for (var j = 0; j < numHighlighters; j += 1) {
+        try {
+          var label = userProps[setStr + 'label' + j];
+          var color = userProps[setStr + 'color' + j];
+          var highlighter = {};
+          highlighter[LABEL_KEY] = label;
+          highlighter[COLOR_KEY] = color;
+          highlighters.push(highlighter);
+        } catch (error) {
+          Logger.log(error);
+        }
+      }
+
+      var setName = userProps[setStr];
+      var highlighterSet = {};
+      highlighterSet[SET_NAME_KEY] = setName;
+      highlighterSet[IS_SET_MINIMIZED_KEY] = isMinimized;
+      highlighterSet[HIGHLIGHTERS_KEY] = highlighters;
+
+      highlighterSets.push(highlighterSet);
+    } catch (error) {
+      Logger.log(error);
     }
-
-    var setName = userProps[setStr];
-    var highlighterSet = {};
-    highlighterSet[SET_NAME_KEY] = setName;
-    highlighterSet[IS_SET_MINIMIZED_KEY] = isMinimized;
-    highlighterSet[HIGHLIGHTERS_KEY] = highlighters;
-
-    highlighterSets.push(highlighterSet);
   }
 
   const hLibraryJSON = {};
