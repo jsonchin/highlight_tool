@@ -1,10 +1,21 @@
 function showSidebar() {
   const sidebarTemplate = HtmlService.createTemplateFromFile('Sidebar');
 
-  const hLib = loadHighlighterLibrary();
-  const currentHSet = hLib.highlighterSets[hLib.currentSetIndex];
-  const hSetJSON = currentHSet.toJSON();
-  sidebarTemplate.hSet = hSetJSON;
+  const currentHSet = loadCurrentHighlighterSet();
+  if (currentHSet === null) {
+    const DEFAULT_HIGHLIGHTER_SET = {};
+    DEFAULT_HIGHLIGHTER_SET[SET_NAME_KEY] = 'Example Set Name';
+    DEFAULT_HIGHLIGHTER_SET[IS_SET_MINIMIZED_KEY] = false;
+    const DEFAULT_HIGHLIGHTERS = [];
+    const DEFAULT_HIGHLIGHTER = {};
+    DEFAULT_HIGHLIGHTER[LABEL_KEY] = 'Example label';
+    DEFAULT_HIGHLIGHTER[COLOR_KEY] = '#42f44b';
+    DEFAULT_HIGHLIGHTERS.push(DEFAULT_HIGHLIGHTER);
+    DEFAULT_HIGHLIGHTER_SET[HIGHLIGHTERS_KEY] = DEFAULT_HIGHLIGHTERS;
+    sidebarTemplate.hSet = DEFAULT_HIGHLIGHTER_SET;
+  } else {
+    sidebarTemplate.hSet = currentHSet.toJSON();
+  }
 
   const sidebar = sidebarTemplate.evaluate();
   sidebar.setTitle('Highlight Tool');
