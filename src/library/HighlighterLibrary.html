@@ -370,6 +370,12 @@
      * Event listeners for adding and removing sets/highlighters.
      */
 
+     function scrollToHighlighterSet($set) {
+         $('#highlighter-library').animate({
+             scrollTop: $set.offset().top
+         });
+     }
+
     /**
      * Add a set.
      */
@@ -377,6 +383,7 @@
         const highlighterSetLi = createSet('', [], false);
         $('#highlighter-sets').append(highlighterSetLi);
         createDraggable();
+        scrollToHighlighterSet($(highlighterSetLi));
     });
 
     /**
@@ -448,6 +455,7 @@
         const currentSetIndex = hLibrary.currentSetIndex;
         const highlighterSets = hLibrary.highlighterSets;
 
+        var $currentSet;
         for (var i = 0; i < highlighterSets.length; i++) {
             const highlighterSet = highlighterSets[i];
             const setName = highlighterSet.setName;
@@ -458,11 +466,14 @@
             $('#highlighter-sets').append(setLi);
             
             if (i == currentSetIndex) {
-                denoteCurrentSet($(setLi));
+                $currentSet = $(setLi);
+                denoteCurrentSet($currentSet);
             }
         }
 
         createDraggable();
+
+        scrollToHighlighterSet($currentSet);
     }).loadHighlighterLibraryJSON();
 </script>
 
