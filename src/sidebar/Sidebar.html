@@ -160,9 +160,7 @@
       const $highlightButton = $(this);
       const RGBcolor = $highlightButton.css('backgroundColor');
       const hexColor = rgb2hex(RGBcolor);
-      console.log('here1');
       if (getLuminosity(hexColor) < LUMINOSITY_BLACK_THRESHOLD) {
-        console.log('here2');
         $highlightButton.css('color', WHITE_TEXT_HEX_COLOR);
       }
     })
