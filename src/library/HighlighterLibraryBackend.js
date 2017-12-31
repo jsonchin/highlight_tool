@@ -84,7 +84,7 @@ function showHighlighterLibraryDialog() {
   dialogTemplate.hLibrary = hLibraryJSON;
 
   const dialog = dialogTemplate.evaluate();
-  dialog.setWidth(800)
+  dialog.setWidth(450)
     .setHeight(600);
 
   DocumentApp.getUi()

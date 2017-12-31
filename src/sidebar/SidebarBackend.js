@@ -29,3 +29,8 @@ function highlightSelection(color) {
     }
   });
 }
+
+function showRequireSelectionError() {
+  const ui = DocumentApp.getUi();
+  ui.alert('No text selected', 'Please try again and select some text before clicking a highlighter.', ui.ButtonSet.OK);
+}
