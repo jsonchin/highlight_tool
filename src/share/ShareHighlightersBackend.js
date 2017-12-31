@@ -15,6 +15,11 @@ SHARE_BLOCK_ATTRIBUTES[DocumentApp.Attribute.FONT_SIZE] = 9;
 SHARE_BLOCK_ATTRIBUTES[DocumentApp.Attribute.FONT_FAMILY] = 'Arial';
 SHARE_BLOCK_ATTRIBUTES[DocumentApp.Attribute.UNDERLINE] = false;
 
+var SHARE_INSTRUCTIONS1 = 'Instructions:';
+var SHARE_INSTRUCTIONS2 = 'Go to "Add-ons" -> "Highlight Tool" -> "Import Highlighters" to add these highlighters to your library! Then go to "Highlighter Library" after starting the add-on to select this set as your current set.';
+var SHARE_INSTRUCTIONS3 = 'Share this document with other users if you want them to import and use your set of highlighters.Alternatively, copy and paste the block of text between and including the *** s into another document and follow the same instructions of importing.';
+var SHARE_INSTRUCTIONS = [SHARE_INSTRUCTIONS1, SHARE_INSTRUCTIONS2, SHARE_INSTRUCTIONS3];
+
 var InvalidShareBlockError = function (msg) {
   this.name = 'InvalidShareBlockError';
   this.message = msg;
@@ -24,15 +29,25 @@ var InvalidShareBlockError = function (msg) {
  * Share Highlighter Sets
  */
 
+function showShareHighlightersDialogCurrentDoc() {
+  showShareHighlightersDialog(CURRENT_DOC);
+}
+
+function showShareHighlightersDialogNewDoc() {
+  showShareHighlightersDialog(NEW_DOC);
+}
+
 /**
  * Shows a dialog asking which highlighter sets in the library to share.
+ * @param {String} destination Either CURRENT_DOC or NEW_DOC.
  */
-function showShareHighlightersDialog() {
+function showShareHighlightersDialog(destination) {
   const dialogTemplate = HtmlService.createTemplateFromFile('ShareHighlighters');
 
   const hLibrary = loadHighlighterLibrary();
   const hLibraryJSON = hLibrary.toJSON();
   dialogTemplate.hLibrary = hLibraryJSON;
+  dialogTemplate.destination = destination;
 
   const dialog = dialogTemplate.evaluate();
   dialog.setWidth(500)
@@ -68,14 +83,28 @@ function appendHighlighterSetBlock(hSet, body) {
 /**
  * Appends the chosen sets as blocks in the active document.
  * @param {List[HighlighterSetJSON]} chosenSets 
+ * @param {String} destination Either CURRENT_DOC or NEW_DOC.
  */
-function shareChosenSets(chosenSets) {
+function shareChosenSets(chosenSets, destination) {
   if (chosenSets.length === 0) {
     const ui = DocumentApp.getUi();
     ui.alert('No highlighter sets chosen', 'Please try again and select at least one highlighter set.', ui.ButtonSet.OK);
   } else {
-    const doc = DocumentApp.getActiveDocument();
+    var doc;
+    if (destination === CURRENT_DOC) {
+      doc = DocumentApp.getActiveDocument();
+    } else {
+      doc = DocumentApp.create('Exported Highlighter Sets');
+    }
     const body = doc.getBody();
+
+    if (destination === NEW_DOC) {
+      SHARE_INSTRUCTIONS.forEach(function (instructionLine) {
+        body.appendParagraph(instructionLine)
+          .setAttributes(SHARE_BLOCK_ATTRIBUTES)
+          .setAlignment(DocumentApp.HorizontalAlignment.CENTER);
+      });
+    }
 
     const spacingParagraph = body.appendParagraph('\n\n');
     spacingParagraph.setAttributes(SHARE_BLOCK_ATTRIBUTES);
@@ -83,7 +112,26 @@ function shareChosenSets(chosenSets) {
     chosenSets.forEach(function (hSet) {
       appendHighlighterSetBlock(hSet, body);
     });
+
+    return doc.getUrl();
   }
+}
+
+function showExportLinkDialog(url) {
+  const dialogTemplate = HtmlService.createTemplateFromFile('ShareHighlightersComplete');
+  dialogTemplate.link = url;
+
+  const dialog = dialogTemplate.evaluate();
+  dialog.setWidth(300)
+    .setHeight(80);
+
+  DocumentApp.getUi()
+    .showModalDialog(dialog, 'Highlighter Sets Exported');
+}
+
+function showExportCompleteDialog() {
+  const ui = DocumentApp.getUi();
+  ui.alert('Highlighter Sets Exported', 'The chosen highlighter sets have been appended to the end of this document.', ui.ButtonSet.OK);
 }
 
 /**

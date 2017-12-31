@@ -88,6 +88,10 @@
 
   const NO_SET_NAME_GIVEN = '(No set name)';
 
+  var NEW_DOC = 'NEW';
+  var CURRENT_DOC = 'CURRENT';
+  const DESTINATION = '<?= destination ?>';
+
   // https://stackoverflow.com/questions/1740700/how-to-get-hex-color-value-rather-than-rgb-value
   var HEX_DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 
@@ -109,10 +113,14 @@
   function shareChosenSets() {
     const chosenSets = serializeChosenSets();
     google.script.run
-      .withSuccessHandler(function () {
-        google.script.host.close();
+      .withSuccessHandler(function (url) {
+        if (DESTINATION === NEW_DOC) {
+          google.script.run.showExportLinkDialog(url);
+        } else {
+          google.script.run.showExportCompleteDialog();
+        }
       })
-      .shareChosenSets(chosenSets);
+      .shareChosenSets(chosenSets, DESTINATION);
   }
 
   function serializeChosenSets() {
