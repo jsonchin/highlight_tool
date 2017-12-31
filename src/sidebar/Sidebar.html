@@ -144,7 +144,7 @@
   /**
    * Calls the server to highlight the selection with the context's background color.
    */
-  function highlightSelection(event) {
+  function highlightSelection() {
     const RGBcolor = $(this).css('backgroundColor');
     const hexColor = rgb2hex(RGBcolor);
     google.script.run.withFailureHandler(highlightFailure).highlightSelection(hexColor);
@@ -154,6 +154,19 @@
    * On click, highlight the selection with the button's background color.
    */
   $('.highlight-button').on('click', highlightSelection);
+
+
+  /**
+   * Calls the server to unhighlight the selection.
+   */
+  function unhighlightSelection() {
+    google.script.run.withFailureHandler(highlightFailure).unhighlightSelection();
+  }
+
+  /**
+   * On click, highlight the selection with the button's background color.
+   */
+  $('#un-highlight').on('click', unhighlightSelection);
 
 
   /**
