@@ -1,4 +1,6 @@
 function showSidebar() {
+  checkVersion();
+
   const sidebarTemplate = HtmlService.createTemplateFromFile('Sidebar');
 
   const currentHSet = loadCurrentHighlighterSet();
