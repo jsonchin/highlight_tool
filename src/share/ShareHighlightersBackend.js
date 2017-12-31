@@ -273,8 +273,9 @@ function groupHighlighterSetHighlighters(hSet) {
 }
 
 /**
- * Defines two HighlighterSets to be equal if they have the same Highlighters in any order.
- * HighlighterSet.setName and HighlighterSet.isMinimized do not affect equality.
+ * Defines two HighlighterSets to be equal if they have the same Highlighters in any order
+ * and same setName.
+ * HighlighterSet.isMinimized do not affect equality.
  * @param {HighlighterSet} hSet1 
  * @param {HighlighterSet} hSet2 
  */
@@ -285,7 +286,7 @@ function isHighlighterSetsEqual(hSet1, hSet2) {
   const colors1 = Object.keys(highlighterGroup1);
   const colors2 = Object.keys(highlighterGroup2);
 
-  if (colors1.length !== colors2.length) {
+  if (colors1.length !== colors2.length || hSet1.setName !== hSet2.setName) {
     return false;
   }
 
