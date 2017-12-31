@@ -79,10 +79,6 @@ function logLibrary() {
 function showHighlighterLibraryDialog() {
   const dialogTemplate = HtmlService.createTemplateFromFile('HighlighterLibrary');
 
-  const hLibrary = loadHighlighterLibrary();
-  const hLibraryJSON = hLibrary.toJSON();
-  dialogTemplate.hLibrary = hLibraryJSON;
-
   const dialog = dialogTemplate.evaluate();
   dialog.setWidth(450)
     .setHeight(600);
