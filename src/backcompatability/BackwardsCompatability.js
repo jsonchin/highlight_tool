@@ -38,8 +38,8 @@ function parsev2Library() {
       var highlighters = [];
       for (var j = 0; j < numHighlighters; j += 1) {
         try {
-          var label = userProps[setStr + 'label' + j];
-          var color = userProps[setStr + 'color' + j];
+          var label = userProps[setStr + 'label' + j].trim();
+          var color = userProps[setStr + 'color' + j].trim();
           var highlighter = {};
           highlighter[LABEL_KEY] = label;
           highlighter[COLOR_KEY] = color;
@@ -49,7 +49,7 @@ function parsev2Library() {
         }
       }
 
-      var setName = userProps[setStr];
+      var setName = userProps[setStr].trim();
       var highlighterSet = {};
       highlighterSet[SET_NAME_KEY] = setName;
       highlighterSet[IS_SET_MINIMIZED_KEY] = isMinimized;
