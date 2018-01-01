@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+
+    <style>
+        body {
+            color: #606060;
+        }
+
+        #banner-container {
+            margin-left: 0;
+            margin-right: 0;
+            padding-left: 0;
+            padding-right: 0;
+            background-image: linear-gradient( 135deg, #3C8CE7 10%, #00EAFF 100%);
+            height: 60vh;
+            text-align: center;
+        }
+
+        #banner-container-inner {
+            width: 40%;
+        }
+
+        #try-now-button {
+            background-color: #FFC200;
+            border-radius: 22.5px;
+            width: 200px;
+            margin: 0 auto;
+        }
+
+        #banner {
+            padding: 0;
+            margin: 0;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            background-repeat: no-repeat;
+            width: 100vw;
+        }
+
+        .highlight-tool-txt {
+            color: #FFDD13;
+            font-size: 10em;
+            font-weight: 600;
+        }
+
+        #perk-container {
+            height: 40vh;
+            padding: 2vh;
+            text-align: center;
+        }
+
+        .perk-icon {
+            font-size: 7em;
+            margin-bottom: 20px;
+        }
+
+        .perk-description {
+            font-size: 90%;
+        }
+
+        #separator-description {
+            width: 100%;
+            margin-bottom: 50px;
+            padding: 50px 0;
+            background-color: #FF7600;
+        }
+
+        #separator-description-inner {
+            color: #FFFFFF;
+            width: 40%;
+            height: 100%;
+            text-align: center;
+        }
+
+        .number-square-box {
+            background: grey;
+            color: white;
+            font-size: 300%;
+            font-weight: bold;
+            text-align: center;
+            vertical-align: middle;
+            height: 100%;
+            width: 100%;
+        }
+
+        input[type=checkbox] {
+            display: none;
+        }
+
+        .usecase-img-container .usecase-img {
+            transition: transform 0.25s ease;
+            cursor: zoom-in;
+        }
+
+        input[type=checkbox]:checked ~ label > img {
+            transform: scale(2);
+            cursor: zoom-out;
+            box-shadow: 10px 10px 8px #888888;
+            z-index: 100;
+        }
+
+        .usecase-img {
+            max-width:100%;
+            max-height:100%;
+        }
+        
+        .usecase-text-col {
+            margin-top: 20px;
+        }
+
+        .usercase-row-header {
+            margin-bottom: 20px;
+        }
+
+        .usecase-row {
+            margin-bottom: 50px;
+        }
+
+
+        #separator-banner {
+            width: 100%;
+            margin-bottom: 50px;
+            padding: 50px 0;
+            background-color: #3C8CE7;
+        }
+
+        #separator-banner-inner {
+            color: #FFFFFF;
+            width: 40%;
+            height: 100%;
+            text-align: center;
+        }
+
+        #feature-tabs {
+            display: block;
+            text-align:center;
+        }
+
+        #feature-tabs > li {
+            float:none;
+            display:inline-block;
+        }
+
+        #contact-info {
+            background-color: #FFDD13;
+            padding: 20px;
+            margin: 0;
+        }
+
+        #contact-info > span {
+        }
+    </style>
+    <title>Highlight Tool</title>
+</head>
+
+<body>
+    <div class="jumbotron jumbotron-fluid" id="banner-container">
+        <!-- <img id="banner" src="images/highlightoolbanner.png"> -->
+        <div class="container" id="banner-container-inner">
+            <h1 class="display-3 highlight-tool-txt">Highlight</h1>
+            <h1 class="display-3 highlight-tool-txt" style="float: right;">Tool</h1>
+        </div>        
+    </div>
+
+    <div class="container" id="perk-container">
+        <div class="row">
+            <div class="col-sm">
+                <i class="material-icons perk-icon">build</i>
+
+                <h3>Custom Highlighters</h3>
+
+                <p class="perk-description">
+                    Never forget what the color of the highlighted text means by creating custom sets of highlighters to use across multiple Google Documents. Create different sets of highlighters for different tasks and use them whenever you need them.
+                </p>
+            </div>
+            <div class="col-sm">
+                <i class="material-icons perk-icon">work</i>
+                
+                <h3>Organize and Analyze</h3>
+                
+                <p class="perk-description">
+                     Understand what your highlighted text means more efficiently by extracting highlighted text from Google Documents and grouping them by their color or organizing them by their original order. 
+                </p>
+            </div>
+            <div class="col-sm">
+                <i class="material-icons perk-icon">compare_arrows</i>
+
+                <h3>Share and Collaborate</h3>
+                
+                <p class="perk-description">
+                    Work with others using the same set of highlighters (colors and labels) on any Google Document by sharing your highlighter sets with other users of this add-on. Communicate with your labels and colors through your highlighters.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="separator-description">
+        <div id="separator-description-inner" class="container">
+            <h3>What's Highlight Tool?</h3>
+            <p>
+                Highlight Tool is a Google Docs Add-on that enables its users to effectively highlight their Google Docs, extract highlighted
+                text, and share and collaborate with other users through sharing their highlighter sets.
+            </p>
+            <p>
+                Highlight Tool is made for students and educators at its very core. It started out as a high school Computer Science club project for a teacher to help her students organize and highlight their Google Docs. Since then, it has evolved to support the needs of many other educators through their feedback and feature requests.
+            </p>
+            <button id="try-now-button" type="button" class="btn btn-neutral btn-block btn-fill btn-round">Try it now!</button>
+        </div>
+    </div>
+
+    <div id="use-cases">
+        <div class="container">
+            <h1 class="display-3" style="text-align:center; margin-bottom:20px;">Use cases</h1>
+
+            <div class="row usercase-row-header">
+                <div class="col-sm-1">
+                    <div class="number-square-box">1</div>
+                </div>
+                <div class="col-sm-5">
+                    <h3>Match a highlighted text's color with its label</h3>
+                </div>
+            <div class="col-sm-6"></div>
+            </div>
+            <div class="row usecase-row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-5 usecase-text-col">
+                    <p>Never forget what the color of your highlighted text means by creating custom highlighters. Users can create a highlighters, which are color and label pairs, and store them for future use. </p>
+
+                    <p>Now it's easy to know that dark green means thesis, yellow is evidence, red is commentary, and navy blue is conclusion. The image on the right shows how easy it is to match the colors with the labels using the sidebar.</p>
+
+                    <p>Use this for <b>correcting grammar mistakes</b>, <b>identifying the structure of an essay</b>, <b>tagging important facts</b>, and <b>much more</b>.</p>
+                    
+                </div>
+                <div class="col-sm-6">
+                    <div class="usecase-img-container">
+                        <input type="checkbox" id="zoomCheck1">
+                        <label for="zoomCheck1">
+                            <img class="usecase-img" src="images/usecase1.png" style="position: relative;">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row usercase-row-header">
+                <div class="col-sm-6"></div>
+                <div class="col-sm-1">
+                    <div class="number-square-box">2</div>
+                </div>
+                <div class="col-sm-5">
+                    <h3>Extract and analyze your highlighted text</h3>
+                </div>
+            </div>
+            <div class="row usecase-row">
+                <div class="col-sm-6">
+                    <div class="usecase-img-container">
+                        <input type="checkbox" id="zoomCheck2">
+                        <label for="zoomCheck2">
+                            <img class="usecase-img" src="images/usecase1.png" style="position: relative;">
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-5 usecase-text-col">
+                    <p>Isolate the most important parts of your Google Doc by extracting its highlighted text. Users can group the highlighted text by their highlighted color or by their original order. It's a lot easier to analyze a large document in small groups at a time.</p>
+
+                    <p>Following from the previous example, now we can extract the highlighted text. If we extract it by its original order we get the structure or outline of an essay. If we extract it by color we can analyze and compare and contrast the different pieces of evidence against each other.</p>
+
+                    <p>Use this functionality for tasks from the previous part and more by <b>isolating your problem</b> and <b>analyzing pieces of it</b>.</p>
+                    
+                </div>
+            </div>
+            
+            <div class="row usercase-row-header">
+                <div class="col-sm-1">
+                    <div class="number-square-box">3</div>
+                </div>
+                <div class="col-sm-5">
+                    <h3>Collaborate with users and share highlighters</h3>
+                </div>
+                <div class="col-sm-6"></div>
+            </div>
+            <div class="row usecase-row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-5 usecase-text-col">
+                    <p>Share your custom highlighters with other users and be on the same page. Users can open the same Google Doc, open up the add-on, and instantly understand what each color means. Eliminate the confusion by this add-on's sharing capabilities.</p>
+
+                    <p>Educators and teachers can prepare a custom set of highlighters the night before and share it with their students the following day. That custom set of highlighters is up to the power of the user who knows their area the best. On the right, a grammar correction set is made and can be shared with many other users.</p>
+
+                    <p>Use this communicating with users on tasks where understanding what the color of each highlighted text means such as    <b>denoting grammar mistakes</b> and <b>identifying key topics</b>.</p>
+                    
+                </div>
+                <div class="col-sm-6">
+                    <div class="usecase-img-container">
+                        <input type="checkbox" id="zoomCheck3">
+                        <label for="zoomCheck3">
+                            <img class="usecase-img" src="images/usecase1.png" style="position: relative;">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row usercase-row-header" style="display: flex; justify-content: center; align-items: center;">
+                <div class="col-sm-1">
+                    <div class="number-square-box">4</div>
+                </div>
+                <h3>&ltInsert your use case&gt</h3>
+            </div>
+            <div class="row usecase-row" style="display: flex; justify-content: center; align-items: center;">
+                <div class="col-sm-5">
+                    <p>As a user with your own set of problems you know your own needs the best. I hope by building this add-on you'll be able to use this tool and its features that have grown from suggestions from users like yourself to help solve the task at hand.</p>
+                </div>
+            </div>
+
+
+            
+        </div>
+    </div>
+
+
+    <div id="separator-banner">
+
+    </div>
+
+    <div id="features">
+        <div class="container" id="features-container">
+            <h1 class="display-3" style="text-align:center; margin-bottom:20px;">Features</h1>
+
+            <ul class="nav nav-tabs" id="feature-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="highlight-tab" data-toggle="tab" href="#highlight" role="tab" aria-controls="highlight" aria-selected="true">Highlight</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="library-tab" data-toggle="tab" href="#library" role="tab" aria-controls="library" aria-selected="false">Library</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="extract-tab" data-toggle="tab" href="#extract" role="tab" aria-controls="extract" aria-selected="false">Extract</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="share-tab" data-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false">Share</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="feature-contents">
+                <div class="tab-pane fade show active" id="highlight" role="tabpanel" aria-labelledby="highlight-tab">
+                    Share your custom highlighters with other users and be on the same page. Users can open the same Google Doc, open up the
+                    add-on, and instantly understand what each color means. Eliminate the confusion by this add-on's sharing capabilities.
+                </div>
+                <div class="tab-pane fade" id="library" role="tabpanel" aria-labelledby="library-tab">
+                    Educators and teachers can prepare a custom set of highlighters the night before and share it with their students the following
+                    day. That custom set of highlighters is up to the power of the user who knows their area the best. On the right,
+                    a grammar correction set is made and can be shared with many other users.
+                </div>
+                <div class="tab-pane fade" id="extract" role="tabpanel" aria-labelledby="extract-tab">
+                    Use this communicating with users on tasks where understanding what the color of each highlighted text means such as denoting
+                    grammar mistakes and identifying key topics
+                </div>
+                <div class="tab-pane fade" id="share" role="tabpanel" aria-labelledby="share-tab">
+                    Use this communicating with users on tasks where understanding what the color of each highlighted text means such as denoting
+                    grammar mistakes and identifying key topics
+                </div>
+                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                    Use this communicating with users on tasks where understanding what the color of each highlighted text means such as denoting
+                    grammar mistakes and identifying key topics
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="blank" style="height: 400px;"></div>
+
+    <div id="contact-info">
+            <span>
+                Contact me at jlchin3 (@) gmail.com for any suggestions, errors, or help concerning the add-on.
+            </span>
+    </div>
+
+</body>
+
+</html>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
