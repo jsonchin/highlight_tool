@@ -243,8 +243,9 @@
     /**
      * Disable all bottom buttons when one of them is clicked.
      */
-    $('#bottom > input[type=button]').on('click', function () {
-        $('#bottom > input[type=button]').attr('disabled', 'disabled');
+    $('#bottom-row2 > input[type=button]').on('click', function () {
+        $('#bottom-row1 > input[type=button]').attr('disabled', 'disabled');
+        $('#bottom-row2 > input[type=button]').attr('disabled', 'disabled');
     });
 
     /**
