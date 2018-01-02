@@ -13,6 +13,10 @@ var assertEquals = function (predicate, truth, msg) {
   assert(predicate === truth, msg);
 };
 
+var assertNotEquals = function (predicate, truth, msg) {
+  assert(predicate !== truth, msg);
+};
+
 var LIBRARY_KEY = 'library';
 var LABEL_KEY = 'label';
 var COLOR_KEY = 'color';
