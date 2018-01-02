@@ -72,7 +72,7 @@ function loadHighlighterLibraryJSON() {
 }
 
 function logLibrary() {
-  Logger.log(loadHighlighterLibrary().toJSON());
+  Logger.log(loadHighlighterLibraryJSON());
 }
 
 
