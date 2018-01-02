@@ -212,4 +212,12 @@ function testBackwardsCompatabilityV2() {
   const convertedV3HLibraryJSON = loadHighlighterLibraryJSON();
   assertEquals(JSON.stringify(convertedV3HLibraryJSON), JSON.stringify(v3HighlighterLibraryJSON),
     'Converted v3 library is not equal.');
+
+  assertEquals(JSON.stringify(convertedV3HLibraryJSON), JSON.stringify(v3HighlighterLibraryJSON),
+    'Converted v3 library is not equal.');
+
+  // test negative
+  v3HighlighterLibraryJSON.highlighterSets[0].highlighters[0].label = 'Incorrect label!';
+  assertNotEquals(JSON.stringify(convertedV3HLibraryJSON), JSON.stringify(v3HighlighterLibraryJSON),
+    'Converted v3 library should not be equal.');
 }
