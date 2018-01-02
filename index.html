@@ -10,6 +10,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
 
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+
     <style>
         body {
             color: #606060;
@@ -21,7 +23,7 @@
             padding-left: 0;
             padding-right: 0;
             background-image: linear-gradient( 135deg, #3C8CE7 10%, #00EAFF 100%);
-            height: 60vh;
+            min-height: 60vh;
             text-align: center;
         }
 
@@ -34,6 +36,11 @@
             border-radius: 22.5px;
             width: 200px;
             margin: 0 auto;
+        }
+
+        #try-now-link:hover, #try-now-link:visited, #try-now-link:link, #try-now-link:active {
+            text-decoration: none;
+            color: #606060;
         }
 
         #banner {
@@ -54,7 +61,7 @@
         }
 
         #perk-container {
-            height: 40vh;
+            min-height: 40vh;
             padding: 2vh;
             text-align: center;
         }
@@ -89,8 +96,9 @@
             font-weight: bold;
             text-align: center;
             vertical-align: middle;
-            height: 100%;
-            width: 100%;
+            height: fit-content;
+            width: fit-content;
+            padding: 0 0.3em;
         }
 
         input[type=checkbox] {
@@ -100,6 +108,8 @@
         .usecase-img-container .usecase-img {
             transition: transform 0.25s ease;
             cursor: zoom-in;
+            z-index: 100;
+            position: relative;
         }
 
         input[type=checkbox]:checked ~ label > img {
@@ -107,6 +117,7 @@
             cursor: zoom-out;
             box-shadow: 10px 10px 8px #888888;
             z-index: 100;
+            position: relative;
         }
 
         .usecase-img {
@@ -116,6 +127,7 @@
         
         .usecase-text-col {
             margin-top: 20px;
+            position: relative;
         }
 
         .usercase-row-header {
@@ -144,11 +156,16 @@
         #feature-tabs {
             display: block;
             text-align:center;
+            margin-bottom: 40px;
         }
 
         #feature-tabs > li {
             float:none;
             display:inline-block;
+        }
+
+        .nav-link {
+            cursor: pointer;
         }
 
         #contact-info {
@@ -158,6 +175,15 @@
         }
 
         #contact-info > span {
+        }
+
+        .reveal-hidden {
+            visibility: hidden;
+        }
+
+        .feature-img {
+            max-width: 100%;
+            max-height: 100%;
         }
     </style>
     <title>Highlight Tool</title>
@@ -174,7 +200,7 @@
 
     <div class="container" id="perk-container">
         <div class="row">
-            <div class="col-sm">
+            <div class="col-sm perk-col reveal-hidden">
                 <i class="material-icons perk-icon">build</i>
 
                 <h3>Custom Highlighters</h3>
@@ -183,7 +209,7 @@
                     Never forget what the color of the highlighted text means by creating custom sets of highlighters to use across multiple Google Documents. Create different sets of highlighters for different tasks and use them whenever you need them.
                 </p>
             </div>
-            <div class="col-sm">
+            <div class="col-sm perk-col reveal-hidden">
                 <i class="material-icons perk-icon">work</i>
                 
                 <h3>Organize and Analyze</h3>
@@ -192,7 +218,7 @@
                      Understand what your highlighted text means more efficiently by extracting highlighted text from Google Documents and grouping them by their color or organizing them by their original order. 
                 </p>
             </div>
-            <div class="col-sm">
+            <div class="col-sm perk-col reveal-hidden">
                 <i class="material-icons perk-icon">compare_arrows</i>
 
                 <h3>Share and Collaborate</h3>
@@ -214,7 +240,12 @@
             <p>
                 Highlight Tool is made for students and educators at its very core. It started out as a high school Computer Science club project for a teacher to help her students organize and highlight their Google Docs. Since then, it has evolved to support the needs of many other educators through their feedback and feature requests.
             </p>
-            <button id="try-now-button" type="button" class="btn btn-neutral btn-block btn-fill btn-round">Try it now!</button>
+            <button id="try-now-button" type="button" class="btn btn-neutral btn-block btn-fill btn-round">
+                <a href="https://chrome.google.com/webstore/detail/highlight-tool/nlokifbmggdbcffkmccbobdnmfkkpape" target="_blank"
+                    id="try-now-link">
+                 Try it now!
+                </a>
+            </button>
         </div>
     </div>
 
@@ -222,12 +253,12 @@
         <div class="container">
             <h1 class="display-3" style="text-align:center; margin-bottom:20px;">Use cases</h1>
 
-            <div class="row usercase-row-header">
+            <div class="row usecase-row-header">
                 <div class="col-sm-1">
                     <div class="number-square-box">1</div>
                 </div>
                 <div class="col-sm-5">
-                    <h3>Match a highlighted text's color with its label</h3>
+                    <h3 class="usecase-title">Match a highlighted text's color with its label</h3>
                 </div>
             <div class="col-sm-6"></div>
             </div>
@@ -242,10 +273,10 @@
                     
                 </div>
                 <div class="col-sm-6">
-                    <div class="usecase-img-container">
+                    <div class="usecase-img-container reveal-hidden reveal-left">
                         <input type="checkbox" id="zoomCheck1">
                         <label for="zoomCheck1">
-                            <img class="usecase-img" src="images/usecase1.png" style="position: relative;">
+                            <img class="usecase-img" src="images/use_case1.png" style="position: relative;">
                         </label>
                     </div>
                 </div>
@@ -253,21 +284,21 @@
 
 
 
-            <div class="row usercase-row-header">
+            <div class="row usecase-row-header">
                 <div class="col-sm-6"></div>
                 <div class="col-sm-1">
                     <div class="number-square-box">2</div>
                 </div>
                 <div class="col-sm-5">
-                    <h3>Extract and analyze your highlighted text</h3>
+                    <h3 class="usecase-title">Extract and analyze your highlighted text</h3>
                 </div>
             </div>
             <div class="row usecase-row">
                 <div class="col-sm-6">
-                    <div class="usecase-img-container">
+                    <div class="usecase-img-container reveal-hidden reveal-right">
                         <input type="checkbox" id="zoomCheck2">
                         <label for="zoomCheck2">
-                            <img class="usecase-img" src="images/usecase1.png" style="position: relative;">
+                            <img class="usecase-img" src="images/use_case2.png" style="position: relative;">
                         </label>
                     </div>
                 </div>
@@ -282,12 +313,12 @@
                 </div>
             </div>
             
-            <div class="row usercase-row-header">
+            <div class="row usecase-row-header">
                 <div class="col-sm-1">
                     <div class="number-square-box">3</div>
                 </div>
                 <div class="col-sm-5">
-                    <h3>Collaborate with users and share highlighters</h3>
+                    <h3 class="usecase-title">Collaborate with users and share highlighters</h3>
                 </div>
                 <div class="col-sm-6"></div>
             </div>
@@ -302,23 +333,26 @@
                     
                 </div>
                 <div class="col-sm-6">
-                    <div class="usecase-img-container">
+                    <div class="usecase-img-container reveal-hidden reveal-left">
                         <input type="checkbox" id="zoomCheck3">
                         <label for="zoomCheck3">
-                            <img class="usecase-img" src="images/usecase1.png" style="position: relative;">
+                            <img class="usecase-img" src="images/use_case3.png" style="position: relative;">
                         </label>
                     </div>
                 </div>
             </div>
 
 
-            <div class="row usercase-row-header" style="display: flex; justify-content: center; align-items: center;">
+            <div class="row usecase-row-header" style="display: flex; justify-content: center; align-items: center;">
                 <div class="col-sm-1">
                     <div class="number-square-box">4</div>
                 </div>
-                <h3>&ltInsert your use case&gt</h3>
+                <div class="col-sm-5">
+                    <h3 class="usecase-title">&ltInsert your use case&gt</h3>
+                </div>
             </div>
             <div class="row usecase-row" style="display: flex; justify-content: center; align-items: center;">
+                <div class="col-sm-1"></div>
                 <div class="col-sm-5">
                     <p>As a user with your own set of problems you know your own needs the best. I hope by building this add-on you'll be able to use this tool and its features that have grown from suggestions from users like yourself to help solve the task at hand.</p>
                 </div>
@@ -331,6 +365,17 @@
 
 
     <div id="separator-banner">
+        <div class="container" style="color:#FFFFFF;">
+            <h3>COPPA Compliance/Privacy Concerns</h3>
+            <p>This Google Add-on:</p>
+            <ul>
+                <li class="list-scroll-reveal">Does not sell in-app products nor advertise to its users (completely and will always be free)</li>
+                <li class="list-scroll-reveal">Does not collect nor store any personal information about the user or his or her Google Documents</li>
+                <li class="list-scroll-reveal">Does not communicate with the user unless he or she has submitted an issue report/has emailed me</li>
+            </ul>
+
+            <p>I made this as a student in high school in 2015 and now I'm a college student. I'm not a compnay that wants your data or personal information.</p>
+        </div>
 
     </div>
 
@@ -338,50 +383,204 @@
         <div class="container" id="features-container">
             <h1 class="display-3" style="text-align:center; margin-bottom:20px;">Features</h1>
 
+            <div class="scroll-reveal">
             <ul class="nav nav-tabs" id="feature-tabs" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="highlight-tab" data-toggle="tab" href="#highlight" role="tab" aria-controls="highlight" aria-selected="true">Highlight</a>
+                    <div class="nav-link active" id="highlight-tab" data-toggle="tab" href="#highlight" role="tab" aria-controls="highlight" aria-selected="true">Highlight</div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="library-tab" data-toggle="tab" href="#library" role="tab" aria-controls="library" aria-selected="false">Library</a>
+                    <div class="nav-link" id="library-tab" data-toggle="tab" href="#library" role="tab" aria-controls="library" aria-selected="false">Library</div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="extract-tab" data-toggle="tab" href="#extract" role="tab" aria-controls="extract" aria-selected="false">Extract</a>
+                    <div class="nav-link" id="extract-tab" data-toggle="tab" href="#extract" role="tab" aria-controls="extract" aria-selected="false">Extract</div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="share-tab" data-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false">Share</a>
+                    <div class="nav-link" id="share-tab" data-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false">Share</div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings</a>
+                    <div class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings</div>
                 </li>
             </ul>
             <div class="tab-content" id="feature-contents">
                 <div class="tab-pane fade show active" id="highlight" role="tabpanel" aria-labelledby="highlight-tab">
-                    Share your custom highlighters with other users and be on the same page. Users can open the same Google Doc, open up the
-                    add-on, and instantly understand what each color means. Eliminate the confusion by this add-on's sharing capabilities.
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h3 class="display-4">
+                                Highlight
+                            </h3>
+
+                            <p>
+                                First start the add-on once in a Google Document by performing the following actions: <code>Add-ons > Highlight Tool > Start</code>.
+                            </p>
+                            <p>
+                                To highlight text, select some text in the Google Document and click one of the highlighters in the add-on sidebar on the right.
+                            </p>
+                            <p>
+                                To unhighlight text, select the desired text in the Google Document and click the <code>Un-highlight</code> button.
+                            </p>
+                            <p>
+                                To create more highlighters (color and label pairs), click on <code>Highlighter Library</code>.
+                            </p>
+                        </div>
+                        <div class="col-sm-4">
+                            <img src="images/sidebar.png" class="feature-img">
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="library" role="tabpanel" aria-labelledby="library-tab">
-                    Educators and teachers can prepare a custom set of highlighters the night before and share it with their students the following
-                    day. That custom set of highlighters is up to the power of the user who knows their area the best. On the right,
-                    a grammar correction set is made and can be shared with many other users.
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <h3 class="display-4">
+                                Library
+                            </h3>
+                    
+                            <p>
+                                Start the Highlighter Library by clicking <code>Highlighter Library</code> in the add-on sidebar.
+                            </p>
+
+                            <h4 class="display-5">
+                                Terminology
+                            </h4>
+                            <ul>
+                                <li><code>Highlighter</code> is a color label pair as seen in the add-on sidebar.</li>
+                                <li><code>Highlighter Set</code> is a set of highlighters along with a name.</li>
+                                <li><code>Highlighter Library</code> is a collection of highlighter sets with a currently select set.</li>
+                            </ul>
+
+                            <p>
+                                Click the blue <code>Save</code> button once changes have been made to save the changes. Click the grey <code>Cancel</code> button if those changes should not be saved.
+                            </p>
+
+                            <h4 class="display-5">
+                                Creation
+                            </h4>
+
+                            <p>To create a highlighter set, click the green <code>New set</code> button.</p>
+                            
+                            <p>To create a new highlighter for a set, click the <code>+</code> button located on the top row of the corresponding set.</p>
+
+                            <p>To select a color for the highlighter, click the rectangular colored box. To select a label for the highlighter, type in the desired label in the input text box.</p>
+
+                            <h4 class="display-5">
+                                Deletion
+                            </h4>
+
+                            <p>To delete a highlighter set, click the red <code>Trash Can</code> button located on the top row of the corresponding set.</p>
+
+                            <p>To delete a highlighter from a set, click the <code>-</code> button located next to the highlighter,</p>
+
+                            <h4 class="display-5">
+                                Reordering
+                            </h4>
+
+                            <p>To reorder highlighter sets, click the drag handle (looks like an arrow going up and an arrow going down) and drag it to the desired order.</p>
+
+                            <p>To reorder highlighters within a set, perform a similar action, click the drag handle and drag it within the set to the desired order.</p>
+
+                            <h4 class="display-5">
+                                Misc
+                            </h4>
+
+                            <p>
+                                To duplicate a highlighter set (in order to avoid starting from scratch), click on the grey copy button (looks like two documents where one is overlapped) next to the + button.
+                            </p>
+
+                            <p>
+                                To minimize a highlighter set click the chevron button (looks like an arrow). To unminimize the highlighter set, click on the same button.
+                            </p>
+
+                        </div>
+                        <div class="col-sm-5">
+                            <img src="images/library.png" class="feature-img">
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="extract" role="tabpanel" aria-labelledby="extract-tab">
-                    Use this communicating with users on tasks where understanding what the color of each highlighted text means such as denoting
-                    grammar mistakes and identifying key topics
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <h3 class="display-4">
+                                Extract
+                            </h3>
+                    
+                            <p>
+                                Extract highlighted text from a Google Document by opening the add-on in the desired doc and click one of the two <code>Extract</code> located at the bottom of the add-on sidebar.
+                            </p>
+                    
+                            <h4 class="display-5">
+                                Order of extracted text
+                            </h4>
+                            <ul>
+                                <li>
+                                    <code>By chrono</code> orders the highlighted text in their original order.</li>
+                                <li>
+                                    <code>By color</code> groups the highlighted text by their highlighted color.</li>
+                            </ul>
+                    
+                        </div>
+                        <div class="col-sm-5">
+                            <img src="images/extract.png" class="feature-img">
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="share" role="tabpanel" aria-labelledby="share-tab">
-                    Use this communicating with users on tasks where understanding what the color of each highlighted text means such as denoting
-                    grammar mistakes and identifying key topics
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <h3 class="display-4">
+                                Share
+                            </h3>
+                    
+                            <p>
+                                Share highlighter sets with other users by performing the following actions: <code>Add-ons > Highlight Tool > Export Library</code>.
+                            </p>
+
+                            <p>
+                                Use other users' highlighter sets by performing the following actions: <code>Add-ons > Highlight Tool > Import Library</code> while in a Google Document with the highlighter share blocks generated by the export feature.
+                            </p>
+                    
+                            <h4 class="display-5">
+                                Share blocks
+                            </h4>
+
+                            <p>
+                                These share blocks can be copy and pasted to any Google Document and can be imported into anyone's highlighter library. Use these to collaborate with others and be on the same page.
+                            </p>
+                    
+                        </div>
+                        <div class="col-sm-5">
+                            <img src="images/share.png" class="feature-img">
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-                    Use this communicating with users on tasks where understanding what the color of each highlighted text means such as denoting
-                    grammar mistakes and identifying key topics
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <h3 class="display-4">
+                                Settings
+                            </h3>
+                    
+                            <p>
+                                Settings are a way to control the behavior of the add-on to fine tune it to your needs.
+                            </p>
+                    
+                            <h4 class="display-5">
+                                Auto import
+                            </h4>
+                            <p>
+                                If this setting is set to true, then whenever the add-on is opened, the add-on will check for any <code>share blocks</code> in the current Google Document. If there are then a dialog will pop up prompting the user if they want to import these highlighter sets into their highlighter library.
+                            </p>
+                    
+                        </div>
+                        <div class="col-sm-5">
+                            <img src="images/settings.png" class="feature-img">
+                        </div>
+                    </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>
 
-    <div id="blank" style="height: 400px;"></div>
+    <div id="blank" style="height: 50vh;"></div>
 
     <div id="contact-info">
             <span>
@@ -398,3 +597,15 @@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/scrollreveal/dist/scrollreveal.min.js"></script>
+
+<script>
+    window.sr = ScrollReveal({reset: true});
+    sr.reveal('.perk-col', 150);
+    sr.reveal('#separator-description-inner');
+    sr.reveal('.usecase-title', { origin: 'left'});
+    sr.reveal('.reveal-left', { origin: 'left' });
+    sr.reveal('.reveal-right', { origin: 'right' });
+    sr.reveal('.scroll-reveal');
+    sr.reveal('.list-scroll-reveal', 250);
+</script>
