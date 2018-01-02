@@ -170,7 +170,11 @@
    * Displays the alert error message when the server side highlightSelection fails.
    */
   function highlightFailure(e) {
-    google.script.run.showRequireSelectionError();
+    google.script.run
+      .withFailureHandler(function () {
+        google.script.run.generalError();
+      })
+      .showRequireSelectionError();
   }
 
   /**
@@ -206,7 +210,11 @@
    */
 
   function openHighlighterLibrary(event) {
-    google.script.run.showHighlighterLibraryDialog();
+    google.script.run
+      .withFailureHandler(function () {
+        google.script.run.generalError();
+      })
+      .showHighlighterLibraryDialog();
   }
   $('#highlighter-library-button').on('click', openHighlighterLibrary);
 
@@ -218,12 +226,20 @@
   var ORDER_CHRONO = 'CHRONO';
 
   $('#extract-highlights-button-chrono').on('click', function () {
-    google.script.run.showExtractHighlightedTextTargetDocDialog(ORDER_CHRONO);
+    google.script.run
+      .withFailureHandler(function () {
+        google.script.run.generalError();
+      })
+      .showExtractHighlightedTextTargetDocDialog(ORDER_CHRONO);
   });
 
   $('#extract-highlights-button-color').on('click', function () {
-      google.script.run.showExtractHighlightedTextTargetDocDialog(ORDER_COLOR);
-    });
+    google.script.run
+      .withFailureHandler(function () {
+        google.script.run.generalError();
+      })
+      .showExtractHighlightedTextTargetDocDialog(ORDER_COLOR);
+  });
   </script>
 </body>
 

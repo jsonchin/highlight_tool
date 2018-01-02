@@ -120,6 +120,9 @@
           google.script.run.showExportCompleteDialog();
         }
       })
+      .withFailureHandler(function () {
+        google.script.run.generalError();
+      })
       .shareChosenSets(chosenSets, DESTINATION);
   }
 
