@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <link rel="stylesheet" href="css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
@@ -23,12 +24,33 @@
             padding-left: 0;
             padding-right: 0;
             background-image: linear-gradient( 135deg, #3C8CE7 10%, #00EAFF 100%);
-            min-height: 60vh;
+            height: fit-content;
+            min-height: 70vh;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         #banner-container-inner {
             width: 40%;
+            height: 100%;
+        }
+
+        .highlight-tool-txt {
+            color: #FFDD13;
+            font-size: 10em; /* fallback if vw not supported */
+            font-size: 10vw;
+            font-weight: 600;
+        }
+
+        #seller-container {
+            text-align: center;
+            min-height: 25vh;
+        }
+
+        #seller-text {
+            margin: 10vh auto;
         }
 
         #try-now-button {
@@ -52,12 +74,6 @@
             background-size: cover;
             background-repeat: no-repeat;
             width: 100vw;
-        }
-
-        .highlight-tool-txt {
-            color: #FFDD13;
-            font-size: 10em;
-            font-weight: 600;
         }
 
         #perk-container {
@@ -192,10 +208,26 @@
 <body>
     <div class="jumbotron jumbotron-fluid" id="banner-container">
         <!-- <img id="banner" src="images/highlightoolbanner.png"> -->
+        <a href="https://github.com/jsonchin/highlight_tool" target="_blank">
+            <i class="fa fa-github" aria-hidden="true" style="position: absolute; right:0;
+                top: 0; font-size: 3em; margin: 10px; color: #000000;"></i>
+        </a>
         <div class="container" id="banner-container-inner">
             <h1 class="display-3 highlight-tool-txt">Highlight</h1>
-            <h1 class="display-3 highlight-tool-txt" style="float: right;">Tool</h1>
+            <h1 class="display-3 highlight-tool-txt" style="text-align: right;">Tool</h1>
         </div>        
+    </div>
+
+    <div class="container" id="seller-container">
+        <div id="seller-text">
+            <h4 class="seller-text">
+                <i>
+                    "A Google Docs Add-on
+                    for more efficiently and effectively highlighting Google Documents."
+                </i>
+            </h4>
+        </div>
+        <hr>
     </div>
 
     <div class="container" id="perk-container">
@@ -375,6 +407,8 @@
             </ul>
 
             <p>I made this as a student in high school in 2015 and now I'm a college student. I'm not a compnay that wants your data or personal information.</p>
+
+            <p>Also the code is made publically available on my <a href="https://github.com/jsonchin/highlight_tool" target="_blank" style="color:#D0D0D0">github</a>.</p>
         </div>
 
     </div>
