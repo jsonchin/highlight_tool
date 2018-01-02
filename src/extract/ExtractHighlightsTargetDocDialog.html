@@ -66,11 +66,19 @@
     if ($('#radio1').is(':checked')) {
       google.script.run.withSuccessHandler(function (docURL) {
         google.script.run.showLinkToDocDialog(docURL);
-      }).extractHighlightsToDoc(NEW_DOC, ORDER);
+      })
+      .withFailureHandler(function () {
+        google.script.run.generalError();
+      })
+      .extractHighlightsToDoc(NEW_DOC, ORDER);
     } else if ($('#radio2').is(':checked')) {
       google.script.run.withSuccessHandler(function (docURL) {
         google.script.run.showLinkToDocDialog(docURL);
-      }).extractHighlightsToDoc(CURRENT_DOC, ORDER);
+      })
+      .withFailureHandler(function () {
+        google.script.run.generalError();
+      })
+      .extractHighlightsToDoc(CURRENT_DOC, ORDER);
     } else {
       const urlDoc = $("#doc-url").val();
       google.script.run
