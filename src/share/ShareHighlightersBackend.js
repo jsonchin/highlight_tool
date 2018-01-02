@@ -311,6 +311,21 @@ function isHighlighterSetsEqual(hSet1, hSet2) {
   return true;
 }
 
+function isSetNameDuplicate(setName) {
+  const setNameLen = setName.length;
+  return setNameLen > 3 && setName.charAt(setNameLen - 1) === ')' && setName.charAt(setNameLen - 3) === '(';
+}
+
+function getSetNamePrefix(setName) {
+  const setNameLen = setName.length;
+  return setName.substring(0, setNameLen - 3);
+}
+
+function getSetNameSuffix(setName) {
+  const setNameLen = setName.length;
+  return setName.charAt(setNameLen - 2);
+}
+
 /**
  * Saves non-duplicate highlighter sets into the user's library (UserProperties).
  * If there are duplicate highlighter set(s), a randomly chosen duplicate
@@ -331,6 +346,13 @@ function saveChosenShareBlocks(highlighterSetsJSON) {
     ));
   });
 
+  const setNames = {}; // set
+
+  for (var i = 0; i < hLibrary.highlighterSets; i += 1) {
+    var setName = hLibrary.highlighterSets[i].setName;
+    setNames[setName] = true;
+  }
+
   var alreadyChangedCurrentSet = false;
   foundHighlighterSets.forEach(function (hSet) {
     var isDuplicate = false;
@@ -346,6 +368,19 @@ function saveChosenShareBlocks(highlighterSetsJSON) {
     }
 
     if (!isDuplicate) {
+      var setName = hSet.setName;
+      var prefixSetName = setName;
+      var suffix = '0';
+      if (isSetNameDuplicate(setName)) {
+        prefixSetName = getSetNamePrefix(setName);
+        suffix = getSetNameSuffix(setName);
+      }
+
+      var j = 0;
+      while (setName in setNames) {
+        setName = setName + ' (1)';
+      }
+
       hLibrary.addHighlighterSet(hSet);
       if (!alreadyChangedCurrentSet) {
         hLibrary.currentSetIndex = hLibrary.highlighterSets.length - 1;
