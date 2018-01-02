@@ -16,8 +16,8 @@ SHARE_BLOCK_ATTRIBUTES[DocumentApp.Attribute.FONT_FAMILY] = 'Arial';
 SHARE_BLOCK_ATTRIBUTES[DocumentApp.Attribute.UNDERLINE] = false;
 
 var SHARE_INSTRUCTIONS1 = 'Instructions:';
-var SHARE_INSTRUCTIONS2 = 'Go to "Add-ons" -> "Highlight Tool" -> "Import Highlighters" to add these highlighters to your library! Then go to "Highlighter Library" after starting the add-on to select this set as your current set.';
-var SHARE_INSTRUCTIONS3 = 'Share this document with other users if you want them to import and use your set of highlighters.Alternatively, copy and paste the block of text between and including the *** s into another document and follow the same instructions of importing.';
+var SHARE_INSTRUCTIONS2 = 'Go to "Add-ons" -> "Highlight Tool" -> "Import Library" to add these highlighters to your library! Then go to "Highlighter Library" after starting the add-on to select this set as your current set.';
+var SHARE_INSTRUCTIONS3 = 'Share this document with other users if you want them to import and use your set of highlighters. Alternatively, copy and paste the block of text between and including the *** s into another document and follow the same instructions.';
 var SHARE_INSTRUCTIONS = [SHARE_INSTRUCTIONS1, SHARE_INSTRUCTIONS2, SHARE_INSTRUCTIONS3];
 
 var InvalidShareBlockError = function (msg) {
@@ -64,7 +64,7 @@ function showShareHighlightersDialog(destination) {
  */
 function appendHighlighterSetBlock(hSet, body) {
   body.appendParagraph(SHARE_BLOCK_HEADER)
-    .setAlignment(DocumentApp.HorizontalAlignment.CENTER);
+    .setAlignment(DocumentApp.HorizontalAlignment.CENTER).setBackgroundColor(null);
   // no templating strings allowed in GAS
   // append setName
   body.appendParagraph(SHARE_BLOCK_LEFT_SET_NAME + hSet.setName + SHARE_BLOCK_RIGHT_SET_NAME)
@@ -73,11 +73,11 @@ function appendHighlighterSetBlock(hSet, body) {
   // append highlighters
   hSet.highlighters.forEach(function (highlighter) {
     body.appendParagraph('"' + highlighter.label + '" : "' + highlighter.color + '"')
-      .setAlignment(DocumentApp.HorizontalAlignment.CENTER);
+      .setAlignment(DocumentApp.HorizontalAlignment.CENTER).setBackgroundColor(highlighter.color);
   });
 
   body.appendParagraph(SHARE_BLOCK_FOOTER)
-    .setAlignment(DocumentApp.HorizontalAlignment.CENTER);
+    .setAlignment(DocumentApp.HorizontalAlignment.CENTER).setBackgroundColor(null);
 }
 
 /**
@@ -102,7 +102,9 @@ function shareChosenSets(chosenSets, destination) {
       SHARE_INSTRUCTIONS.forEach(function (instructionLine) {
         body.appendParagraph(instructionLine)
           .setAttributes(SHARE_BLOCK_ATTRIBUTES)
-          .setAlignment(DocumentApp.HorizontalAlignment.CENTER);
+          .setAlignment(DocumentApp.HorizontalAlignment.CENTER)
+          .editAsText()
+            .setFontSize(11);
       });
     }
 
