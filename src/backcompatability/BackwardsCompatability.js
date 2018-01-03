@@ -26,6 +26,27 @@ function convertV2ToV3Library() {
 }
 
 /**
+ * RGB to hex utilities.
+ * https://stackoverflow.com/questions/12043187/how-to-check-if-hex-color-is-too-black
+ */
+var HEX_DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+
+/**
+ * Converts RGB to hex.
+ */
+function rgb2hex(rgb) {
+  rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+  return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+}
+
+/**
+ * Converts a number between 0 to 255 to its corresponding value in hex.
+ */
+function hex(num) {
+  return isNaN(num) ? "00" : HEX_DIGITS[(num - num % 16) / 16] + HEX_DIGITS[num % 16];
+}
+
+/**
  * Parses the previous version of the tool's storage system and
  * returns HighlighterLibraryJSON format.
  * An example of the previous version's tool is listed in the corresponding test file.
@@ -45,6 +66,9 @@ function parsev2Library(v2HighlighterLibrary) {
         try {
           var label = v2HighlighterLibrary[setStr + 'label' + j].trim();
           var color = v2HighlighterLibrary[setStr + 'color' + j].trim();
+          if (color.substring(0, 3) === 'rgb') {
+            color = rgb2hex(color);
+          }
           var highlighter = {};
           highlighter[LABEL_KEY] = label;
           highlighter[COLOR_KEY] = color;
