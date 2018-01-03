@@ -13,7 +13,7 @@ var LUMINOSITY_WHITE_THRESHOLD = 230;
 var getActiveDocument = function () {
   return DocumentApp.getActiveDocument();
   // return DocumentApp.openByUrl('https://docs.google.com/document/d/1S-QoWUdC07lOn6iijAhEOFNaFFWK6PHpQ_2AE6XfXe0/edit');
-}
+};
 
 var extractHighlightedTextFromDoc = function extractHighlightedTextFromActiveDoc() {
   const doc = getActiveDocument();
