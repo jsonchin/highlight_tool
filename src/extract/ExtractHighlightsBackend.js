@@ -13,7 +13,7 @@ var LUMINOSITY_WHITE_THRESHOLD = 230;
 var getActiveDocument = function () {
   return DocumentApp.getActiveDocument();
   // return DocumentApp.openByUrl('https://docs.google.com/document/d/1S-QoWUdC07lOn6iijAhEOFNaFFWK6PHpQ_2AE6XfXe0/edit');
-}
+};
 
 var extractHighlightedTextFromDoc = function extractHighlightedTextFromActiveDoc() {
   const doc = getActiveDocument();
@@ -100,7 +100,7 @@ var appendHighlighterKey = function appendCurrentHighlighterSetKey(doc, currentH
     });
   }
   labelingKeyParagraph.editAsText().setBold(true).setUnderline(true).setBackgroundColor(null);
-  body.appendParagraph('\n\n');
+  body.appendParagraph('\r\r');
 };
 
 /**
@@ -160,7 +160,7 @@ var appendExtractedTextChrono = function appendExtractedTextToDocByChronological
       var tableCell1;
       var tableCell2;
       // if adjacent extractedText have the same color, put them in the same row.
-      if (color === table.getRow(table.getNumRows() - 1).getCell(0).getBackgroundColor()) {
+      if (table.getNumRows() > 0 && color === table.getRow(table.getNumRows() - 1).getCell(0).getBackgroundColor()) {
         tableRow = table.getRow(table.getNumRows() - 1);
         tableCell1 = tableRow.getCell(0);
         tableCell2 = tableRow.getCell(1);
@@ -180,8 +180,13 @@ var appendExtractedTextChrono = function appendExtractedTextToDocByChronological
       }
 
       // style the table cells with the correct color
-      tableCell1.setBackgroundColor(color);
-      tableCell2.editAsText().setBackgroundColor(color);
+      var colorAttributes = {};
+      colorAttributes[DocumentApp.Attribute.BACKGROUND_COLOR] = color;
+      tableCell1.setAttributes(colorAttributes);
+      tableCell2.setAttributes(colorAttributes);
+
+      // tableCell1.setBackgroundColor(color);
+      // tableCell2.setBackgroundColor(color);
     }
   });
 
@@ -320,17 +325,14 @@ function extractHighlightsToDoc(target, order) {
 
   // append the extracted text to the targetDoc
   appendExtractedTextByOrder(extractedTexts, targetDoc, currentHSet);
-
-  // show a dialog containing a link to the target doc
   const docURL = targetDoc.getUrl();
-
-  return docURL;
+  showLinkToDocDialog(docURL, target === CURRENT_DOC);
 }
 
-function showLinkToDocDialog(link) {
+function showLinkToDocDialog(link, isCurrentDoc) {
   const dialogTemplate = HtmlService.createTemplateFromFile('ExtractHighlightsLinkDialog');
   dialogTemplate.link = link;
-  dialogTemplate.isCurrentDoc = link === getActiveDocument().getUrl();
+  dialogTemplate.isCurrentDoc = isCurrentDoc;
 
   const dialog = dialogTemplate.evaluate();
   dialog.setWidth(300)

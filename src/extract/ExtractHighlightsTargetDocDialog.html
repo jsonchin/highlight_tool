@@ -64,17 +64,13 @@
 
   $('#export-button').on('click', function () {
     if ($('#radio1').is(':checked')) {
-      google.script.run.withSuccessHandler(function (docURL) {
-        google.script.run.showLinkToDocDialog(docURL);
-      })
+      google.script.run
       .withFailureHandler(function () {
         google.script.run.generalError();
       })
       .extractHighlightsToDoc(NEW_DOC, ORDER);
     } else if ($('#radio2').is(':checked')) {
-      google.script.run.withSuccessHandler(function (docURL) {
-        google.script.run.showLinkToDocDialog(docURL);
-      })
+      google.script.run
       .withFailureHandler(function () {
         google.script.run.generalError();
       })
@@ -82,13 +78,10 @@
     } else {
       const urlDoc = $("#doc-url").val();
       google.script.run
-        .withSuccessHandler(function (docURL) {
-          google.script.run.showLinkToDocDialog(docURL);
-        })
-        .withFailureHandler(function () {
-          google.script.run.showInvalidURLDialog(urlDoc);
-        })
-        .extractHighlightsToDoc(urlDoc, ORDER);
+      .withFailureHandler(function () {
+        google.script.run.showInvalidURLDialog(urlDoc);
+      })
+      .extractHighlightsToDoc(urlDoc, ORDER);
     }
 
     const baseText = 'Highlights are being extracted.';
