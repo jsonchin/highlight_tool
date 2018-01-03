@@ -1,7 +1,7 @@
 function onOpen(e) {
   const ui = DocumentApp.getUi();
   ui.createAddonMenu()
-    .addItem('Start', 'showSidebar')
+    .addItem('Start', 'start')
     .addItem('Import Library', 'showFoundSharedHighlighterSetsDialog')
     .addSubMenu(ui.createMenu('Export Library')
       .addItem('To new document', 'showShareHighlightersDialogNewDoc')
@@ -13,4 +13,10 @@ function onOpen(e) {
 
 function onInstall(e) {
   onOpen(e);
+}
+
+function start() {
+  checkVersion();
+  autoImportHighlighterSets();
+  showSidebar();
 }
