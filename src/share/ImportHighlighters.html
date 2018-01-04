@@ -23,6 +23,11 @@
       flex: 1;
     }
 
+    .set-name {
+      width: 160px;
+      vertical-align: middle;
+    }
+
     .empty-label {
       width: 1em;
       height: 1em;
@@ -48,9 +53,12 @@
       <input type="checkbox" class='set-checkbox' id="set<?= i ?>" checked>
       <label for="set<?= i ?>">
       <? if (hSets[i].setName === '') { ?>
-        <span class='set-name' style="font-weight:bold;">(No set name)</span>
+        <input type="text" class="set-name" placeholder="No set name given">
       <? } else { ?>
-        <span class='set-name' style="font-weight:bold;"><?= hSets[i].setName ?></span>
+        <input type="text" class="set-name" value="<?= hSets[i].setName ?>">
+        <? if (hSets[i].setName in seenSetNames) { ?>
+          <span><i>(duplicate set name)</i></span>
+        <? } ?>
       <? } ?>
         <? var highlighters = hSets[i].highlighters; ?>
         <ul class="highlighters">
@@ -120,7 +128,7 @@
       var $setCheckbox = $(this);
       if ($setCheckbox.is(':checked')) {
         var $label = $setCheckbox.parent().children('label');
-        var setNameVal = $label.children('.set-name').html();
+        var setNameVal = $label.children('.set-name').val();
         var setName = setNameVal === NO_SET_NAME_GIVEN ? '' : setNameVal;
 
         var highlighters = [];
