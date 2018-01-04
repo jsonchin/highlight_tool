@@ -240,11 +240,19 @@ function showFoundSharedHighlighterSetsDialog() {
     return;
   }
 
+  // get set names that exist in the library to mark the found sets as duplicate set names
+  const hLibrary = loadHighlighterLibrary();
+  const seenSetNames = {}; // js set
+  hLibrary.highlighterSets.forEach(function (highlighterSet) {
+    seenSetNames[highlighterSet.setName] = true;
+  });
+
   const dialogTemplate = HtmlService.createTemplateFromFile('ImportHighlighters');
   const hLibraryJSON = {};
   hLibraryJSON[HIGHLIGHTER_SETS_KEY] = sharedHighlighterSets;
 
   dialogTemplate.hLibrary = hLibraryJSON;
+  dialogTemplate.seenSetNames = seenSetNames;
   dialogTemplate.additionalText = '';
 
   const dialog = dialogTemplate.evaluate();
