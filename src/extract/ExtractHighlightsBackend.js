@@ -8,7 +8,7 @@ var ORDER_CHRONO = 'CHRONO';
 var NEW_DOC = 'NEW';
 var CURRENT_DOC = 'CURRENT';
 
-var LUMINOSITY_WHITE_THRESHOLD = 230;
+var LUMINOSITY_WHITE_THRESHOLD = 240;
 
 var getActiveDocument = function () {
   return DocumentApp.getActiveDocument();
@@ -154,7 +154,7 @@ var appendExtractedTextChrono = function appendExtractedTextToDocByChronological
 
     // ignore the extracted text if its color is too white
     if (getLuminosity(color) < LUMINOSITY_WHITE_THRESHOLD) {
-      var textStr = extractedText.text;
+      var textStr = extractedText.text.replace(/\r/g, '\n');
 
       var tableRow;
       var tableCell1;
