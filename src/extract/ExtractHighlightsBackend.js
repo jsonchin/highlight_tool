@@ -15,22 +15,70 @@ var getActiveDocument = function () {
   // return DocumentApp.openByUrl('https://docs.google.com/document/d/1S-QoWUdC07lOn6iijAhEOFNaFFWK6PHpQ_2AE6XfXe0/edit');
 };
 
-var extractHighlightedTextFromDoc = function extractHighlightedTextFromActiveDoc() {
-  const doc = getActiveDocument();
+/**
+ * Extracts a list of ExtractedText from the specified Document object.
+ * @param {Document} Doc 
+ */
+var extractHighlightedTextFromDoc = function extractHighlightedTextFromDoc(doc) {
   const body = doc.getBody();
-
   const numChildren = body.getNumChildren();
 
   const extractedTexts = [];
 
   for (var i = 0; i < numChildren; i += 1) {
-    var childElementText = body.getChild(i).asText(); // var because it needs to be doc scoped
-    var partialExtractedTexts = extractHighlightsFromText(childElementText);
-    partialExtractedTexts.forEach(function (extractedText) {
-      extractedTexts.push(extractedText);
-    });
+    var child = body.getChild(i);
+    if (child.getType() === DocumentApp.ElementType.TABLE) {
+      var partialExtractedTexts = extractHighlightsFromTable(child);
+      partialExtractedTexts.forEach(function (extractedText) {
+        extractedTexts.push(extractedText);
+      });
+    } else {
+      var childElementText = body.getChild(i).asText(); // var because it needs to be doc scoped
+      var partialExtractedTexts = extractHighlightsFromText(childElementText);
+      partialExtractedTexts.forEach(function (extractedText) {
+        extractedTexts.push(extractedText);
+      });
+    }
   }
 
+  return extractedTexts;
+};
+
+/**
+ * Extracts highlighted text from a table using the extractHighlightsFromTableCell.
+ * @param {Table} table 
+ */
+var extractHighlightsFromTable = function extractHighlightedTextFromGASTableObject(table) {
+  const numRows = table.getNumRows();
+  const extractedTexts = [];
+  for (var r = 0; r < numRows; r += 1) {
+    var row = table.getRow(r);
+    var numCells = row.getNumCells();
+    for (var c = 0; c < numCells; c += 1) {
+      var cell = row.getCell(c);
+      var partialExtractedTexts = extractHighlightsFromTableCell(cell);
+      partialExtractedTexts.forEach(function (extractedText) {
+        extractedTexts.push(extractedText);
+      });
+    }
+  }
+  return extractedTexts;
+};
+
+/**
+ * Extracts highlighted text from a table cell.
+ * If it contains highlighted text, then that is extracted.
+ * If it does not and the table cell is highlighted, then all of the text inside
+ * that cell is extracted with the table cell's background color.
+ * @param {TableCell} tableCell 
+ */
+var extractHighlightsFromTableCell = function extractHighlightedTextFromGASTableCellObject(tableCell) {
+  const bgColor = tableCell.getBackgroundColor();
+  const text = tableCell.editAsText();
+  const extractedTexts = extractHighlightsFromText(text);
+  if (extractedTexts.length === 0 && bgColor) { // bgColor is not null/undefined/empty string
+    return [new ExtractedText(text.getText(), bgColor)];
+  }
   return extractedTexts;
 };
 
@@ -307,7 +355,8 @@ function extractHighlightsToDoc(target, order) {
   }
 
   // extract the highlighted text BEFORE appending the highlighter key
-  const extractedTexts = extractHighlightedTextFromDoc();
+  const activeDoc = getActiveDocument();
+  const extractedTexts = extractHighlightedTextFromDoc(activeDoc);
 
   // append the highlighter key to the targetDoc
   const currentHSet = loadCurrentHighlighterSet();
