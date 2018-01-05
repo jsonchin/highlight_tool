@@ -237,7 +237,7 @@ function showFoundSharedHighlighterSetsDialog() {
       'Please copy and paste highlighter blocks produced from this tool\'s export feature into this document.',
       ui.ButtonSet.OK
     );
-
+  } else {
     showFoundSharedHighlighterSetsDuplicateDialog('', sharedHighlighterSets);
   }
 }
