@@ -238,8 +238,8 @@ function showFoundSharedHighlighterSetsDialog() {
       ui.ButtonSet.OK
     );
 
-    showFoundSharedHighlighterSetsDuplicateDialog('', sharedHighlighterSets);
   }
+  showFoundSharedHighlighterSetsDuplicateDialog('', sharedHighlighterSets);
 }
 
 function showFoundSharedHighlighterSetsDuplicateDialog(additionalText, sharedHighlighterSets) {

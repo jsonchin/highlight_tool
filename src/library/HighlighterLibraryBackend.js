@@ -34,7 +34,12 @@ var HIGHLIGHTER_SETS_KEY = 'highlighterSets';
 var makeHighlighterLibrary = function makeHighlighterLibraryFromJSON(libraryJSON) {
   const hLibrary = new HighlighterLibrary();
 
-  hLibrary.currentSetIndex = libraryJSON.currentSetIndex;
+  if (!([CURRENT_SET_INDEX_KEY] in libraryJSON)) {
+    hLibrary.currentSetIndex = 0;
+  } else {
+    hLibrary.currentSetIndex = libraryJSON.currentSetIndex;    
+  }
+
   libraryJSON.highlighterSets.forEach(function (highlighterSet) {
     hLibrary.highlighterSets.push(new HighlighterSet(
       highlighterSet.setName,
