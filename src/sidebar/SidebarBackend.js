@@ -26,17 +26,21 @@ function highlightSelection(color) {
   const doc = DocumentApp.getActiveDocument();
   const range = doc.getSelection();
   const rangeElements = range.getRangeElements();
-  rangeElements.forEach(function (rangeElement) {
-    if (rangeElement.isPartial()) {
-      rangeElement.getElement().asText().setBackgroundColor(
-        rangeElement.getStartOffset(),
-        rangeElement.getEndOffsetInclusive(),
-        color
-      );
-    } else {
-      rangeElement.getElement().asText().setBackgroundColor(color);
-    }
-  });
+  if (rangeElements) {
+    rangeElements.forEach(function (rangeElement) {
+      if (rangeElement.isPartial()) {
+        rangeElement.getElement().asText().setBackgroundColor(
+          rangeElement.getStartOffset(),
+          rangeElement.getEndOffsetInclusive(),
+          color
+        );
+      } else {
+        rangeElement.getElement().asText().setBackgroundColor(color);
+      }
+    });
+  } else {
+    throw new AssertionError('Must select some text.');
+  }
 }
 
 function unhighlightSelection() {
