@@ -25,8 +25,8 @@ function showSidebar() {
 function highlightSelection(color) {
   const doc = DocumentApp.getActiveDocument();
   const range = doc.getSelection();
-  const rangeElements = range.getRangeElements();
-  if (rangeElements) {
+  if (range) {
+    const rangeElements = range.getRangeElements();
     rangeElements.forEach(function (rangeElement) {
       if (rangeElement.isPartial()) {
         rangeElement.getElement().asText().setBackgroundColor(
