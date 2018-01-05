@@ -51,19 +51,9 @@ function autoImportHighlighterSets() {
   if (isAutoScan === SETTING_AUTO_IMPORT_TRUE || isAutoScan === null) {
     const sharedHighlighterSets = scanDocumentForSharedHighlighterSets();
     if (sharedHighlighterSets.length !== 0) {
-      const dialogTemplate = HtmlService.createTemplateFromFile('ImportHighlighters');
-      const hLibraryJSON = {};
-      hLibraryJSON[HIGHLIGHTER_SETS_KEY] = sharedHighlighterSets;
-
-      dialogTemplate.hLibrary = hLibraryJSON;
-      dialogTemplate.additionalText = '(To disable this auto-scan feature, go to "Add-ons" > "Settings")';
-
-      const dialog = dialogTemplate.evaluate();
-      dialog.setWidth(500)
-        .setHeight(300);
-
-      DocumentApp.getUi()
-        .showModalDialog(dialog, 'Highlighter Library Exporter');
+      // get set names that exist in the library to mark the found sets as duplicate set names
+      showFoundSharedHighlighterSetsDuplicateDialog('(To disable this auto-scan feature, go to "Add-ons" > "Settings")',
+        sharedHighlighterSets);
     }
   }
 }
