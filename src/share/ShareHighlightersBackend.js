@@ -237,9 +237,12 @@ function showFoundSharedHighlighterSetsDialog() {
       'Please copy and paste highlighter blocks produced from this tool\'s export feature into this document.',
       ui.ButtonSet.OK
     );
-    return;
-  }
 
+    showFoundSharedHighlighterSetsDuplicateDialog('', sharedHighlighterSets);
+  }
+}
+
+function showFoundSharedHighlighterSetsDuplicateDialog(additionalText, sharedHighlighterSets) {
   // get set names that exist in the library to mark the found sets as duplicate set names
   const hLibrary = loadHighlighterLibrary();
   const seenSetNames = {}; // js set
@@ -253,7 +256,7 @@ function showFoundSharedHighlighterSetsDialog() {
 
   dialogTemplate.hLibrary = hLibraryJSON;
   dialogTemplate.seenSetNames = seenSetNames;
-  dialogTemplate.additionalText = '';
+  dialogTemplate.additionalText = additionalText;
 
   const dialog = dialogTemplate.evaluate();
   dialog.setWidth(500)
