@@ -33,11 +33,13 @@ var extractHighlightedTextFromDoc = function extractHighlightedTextFromDoc(doc) 
         extractedTexts.push(extractedText);
       });
     } else {
-      var childElementText = body.getChild(i).asText(); // var because it needs to be doc scoped
-      var partialExtractedTexts = extractHighlightsFromText(childElementText);
-      partialExtractedTexts.forEach(function (extractedText) {
-        extractedTexts.push(extractedText);
-      });
+      try { // try catch the asText
+        var childElementText = body.getChild(i).asText(); // var because it needs to be doc scoped
+        var partialExtractedTexts = extractHighlightsFromText(childElementText);
+        partialExtractedTexts.forEach(function (extractedText) {
+          extractedTexts.push(extractedText);
+        });
+      } catch (error) {}
     }
   }
 
