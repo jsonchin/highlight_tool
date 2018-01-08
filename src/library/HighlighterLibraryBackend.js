@@ -9,6 +9,12 @@ var assert = function (bool, msg) {
   }
 };
 
+var assertFalse = function (bool, msg) {
+  if (bool) {
+    throw new AssertionError(msg);
+  }
+};
+
 var assertEquals = function (predicate, truth, msg) {
   assert(predicate === truth, msg);
 };

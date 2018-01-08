@@ -305,6 +305,9 @@ function isHighlighterSetsEqual(hSet1, hSet2) {
 
   for (var i = 0; i < colors1.length; i += 1) {
     var color = colors1[i];
+    if (!(color in highlighterGroup1) || !(color in highlighterGroup2)) {
+      return false;
+    }
     var labels1 = highlighterGroup1[color].sort();
     var labels2 = highlighterGroup2[color].sort();
 
