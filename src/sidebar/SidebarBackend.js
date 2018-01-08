@@ -39,7 +39,7 @@ function highlightSelection(color) {
       }
     });
   } else {
-    throw new AssertionError('Must select some text.');
+    showRequireSelectionError();
   }
 }
 
