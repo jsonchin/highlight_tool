@@ -32,6 +32,8 @@ var HIGHLIGHTERS_KEY = 'highlighters';
 var CURRENT_SET_INDEX_KEY = 'currentSetIndex';
 var HIGHLIGHTER_SETS_KEY = 'highlighterSets';
 
+var DEFAULT_COLOR = '#FFFFFF';
+
 
 /**
  * Creates a highlighter library from the provided json.
@@ -109,22 +111,35 @@ function saveHighlighterLibraryFromDialog(libraryJSON) {
   showSidebar();
 }
 
+var isHex = function isHex(hex) {
+  try {
+    return /^#[0-9A-F]{6}$/i.test(hex);
+  } catch (error) {
+    return false;
+  }
+};
+
 
 /**
  * @param {String} label
  * @param {String} color (in #RGB format, ex. "#3f0f10")
  */
 function Highlighter (label, color) {
-  this.label = label;
-  this.color = color;
-
   this.setLabel = function (newLabel) {
     this.label = newLabel;
   };
 
   this.setColor = function (newColor) {
-    this.color = newColor;
+    const inputColor = newColor.trim();
+    if (isHex(inputColor)) {
+      this.color = newColor;
+    } else {
+      this.color = DEFAULT_COLOR;
+    }
   };
+
+  this.setLabel(label);
+  this.setColor(color);
 
   this.toJSON = function () {
     const json = {};
