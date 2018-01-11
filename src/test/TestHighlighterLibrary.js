@@ -13,6 +13,15 @@ function runTests() {
   testLibraryRemoveSetNegative();
   testSetRemoveHighlighter();
   testSetRemoveHighlighterNegative();
+
+  testIsHexPositive();
+  testIsHexPositiveUpperCase();
+  testIsHexPositiveDifferentCase();
+  testIsHexPositiveAllLetters();
+  testIsHexPositiveAllNums();
+  testIsHexNegativeNoHashTag();
+  testIsHexNegativeInvalidLetter();
+  testIsHexNegativeNotEnoughChars();
   Logger.log('Tests successful.');
 }
 
@@ -110,4 +119,36 @@ function testSetRemoveHighlighterNegative() {
     e = error;
   }
   assert(e, 'HighlighterSet:removeHighlighter invalid argument did not error,');
+}
+
+function testIsHexPositive() {
+  assert(isHex('#ff01e9'), 'Valid hex was invalid.');
+}
+
+function testIsHexPositiveUpperCase() {
+  assert(isHex('#FD01EC'), 'Valid hex was invalid.');
+}
+
+function testIsHexPositiveDifferentCase() {
+  assert(isHex('#fF01a9'), 'Valid hex was invalid.');
+}
+
+function testIsHexPositiveAllNums() {
+  assert(isHex('#292919'), 'Valid hex was invalid.');
+}
+
+function testIsHexPositiveAllLetters() {
+  assert(isHex('#fabced'), 'Valid hex was invalid.');
+}
+
+function testIsHexNegativeNoHashTag() {
+  assertFalse(isHex('292919'), 'Inalid hex was valid.');
+}
+
+function testIsHexNegativeInvalidLetter() {
+  assertFalse(isHex('#ff00fZ'), 'Inalid hex was valid.');
+}
+
+function testIsHexNegativeNotEnoughChars() {
+  assertFalse(isHex('#f0fz'), 'Inalid hex was valid.');
 }
