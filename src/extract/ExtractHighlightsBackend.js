@@ -8,7 +8,7 @@ var ORDER_CHRONO = 'CHRONO';
 var NEW_DOC = 'NEW';
 var CURRENT_DOC = 'CURRENT';
 
-var LUMINOSITY_WHITE_THRESHOLD = 240;
+var LUMINOSITY_WHITE_THRESHOLD = 250;
 
 var getActiveDocument = function () {
   return DocumentApp.getActiveDocument();
