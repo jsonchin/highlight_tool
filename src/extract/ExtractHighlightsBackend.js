@@ -8,6 +8,9 @@ var ORDER_CHRONO = 'CHRONO';
 var NEW_DOC = 'NEW';
 var CURRENT_DOC = 'CURRENT';
 
+var EXTRACT_HIGHLIGHTS_TARGET_DOC_DIALOG_HTML_FILENAME = 'src/extract/ExtractHighlightsTargetDocDialog';
+var EXTRACT_HIGHLIGHTS_LINK_DIALOG_HTML_FILENAME = 'src/extract/ExtractHighlightsLinkDialog';
+
 var LUMINOSITY_WHITE_THRESHOLD = 250;
 
 var getActiveDocument = function () {
@@ -326,7 +329,7 @@ TABLE_ATTRIBUTES[DocumentApp.Attribute.UNDERLINE] = false;
  * @param {String} order must either by 'COLOR' or CHRONO'
  */
 function showExtractHighlightedTextTargetDocDialog(order) {
-  const dialogTemplate = HtmlService.createTemplateFromFile('ExtractHighlightsTargetDocDialog');
+  const dialogTemplate = HtmlService.createTemplateFromFile(EXTRACT_HIGHLIGHTS_TARGET_DOC_DIALOG_HTML_FILENAME);
   dialogTemplate.order = order;
 
   const dialog = dialogTemplate.evaluate();
@@ -381,7 +384,7 @@ function extractHighlightsToDoc(target, order) {
 }
 
 function showLinkToDocDialog(link, isCurrentDoc) {
-  const dialogTemplate = HtmlService.createTemplateFromFile('ExtractHighlightsLinkDialog');
+  const dialogTemplate = HtmlService.createTemplateFromFile(EXTRACT_HIGHLIGHTS_LINK_DIALOG_HTML_FILENAME);
   dialogTemplate.link = link;
   dialogTemplate.isCurrentDoc = isCurrentDoc;
 

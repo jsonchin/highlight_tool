@@ -20,6 +20,10 @@ var SHARE_INSTRUCTIONS2 = 'Go to "Add-ons" -> "Highlight Tool" -> "Import Librar
 var SHARE_INSTRUCTIONS3 = 'Share this document with other users if you want them to import and use your set of highlighters. Alternatively, copy and paste the block of text between and including the *** s into another document and follow the same instructions.';
 var SHARE_INSTRUCTIONS = [SHARE_INSTRUCTIONS1, SHARE_INSTRUCTIONS2, SHARE_INSTRUCTIONS3];
 
+var SHARE_DIALOG_HTML_FILENAME = 'src/share/ShareHighlighters';
+var SHARE_COMPLETE_DIALOG_HTML_FILENAME = 'src/share/ShareHighlightersComplete';
+var IMPORT_DIALOG_HTML_FILENAME = 'src/share/ImportHighlighters';
+
 var InvalidShareBlockError = function (msg) {
   this.name = 'InvalidShareBlockError';
   this.message = msg;
@@ -42,7 +46,7 @@ function showShareHighlightersDialogNewDoc() {
  * @param {String} destination Either CURRENT_DOC or NEW_DOC.
  */
 function showShareHighlightersDialog(destination) {
-  const dialogTemplate = HtmlService.createTemplateFromFile('ShareHighlighters');
+  const dialogTemplate = HtmlService.createTemplateFromFile(SHARE_DIALOG_HTML_FILENAME);
 
   const hLibrary = loadHighlighterLibrary();
   const hLibraryJSON = hLibrary.toJSON();
@@ -120,7 +124,7 @@ function shareChosenSets(chosenSets, destination) {
 }
 
 function showExportLinkDialog(url) {
-  const dialogTemplate = HtmlService.createTemplateFromFile('ShareHighlightersComplete');
+  const dialogTemplate = HtmlService.createTemplateFromFile(SHARE_COMPLETE_DIALOG_HTML_FILENAME);
   dialogTemplate.link = url;
 
   const dialog = dialogTemplate.evaluate();
@@ -250,7 +254,7 @@ function showFoundSharedHighlighterSetsDuplicateDialog(additionalText, sharedHig
     seenSetNames[highlighterSet.setName] = true;
   });
 
-  const dialogTemplate = HtmlService.createTemplateFromFile('ImportHighlighters');
+  const dialogTemplate = HtmlService.createTemplateFromFile(IMPORT_DIALOG_HTML_FILENAME);
   const hLibraryJSON = {};
   hLibraryJSON[HIGHLIGHTER_SETS_KEY] = sharedHighlighterSets;
 

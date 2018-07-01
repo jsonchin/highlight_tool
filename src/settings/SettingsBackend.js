@@ -2,13 +2,15 @@ var SETTING_AUTO_IMPORT_KEY = 'settingAutoImport'; // 'true' or 'false' as keys
 var SETTING_AUTO_IMPORT_TRUE = 'true';
 var SETTING_AUTO_IMPORT_FALSE = 'false';
 
+var SETTINGS_HTML_FILENAME = 'src/settings/Settings'
+
 /**
  * Shows a dialog where the user can choose their settings.
  * Currently only:
  *  - autoImport
  */
 function showSettingsDialog() {
-  const dialogTemplate = HtmlService.createTemplateFromFile('Settings');
+  const dialogTemplate = HtmlService.createTemplateFromFile(SETTINGS_HTML_FILENAME);
   const userProps = PropertiesService.getUserProperties();
 
   // retrieve the settings from UserProperties and apply them to the scriplet
