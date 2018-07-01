@@ -72,7 +72,7 @@
             margin-bottom: 10px;
         }
 
-        .set-remove, .highlighter-remove, .set-hide, .highlighter-add, .set-copy {
+        .set-remove, .highlighter-remove, .set-hide, .highlighter-add, .set-copy, .set-sort {
             height: 27px;
             width: 27px;
             min-width: 27px;
@@ -89,11 +89,11 @@
             font-size: 22px;
         }
 
-        .set-copy-icon {
+        .set-copy-icon, .set-sort-icon {
             font-size: 20px;
         }
 
-        .set-name, .highlighter-label, .set-remove, .highlighter-remove, .highlighter-add, .set-hide, .highlighter-color, .set-copy {
+        .set-name, .highlighter-label, .set-remove, .highlighter-remove, .highlighter-add, .set-hide, .highlighter-color, .set-copy, .set-sort {
             vertical-align: middle;
         }
     </style>
@@ -309,6 +309,14 @@
         setCopyIcon.innerHTML = 'content_copy';
         setCopyButton.appendChild(setCopyIcon);
 
+        const setSortButton = document.createElement('button');
+        setSortButton.className = 'set-sort';
+        setSortButton.style.display = displayCSS;
+        const setSortIcon = document.createElement('i');
+        setSortIcon.className = 'material-icons set-sort-icon';
+        setSortIcon.innerHTML = 'sort_by_alpha';
+        setSortButton.appendChild(setSortIcon);
+
         const setRemoveInput = document.createElement('button');
         setRemoveInput.style.display = displayCSS;
         setRemoveInput.className = 'set-remove create';
@@ -341,6 +349,8 @@
         highlighterSetLi.appendChild(highlighterAddButton);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
         highlighterSetLi.appendChild(setCopyButton);
+        highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
+        highlighterSetLi.appendChild(setSortButton);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
         highlighterSetLi.appendChild(setRemoveInput);
         highlighterSetLi.appendChild(document.createTextNode('\u00A0'));
@@ -451,6 +461,32 @@
 
         return false;
     });
+
+    /**
+     * Sort a set.
+     */
+    $(document).on('click', '.set-sort', function () {
+        const $highlighterSet = $(this).parent();
+        sortHighlighterSet($highlighterSet);
+        return false;
+    });
+
+    const sortHighlighterSet = function(highlighterSet) {
+        console.log(highlighterSet);
+        const highlighters = highlighterSet.children('.highlighters').children('.highlighters-item');
+        console.log(highlighters);
+        const sortedHighlighters = highlighters.sort(function(highlighter1, highlighter2) {
+            console.log($(highlighter1));
+            console.log($(highlighter1).children('.highlighter-label'));
+            const label1 = $(highlighter1).children('.highlighter-label')[0].value;
+            const label2 = $(highlighter2).children('.highlighter-label')[0].value;
+            console.log(label1);
+            return label1.localeCompare(label2);
+        });
+        highlighterSet.children('.highlighters').html(sortedHighlighters);
+
+        console.log(sortedHighlighters);
+    };
 
     /**
      * Add a new highlighter to a set.
