@@ -1,5 +1,7 @@
+var SIDEBAR_HTML_FILENAME = 'src/sidebar/Sidebar';
+
 function showSidebar() {
-  const sidebarTemplate = HtmlService.createTemplateFromFile('Sidebar');
+  const sidebarTemplate = HtmlService.createTemplateFromFile(SIDEBAR_HTML_FILENAME);
 
   const currentHSet = loadCurrentHighlighterSet();
   if (currentHSet === null) {

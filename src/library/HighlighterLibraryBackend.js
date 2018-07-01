@@ -34,6 +34,7 @@ var HIGHLIGHTER_SETS_KEY = 'highlighterSets';
 
 var DEFAULT_COLOR = '#FFFFFF';
 
+var HIGHLIGHTER_LIBRARY_HTML_FILENAME = 'src/library/HighlighterLibrary';
 
 /**
  * Creates a highlighter library from the provided json.
@@ -94,7 +95,7 @@ function logLibrary() {
 
 
 function showHighlighterLibraryDialog() {
-  const dialogTemplate = HtmlService.createTemplateFromFile('HighlighterLibrary');
+  const dialogTemplate = HtmlService.createTemplateFromFile(HIGHLIGHTER_LIBRARY_HTML_FILENAME);
 
   const dialog = dialogTemplate.evaluate();
   dialog.setWidth(450)
