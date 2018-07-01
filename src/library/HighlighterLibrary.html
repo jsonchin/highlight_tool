@@ -466,26 +466,18 @@
      * Sort a set.
      */
     $(document).on('click', '.set-sort', function () {
-        const $highlighterSet = $(this).parent();
         sortHighlighterSet($highlighterSet);
         return false;
     });
 
     const sortHighlighterSet = function(highlighterSet) {
-        console.log(highlighterSet);
         const highlighters = highlighterSet.children('.highlighters').children('.highlighters-item');
-        console.log(highlighters);
         const sortedHighlighters = highlighters.sort(function(highlighter1, highlighter2) {
-            console.log($(highlighter1));
-            console.log($(highlighter1).children('.highlighter-label'));
             const label1 = $(highlighter1).children('.highlighter-label')[0].value;
             const label2 = $(highlighter2).children('.highlighter-label')[0].value;
-            console.log(label1);
             return label1.localeCompare(label2);
         });
         highlighterSet.children('.highlighters').html(sortedHighlighters);
-
-        console.log(sortedHighlighters);
     };
 
     /**
