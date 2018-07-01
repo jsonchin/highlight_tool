@@ -127,6 +127,7 @@
         <ul id="highlighter-sets">
         
         </ul>
+        <input type="button" value="Hide All Sets" id="hide-all-sets" />
     </div>
 
     <div id="bottom">
@@ -516,6 +517,10 @@
     $(document).on('click', '.set-hide', function () {
         const highlighterSetDOM = $(this).parent()
         flipVisiblityForSet(highlighterSetDOM);
+    });
+
+    $(document).on('click', '#hide-all-sets', function () {
+        hideAllLibrarySets();
     });
     
 
