@@ -519,10 +519,12 @@
         flipVisiblityForSet(highlighterSetDOM);
     });
 
+    /**
+     * Event listener for hiding all highlighter sets.
+     */
     $(document).on('click', '#hide-all-sets', function () {
         hideAllLibrarySets();
     });
-    
 
     /**
      * Load the library and create the html.
