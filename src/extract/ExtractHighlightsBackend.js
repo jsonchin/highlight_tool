@@ -13,6 +13,9 @@ var EXTRACT_HIGHLIGHTS_LINK_DIALOG_HTML_FILENAME = 'src/extract/ExtractHighlight
 
 var LUMINOSITY_WHITE_THRESHOLD = 250;
 
+var SPACING_PARAGRAPH_STYLE = {};
+SPACING_PARAGRAPH_STYLE[DocumentApp.Attribute.FONT_SIZE] = 6;
+
 var getActiveDocument = function () {
   return DocumentApp.getActiveDocument();
   // return DocumentApp.openByUrl('https://docs.google.com/document/d/1S-QoWUdC07lOn6iijAhEOFNaFFWK6PHpQ_2AE6XfXe0/edit');
@@ -217,7 +220,10 @@ var appendExtractedTextChrono = function appendExtractedTextToDocByChronological
         tableRow = table.getRow(table.getNumRows() - 1);
         tableCell1 = tableRow.getCell(0);
         tableCell2 = tableRow.getCell(1);
+        var spacingParagraph = tableCell2.appendParagraph('');
         tableCell2.appendParagraph(textStr);
+        // set style afterwards so it doesn't affect the content paragraph
+        spacingParagraph.setAttributes(SPACING_PARAGRAPH_STYLE);
       } else {
         tableRow = table.appendTableRow();
         tableCell1 = tableRow.appendTableCell();
