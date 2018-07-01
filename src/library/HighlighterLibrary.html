@@ -469,28 +469,55 @@
         $(this).parent().remove();
     });
 
+    const highlighterSetVisibiltyHelper = function(highlighterSetDOM, isHideSet) {
+        const $highlighterSet = highlighterSetDOM;
+        const $highlighters = $highlighterSet.children('.highlighters');
+        const $addHighlighterButton = $highlighterSet.children('.highlighter-add');
+        const $removeSetButton = $highlighterSet.children('.set-remove');
+        if (isHideSet) {
+            $highlighters.css('display', DISPLAY_NONE);
+            $addHighlighterButton.css('display', DISPLAY_NONE);
+            $removeSetButton.css('display', DISPLAY_NONE);
+            $highlighterSet.children('.set-hide').children('i').html(SHOW_SET_VAL);
+        } else {
+            $highlighters.css('display', DISPLAY_SHOW);
+            $addHighlighterButton.css('display', DISPLAY_SHOW);
+            $removeSetButton.css('display', DISPLAY_SHOW);
+            $highlighterSet.children('.set-hide').children('i').html(MINIMIZE_SET_VAL);
+        }
+    };
+
+    const hideHighlighterSet = function(highlighterSetDOM) {
+        highlighterSetVisibiltyHelper(highlighterSetDOM, true);
+    };
+
+    const showHighlighterSet = function(highlighterSetDOM) {
+        highlighterSetVisibiltyHelper(highlighterSetDOM, false);
+    };
+
+    const flipVisiblityForSet = function(highlighterSetDOM) {
+        const displayCSS = highlighterSetDOM.children('.highlighters').css('display');
+        if (displayCSS === DISPLAY_NONE) {
+            showHighlighterSet(highlighterSetDOM);
+        } else {
+            hideHighlighterSet(highlighterSetDOM);
+        }
+    };
+
+    const hideAllLibrarySets = function() {
+        $('#highlighter-sets').children('.highlighter-sets-item').each(function (i) {
+            hideHighlighterSet($(this));
+        });
+    };
 
     /**
      * Event listener for hiding and showing a highlighter set.
      */
     $(document).on('click', '.set-hide', function () {
-        const $highlighterSet = $(this).parent();
-        const $highlighters = $highlighterSet.children('.highlighters');
-        const $addHighlighterButton = $highlighterSet.children('.highlighter-add');
-        const $removeSetButton = $highlighterSet.children('.set-remove');
-        const displayCSS = $highlighters.css('display');
-        if (displayCSS === DISPLAY_NONE) {
-            $highlighters.css('display', DISPLAY_SHOW);
-            $addHighlighterButton.css('display', DISPLAY_SHOW);
-            $removeSetButton.css('display', DISPLAY_SHOW);
-            $(this).children('i').html(MINIMIZE_SET_VAL);
-        } else {
-            $highlighters.css('display', DISPLAY_NONE);
-            $addHighlighterButton.css('display', DISPLAY_NONE);
-            $removeSetButton.css('display', DISPLAY_NONE);
-            $(this).children('i').html(SHOW_SET_VAL);
-        }
+        const highlighterSetDOM = $(this).parent()
+        flipVisiblityForSet(highlighterSetDOM);
     });
+    
 
     /**
      * Load the library and create the html.
