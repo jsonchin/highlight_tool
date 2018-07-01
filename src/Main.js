@@ -3,9 +3,8 @@ function onOpen(e) {
   ui.createAddonMenu()
     .addItem('Start', 'start')
     .addItem('Import Library', 'mainShowFoundSharedHighlighterSetsDialog')
-    .addSubMenu(ui.createMenu('Export Library')
-      .addItem('To new document', 'mainShowShareHighlightersDialogNewDoc')
-      .addItem('To current document', 'mainShowShareHighlightersDialogCurrentDoc'))
+    .addItem('Export Library', 'mainShowShareHighlightersDialogNewDoc')
+    .addItem('Associate', 'mainShowShareHighlightersDialogCurrentDoc')
     .addSeparator()
     .addItem('Settings', 'showSettingsDialog')
     .addToUi();
