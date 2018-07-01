@@ -467,6 +467,7 @@
      * Sort a set.
      */
     $(document).on('click', '.set-sort', function () {
+        const $highlighterSet = $(this).parent();
         sortHighlighterSet($highlighterSet);
         return false;
     });
