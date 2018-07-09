@@ -72,13 +72,18 @@
             margin-bottom: 10px;
         }
 
-        .set-remove, .highlighter-remove, .set-hide, .highlighter-add, .set-copy, .set-sort {
+        .set-remove, .highlighter-remove, .set-hide, .highlighter-add, .set-copy, .set-sort, #hide-all-sets, #expand-all-sets {
             height: 27px;
             width: 27px;
             min-width: 27px;
             text-align: center;
             padding: 0;
             line-height: 50%;
+        }
+
+        #hide-all-sets, #expand-all-sets {
+            vertical-align: middle;
+            margin-left: 7px;
         }
 
         .set-remove {
@@ -127,12 +132,21 @@
         <ul id="highlighter-sets">
         
         </ul>
-        <input type="button" value="Hide All Sets" id="hide-all-sets" />
     </div>
 
     <div id="bottom">
         <div id="bottom-row1">
             <input type="button" value="New Set" id="set-add" class="share" />
+            <button id="hide-all-sets">
+                <i class="material-icons">
+                    unfold_less
+                </i>
+            </button>
+            <button id="expand-all-sets">
+                <i class="material-icons">
+                    unfold_more
+                </i>
+            </button>
             <span style="float: right;">
                 <span style="font-style: italic;">Currently selected: </span>
                 <b>' <span id="selected-set-name"></span> '</b>
@@ -504,15 +518,18 @@
         const $highlighters = $highlighterSet.children('.highlighters');
         const $addHighlighterButton = $highlighterSet.children('.highlighter-add');
         const $removeSetButton = $highlighterSet.children('.set-remove');
+        const $setSort = $highlighterSet.children('.set-sort');
         if (isHideSet) {
             $highlighters.css('display', DISPLAY_NONE);
             $addHighlighterButton.css('display', DISPLAY_NONE);
             $removeSetButton.css('display', DISPLAY_NONE);
+            $setSort.css('display', DISPLAY_NONE);
             $highlighterSet.children('.set-hide').children('i').html(SHOW_SET_VAL);
         } else {
             $highlighters.css('display', DISPLAY_SHOW);
             $addHighlighterButton.css('display', DISPLAY_SHOW);
             $removeSetButton.css('display', DISPLAY_SHOW);
+            $setSort.css('display', DISPLAY_SHOW);
             $highlighterSet.children('.set-hide').children('i').html(MINIMIZE_SET_VAL);
         }
     };
@@ -540,6 +557,12 @@
         });
     };
 
+    const showAllLibrarySets = function() {
+        $('#highlighter-sets').children('.highlighter-sets-item').each(function (i) {
+            showHighlighterSet($(this));
+        });
+    };
+
     /**
      * Event listener for hiding and showing a highlighter set.
      */
@@ -553,6 +576,13 @@
      */
     $(document).on('click', '#hide-all-sets', function () {
         hideAllLibrarySets();
+    });
+
+    /**
+     * Event listener for expanding all highlighter sets.
+     */
+    $(document).on('click', '#expand-all-sets', function () {
+        showAllLibrarySets();
     });
 
     /**
