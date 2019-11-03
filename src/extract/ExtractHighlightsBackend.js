@@ -230,11 +230,13 @@ var appendExtractedTextChrono = function appendExtractedTextToDocByChronological
         // set the first column to be the label if there is a match
         if (color in colorToLabel) {
           tableCell1.setText(colorToLabel[color]);
+          tableCell1.getChild(0).asParagraph().setBackgroundColor(color);
           tableCell1.setBold(true);
           tableCell1.setWidth(TABLE_LABEL_CELL_WIDTH);
         }
         tableCell2 = tableRow.appendTableCell();
         tableCell2.setText(textStr);
+        tableCell2.getChild(0).asParagraph().setBackgroundColor(color);
         tableCell2.setBold(false);
       }
 

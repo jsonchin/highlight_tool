@@ -68,7 +68,7 @@ function showShareHighlightersDialog(destination) {
  */
 function appendHighlighterSetBlock(hSet, body) {
   body.appendParagraph(SHARE_BLOCK_HEADER)
-    .setAlignment(DocumentApp.HorizontalAlignment.CENTER).setBackgroundColor(null);
+    .setAlignment(DocumentApp.HorizontalAlignment.CENTER).setForegroundColor(null);
   // no templating strings allowed in GAS
   // append setName
   body.appendParagraph(SHARE_BLOCK_LEFT_SET_NAME + hSet.setName + SHARE_BLOCK_RIGHT_SET_NAME)
@@ -77,11 +77,11 @@ function appendHighlighterSetBlock(hSet, body) {
   // append highlighters
   hSet.highlighters.forEach(function (highlighter) {
     body.appendParagraph('"' + highlighter.label + '" : "' + highlighter.color + '"')
-      .setAlignment(DocumentApp.HorizontalAlignment.CENTER).setBackgroundColor(highlighter.color);
+      .setAlignment(DocumentApp.HorizontalAlignment.CENTER).setForegroundColor(highlighter.color);
   });
 
   body.appendParagraph(SHARE_BLOCK_FOOTER)
-    .setAlignment(DocumentApp.HorizontalAlignment.CENTER).setBackgroundColor(null);
+    .setAlignment(DocumentApp.HorizontalAlignment.CENTER).setForegroundColor(null);
 }
 
 /**
