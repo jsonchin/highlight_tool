@@ -611,6 +611,8 @@
         createDraggable();
 
         if ($currentSet !== undefined) {
+            hideAllLibrarySets();
+            showHighlighterSet($currentSet);
             scrollToHighlighterSet($currentSet);
         }
     }).loadHighlighterLibraryJSON();
