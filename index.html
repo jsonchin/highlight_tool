@@ -397,18 +397,36 @@
 
 
     <div id="separator-banner">
-        <div class="container" style="color:#FFFFFF;">
-            <h3>COPPA Compliance/Privacy Concerns</h3>
-            <p>This Google Add-on:</p>
+        <div class="container" id="privacy-policy" style="color:#FFFFFF;">
+            <h3>COPPA Compliance/Privacy Policy</h3>
+            <p>This Google Docs Add-on:</p>
             <ul class="scroll-reveal">
                 <li>Does not sell in-app products nor advertise to its users (completely and will always be free)</li>
                 <li>Does not collect nor store any personal information about the user or his or her Google Documents</li>
                 <li>Does not communicate with the user unless he or she has submitted an issue report/has emailed me</li>
             </ul>
 
-            <p>I made this as a student in high school in 2015 and now I'm a college student. I'm not a company that wants your data or personal information.</p>
+            <p>This Google Docs Add-on requests two sensitive privacy scopes for the following reasons:</p>
+            <ul class="scroll-reveal">
+                <li>/auth/documents</li>
+                <ul class="scroll-reveal">
+                    <li>This scope allows this Add-on to create or modify documents outside of the currently used document. This Add-on utilizes this scope in a few ways. The first usage is a feature to extract the highlighted text from the current document and store it in a table in a newly created document or a existing document (specified via a URL). The second usage is a feature to share your highlighter sets with other users by exporting them to a newly created document.</li>
+                </ul>
+                <li>/auth/script.container.ui</li>
+                <ul class="scroll-reveal">
+                    <li>This scope allows this Add-on to display a sidebar which holds your current highlighter set on the right hand side. This scope also allows this Add-on to display dialogs such as the "Highlighter Library" dialog where you can edit your highlighter sets or the "Extract Highlighted Text" dialog that allows you to choose where to extract your highlighted text to.</li>
+                </ul>
+            </ul>
 
-            <p>Also the code is made publically available on my <a href="https://github.com/jsonchin/highlight_tool" target="_blank" style="color:#D0D0D0">github</a>.</p>
+            <p>User data:</p>
+            <ul class="scroll-reveal">
+                <li>This Add-on stores your "Highlighter Library" using Google App Script's <a href="https://developers.google.com/apps-script/reference/properties/properties-service#getuserproperties" target="_blank" style="color:#D0D0D0">PropertiesService::getUserProperties()</a> API. The documentation for this API states "Gets a property store that only the current user can access, and only within this script." meaning that this data is only accessible by the user running this Add-on. Neither the developer of this Add-on (me) nor other users can access your highlighters.</li>
+                <li>This Add-on does not collect nor store any information about your documents or your higlighters anywhere.</li>
+            </ul>
+
+            <p>I made this as a student in high school in 2015 for my Social Studies teacher. I don't have a need for your data.</p>
+
+            <p>The code is made publically available on my <a href="https://github.com/jsonchin/highlight_tool" target="_blank" style="color:#D0D0D0">github</a>.</p>
         </div>
     </div>
 
